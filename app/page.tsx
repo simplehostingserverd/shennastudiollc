@@ -1,103 +1,170 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { useState, useEffect } from "react"
+import ProductGrid from "@/app/components/ProductGrid"
+import SearchBar from "@/app/components/SearchBar"
+import Button from "@/app/components/ui/Button"
+import { Product } from "@/src/lib/medusa"
+import medusa from "@/src/lib/medusa"
+import Link from "next/link"
+
+export default function HomePage() {
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchFeaturedProducts()
+  }, [])
+
+  const fetchFeaturedProducts = async () => {
+    try {
+      setLoading(true)
+      const response = await medusa.store.products.list({ limit: 8 })
+      if (response.products) {
+        setFeaturedProducts(response.products)
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative h-[600px] flex items-center justify-center bg-gradient-to-br from-ocean-500 via-ocean-600 to-ocean-800 text-white overflow-hidden">
+        <video
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src="/videobackground.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-ocean-500 opacity-20"></div>
+        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
+          <div className="mb-6">
+            <div className="text-8xl mb-4 animate-float">🐢</div>
+            <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 text-gradient-coral">
+              Shenna's Studio
+            </h1>
+            <p className="text-xl md:text-2xl text-ocean-100 mb-8 max-w-2xl mx-auto">
+              A family business crafting beautiful ocean-themed treasures that celebrate marine life 
+              and support ocean conservation efforts.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="#featured">
+              <Button 
+                variant="coral" 
+                size="lg" 
+                className="text-lg px-8 py-4"
+              >
+                Explore Products
+              </Button>
+            </Link>
+            <Link href="/about">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-ocean-600"
+              >
+                Our Mission
+              </Button>
+            </Link>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        
+        {/* Floating elements */}
+        <div className="absolute top-20 left-10 text-4xl animate-float opacity-60">🌊</div>
+        <div className="absolute top-40 right-16 text-3xl animate-float opacity-40" style={{ animationDelay: '1s' }}>🐠</div>
+        <div className="absolute bottom-32 left-20 text-3xl animate-float opacity-50" style={{ animationDelay: '2s' }}>🐙</div>
+        <div className="absolute bottom-20 right-10 text-4xl animate-float opacity-30" style={{ animationDelay: '3s' }}>🦀</div>
+      </section>
+
+      {/* Search Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-display font-bold text-ocean-900 mb-4">
+              Find Your Perfect Ocean Treasure
+            </h2>
+            <p className="text-lg text-ocean-600 mb-8">
+              Search through our carefully curated collection of ocean-inspired products
+            </p>
+          </div>
+          <SearchBar />
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <section id="featured" className="py-20 bg-ocean-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-display font-bold text-ocean-900 mb-4">
+              Featured Products
+            </h2>
+            <p className="text-lg text-ocean-600 max-w-2xl mx-auto">
+              Handpicked treasures from the depths of our collection, each one celebrating 
+              the beauty and wonder of ocean life.
+            </p>
+          </div>
+
+          <ProductGrid products={featuredProducts} />
+
+          <div className="text-center mt-12">
+            <Link href="/products">
+              <Button variant="primary" size="lg">
+                View All Products
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Conservation Message */}
+      <section className="py-20 ocean-gradient text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="text-6xl mb-8">🌊</div>
+          <h2 className="text-4xl font-display font-bold mb-6">
+            Supporting Ocean Conservation
+          </h2>
+          <p className="text-xl text-ocean-100 mb-8 leading-relaxed">
+            Every purchase helps protect our oceans. We donate 10% of all proceeds 
+            to marine conservation organizations working tirelessly to preserve 
+            ocean ecosystems for future generations.
+          </p>
+          <Link href="/conservation">
+            <Button variant="seafoam" size="lg">
+              Learn More About Our Impact
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-display font-bold text-ocean-900 mb-4">
+            Stay Connected with the Ocean
+          </h2>
+          <p className="text-lg text-ocean-600 mb-8">
+            Get updates on new arrivals, conservation efforts, and exclusive offers
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="flex-1 px-4 py-3 border border-ocean-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
+            />
+            <Button variant="primary" className="px-8">
+              Subscribe
+            </Button>
+          </div>
+        </div>
+      </section>
     </div>
-  );
+  )
 }
