@@ -13,14 +13,20 @@
       "Bash(npm install:*)",
       "Bash(npm run algolia:index:*)",
       "Bash(curl:*)",
-      "Bash(ngrok:*)",
       "Bash(timeout:*)",
       "Bash(git add:*)",
       "Bash(git rm:*)",
       "Bash(docker logs:*)",
       "Bash(docker compose:*)",
       "Bash(docker-compose:*)",
-      "Bash(start \"Docker Desktop\" \"C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe\")"
+      "Bash(start \"Docker Desktop\" \"C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe\")",
+      "Bash(git commit:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm audit:*)",
+      "WebSearch",
+      "Bash(npm view:*)",
+      "Bash(npm ls:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

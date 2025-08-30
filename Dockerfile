@@ -2,6 +2,7 @@
 # This builds both the frontend and backend services
 
 FROM node:20-alpine AS base
+RUN apk add --no-cache curl
 
 # Build Frontend
 FROM base AS frontend-builder
