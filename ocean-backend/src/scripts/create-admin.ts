@@ -1,7 +1,7 @@
-import { MedusaApp, Modules } from "@medusajs/framework/utils"
+import { createMedusaContainer, Modules } from "@medusajs/framework/utils"
 
 const createAdminUser = async () => {
-  const { modules } = await MedusaApp({
+  const { modules } = await createMedusaContainer({
     modulesConfig: {
       [Modules.USER]: {
         resolve: "@medusajs/user",
