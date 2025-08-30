@@ -35,6 +35,19 @@ const config: Config = {
           900: '#7a3117',
           950: '#42170a',
         },
+        maroon: {
+          50: '#fdf2f2',
+          100: '#fce7e7',
+          200: '#f8d1d1',
+          300: '#f1a8a8',
+          400: '#e87474',
+          500: '#dc4545',
+          600: '#c92a2a',
+          700: '#a91d1d',
+          800: '#8b1b1b',
+          900: '#721c1c',
+          950: '#3e0a0a',
+        },
         seafoam: {
           50: '#ecfdf5',
           100: '#d1fae5',
@@ -52,6 +65,7 @@ const config: Config = {
       backgroundImage: {
         'ocean-gradient': 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #075985 100%)',
         'coral-gradient': 'linear-gradient(135deg, #f59542 0%, #f2761e 50%, #e35d14 100%)',
+        'maroon-gradient': 'linear-gradient(135deg, #e87474 0%, #dc4545 50%, #c92a2a 100%)',
         'seafoam-gradient': 'linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%)',
         'ocean-waves': "url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23bae6fd\" fill-opacity=\"0.1\"%3E%3Cpath d=\"m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')",
       },

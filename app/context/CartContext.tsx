@@ -43,6 +43,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Load cart from localStorage on mount
   useEffect(() => {
+    const loadCart = async (id: string) => {
+      try {
+        setIsLoading(true)
+        const response = await medusa.store.carts.retrieve(id)
+        if (response.cart) {
+          setItems(response.cart.items || [])
+        }
+      } catch (error) {
+        console.error("Error loading cart:", error)
+        localStorage.removeItem("cart_id")
+        setCartId(null)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
     const savedCartId = localStorage.getItem("cart_id")
     if (savedCartId) {
       setCartId(savedCartId)
@@ -50,21 +66,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const loadCart = async (id: string) => {
-    try {
-      setIsLoading(true)
-      const response = await medusa.store.carts.retrieve(id)
-      if (response.cart) {
-        setItems(response.cart.items || [])
-      }
-    } catch (error) {
-      console.error("Error loading cart:", error)
-      // If cart doesn't exist, create a new one
-      await createCart()
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   const createCart = async () => {
     try {

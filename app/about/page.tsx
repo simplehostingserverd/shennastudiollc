@@ -21,7 +21,7 @@ export default function AboutPage() {
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="text-6xl mb-6 animate-float">🌊</div>
           <h1 className="text-4xl md:text-6xl font-display font-bold mb-6">
-            About Shenna's Studio
+            About Shenna&apos;s Studio
           </h1>
           <p className="text-xl md:text-2xl text-ocean-100 max-w-3xl mx-auto leading-relaxed">
             A family business born from passion, crafted with love, and dedicated to bringing 
@@ -48,7 +48,7 @@ export default function AboutPage() {
                 <p>
                   What started as a simple idea has blossomed into a thriving family business 
                   that brings the wonder and beauty of ocean life to homes across the world. 
-                  Shenna's Studio was born from a deep love for marine conservation and 
+                  Shenna&apos;s Studio was born from a deep love for marine conservation and 
                   artisan craftsmanship.
                 </p>
                 <p>
@@ -58,7 +58,7 @@ export default function AboutPage() {
                   Every piece tells a story of the sea.
                 </p>
                 <p>
-                  Today, Shenna's Studio has grown into a full-fledged, beautiful family-owned 
+                  Today, Shenna&apos;s Studio has grown into a full-fledged, beautiful family-owned 
                   business that is prospering online, reaching ocean lovers around the globe 
                   while maintaining our commitment to quality, authenticity, and environmental responsibility.
                 </p>
@@ -88,7 +88,7 @@ export default function AboutPage() {
               Meet Our Founders
             </h2>
             <p className="text-lg text-ocean-600 max-w-2xl mx-auto">
-              The passionate duo behind Shenna's Studio, combining creativity with 
+              The passionate duo behind Shenna&apos;s Studio, combining creativity with 
               technical expertise to create something beautiful.
             </p>
           </div>
@@ -104,7 +104,7 @@ export default function AboutPage() {
               </h3>
               <p className="text-coral-600 font-medium mb-4">Creative Founder & Visionary</p>
               <p className="text-ocean-600 leading-relaxed mb-6">
-                The creative heart behind Shenna's Studio. Shenna's passion for ocean 
+                The creative heart behind Shenna&apos;s Studio. Shenna&apos;s passion for ocean 
                 conservation and artistic expression drives every design decision, 
                 ensuring each product captures the true essence of marine beauty.
               </p>
@@ -132,7 +132,7 @@ export default function AboutPage() {
               <p className="text-ocean-600 font-medium mb-4">Technical Co-Founder & Owner of SoftwarePros Inc</p>
               <p className="text-ocean-600 leading-relaxed mb-6">
                 A 20-year software architecture veteran who brings technical excellence 
-                to Shenna's Studio. As owner of SoftwarePros Inc, Michael's expertise ensures our online presence 
+                to Shenna&apos;s Studio. As owner of SoftwarePros Inc, Michael&apos;s expertise ensures our online presence 
                 is as beautiful and reliable as our products.
               </p>
               <div className="flex justify-center space-x-4 mb-6">
@@ -184,7 +184,7 @@ export default function AboutPage() {
               Our Values
             </h2>
             <p className="text-lg text-ocean-600 max-w-2xl mx-auto">
-              The principles that guide everything we do at Shenna's Studio.
+              The principles that guide everything we do at Shenna&apos;s Studio.
             </p>
           </div>
 
@@ -238,13 +238,13 @@ export default function AboutPage() {
             Visit Our Studio
           </h2>
           <p className="text-xl text-ocean-100 mb-8 max-w-2xl mx-auto">
-            We'd love to welcome you to our family! Come visit us in beautiful Brownsville, Texas.
+            We&apos;d love to welcome you to our family! Come visit us in beautiful Brownsville, Texas.
           </p>
           
           <div className="bg-white bg-opacity-10 rounded-2xl p-8 mb-8 backdrop-blur-sm">
             <div className="text-3xl mb-4">📍</div>
             <div className="text-lg space-y-2">
-              <p className="font-semibold">Shenna's Studio</p>
+              <p className="font-semibold">Shenna&apos;s Studio</p>
               <p>2436 Pablo Kisel Boulevard</p>
               <p>Brownsville, Texas 78526</p>
             </div>
@@ -252,7 +252,7 @@ export default function AboutPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/products">
-              <Button variant="seafoam" size="lg">
+              <Button variant="maroon" size="lg">
                 Shop Our Collection
               </Button>
             </Link>

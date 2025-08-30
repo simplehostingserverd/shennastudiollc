@@ -10,7 +10,7 @@ import Link from "next/link"
 
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
+  const [, setLoading] = useState(true)
 
   useEffect(() => {
     fetchFeaturedProducts()
@@ -47,9 +47,16 @@ export default function HomePage() {
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
           <div className="mb-6">
             <div className="text-8xl mb-4 animate-float">🐢</div>
-            <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 text-gradient-coral">
-              Shenna's Studio
-            </h1>
+            <div className="flex flex-col items-center mb-6">
+              <img
+                src="/ShennasLogo.png"
+                alt="Shenna's Studio Logo"
+                className="h-20 md:h-24 mb-4 object-contain"
+              />
+              <h1 className="text-5xl md:text-7xl font-display font-bold bg-maroon-gradient bg-clip-text text-transparent">
+                Shenna&apos;s Studio
+              </h1>
+            </div>
             <p className="text-xl md:text-2xl text-ocean-100 mb-8 max-w-2xl mx-auto">
               A family business crafting beautiful ocean-themed treasures that celebrate marine life 
               and support ocean conservation efforts.
@@ -58,7 +65,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="#featured">
               <Button 
-                variant="coral" 
+                variant="maroon" 
                 size="lg" 
                 className="text-lg px-8 py-4"
               >
@@ -137,7 +144,7 @@ export default function HomePage() {
             ocean ecosystems for future generations.
           </p>
           <Link href="/conservation">
-            <Button variant="seafoam" size="lg">
+            <Button variant="maroon" size="lg">
               Learn More About Our Impact
             </Button>
           </Link>

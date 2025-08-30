@@ -7,7 +7,7 @@ import { TrashIcon, MinusIcon, PlusIcon, ShoppingBagIcon } from "@heroicons/reac
 import Link from "next/link"
 
 export default function CartPage() {
-  const { items, updateItem, removeItem, clearCart, total, subtotal, itemCount, isLoading } = useCart()
+  const { items, updateItem, removeItem, clearCart, total, subtotal, itemCount, isLoading, cartId } = useCart()
 
   const handleQuantityChange = async (itemId: string, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -36,7 +36,7 @@ export default function CartPage() {
             <div className="text-8xl mb-6">🌊</div>
             <h2 className="text-2xl font-bold text-ocean-900 mb-4">Your cart is empty</h2>
             <p className="text-ocean-600 mb-8 max-w-md mx-auto">
-              Looks like you haven't added any ocean treasures to your cart yet. 
+              Looks like you haven&apos;t added any ocean treasures to your cart yet. 
               Start exploring our collection!
             </p>
             <Link href="/">
@@ -178,8 +178,33 @@ export default function CartPage() {
                   disabled={isLoading}
                   loading={isLoading}
                   onClick={async () => {
-                    // TODO: Implement Stripe checkout
-                    console.log("Proceeding to checkout...")
+                    try {
+                      const response = await fetch("/api/create-checkout-session", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          items,
+                          cartId,
+                        }),
+                      })
+
+                      const { url, error } = await response.json()
+                      
+                      if (error) {
+                        console.error("Checkout error:", error)
+                        alert("There was an error creating your checkout session. Please try again.")
+                        return
+                      }
+
+                      if (url) {
+                        window.location.href = url
+                      }
+                    } catch (error) {
+                      console.error("Checkout error:", error)
+                      alert("There was an error processing your request. Please try again.")
+                    }
                   }}
                 >
                   Proceed to Checkout

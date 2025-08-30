@@ -10,9 +10,13 @@ export default function Footer() {
           
           {/* Brand Section */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="text-3xl animate-float">🐢</div>
-              <span className="text-2xl font-display font-bold">Shenna's Studio</span>
+            <div className="flex items-center space-x-3 mb-4">
+              <img
+                src="/ShennasLogo.png"
+                alt="Shenna's Studio Logo"
+                className="h-12 w-auto object-contain"
+              />
+              <span className="text-2xl font-display font-bold text-white">Shenna&apos;s Studio</span>
             </div>
             <p className="text-ocean-100 max-w-md mb-6">
               A family business bringing the beauty and wonder of the ocean to your everyday life through 
@@ -131,7 +135,7 @@ export default function Footer() {
       <div className="bg-ocean-900 border-t border-ocean-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row justify-between items-center text-sm text-ocean-200">
-            <p>© {new Date().getFullYear()} Shenna's Studio. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} Shenna&apos;s Studio. All rights reserved.</p>
             <div className="flex space-x-4 mt-2 sm:mt-0">
               <Link href="/privacy" className="hover:text-white transition-colors">
                 Privacy Policy

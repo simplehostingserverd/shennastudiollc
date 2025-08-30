@@ -12,7 +12,7 @@ export default function ContactPage() {
             Get In Touch
           </h1>
           <p className="text-lg text-ocean-600 max-w-2xl mx-auto">
-            We'd love to hear from you! Whether you have questions about our products, 
+            We&apos;d love to hear from you! Whether you have questions about our products, 
             need help with an order, or just want to say hello.
           </p>
         </div>
@@ -96,7 +96,7 @@ export default function ContactPage() {
                 </h3>
               </div>
               <div className="text-ocean-600 space-y-1">
-                <p className="font-semibold">Shenna's Studio</p>
+                <p className="font-semibold">Shenna&apos;s Studio</p>
                 <p>2436 Pablo Kisel Boulevard</p>
                 <p>Brownsville, Texas 78526</p>
               </div>
@@ -164,7 +164,7 @@ export default function ContactPage() {
               
               <div className="mt-4 p-3 bg-ocean-50 rounded-lg">
                 <p className="text-sm text-ocean-600">
-                  💡 <strong>Tip:</strong> Call ahead for studio visits to ensure we're available 
+                  💡 <strong>Tip:</strong> Call ahead for studio visits to ensure we&apos;re available 
                   to give you our full attention!
                 </p>
               </div>
@@ -184,7 +184,7 @@ export default function ContactPage() {
                 Do you ship internationally?
               </h3>
               <p className="text-ocean-600">
-                Currently, we ship within the United States. We're working on international 
+                Currently, we ship within the United States. We&apos;re working on international 
                 shipping options and hope to expand soon!
               </p>
             </div>
@@ -215,7 +215,7 @@ export default function ContactPage() {
               </h3>
               <p className="text-ocean-600">
                 Yes! We love creating custom pieces. Contact us to discuss your ideas 
-                and we'll work together to create something uniquely yours.
+                and we&apos;ll work together to create something uniquely yours.
               </p>
             </div>
           </div>

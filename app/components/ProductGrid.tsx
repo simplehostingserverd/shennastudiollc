@@ -26,7 +26,7 @@ export default function ProductGrid({
     if (!initialProducts) {
       fetchProducts()
     }
-  }, [category, searchQuery, initialProducts])
+  }, [category, searchQuery, initialProducts, fetchProducts])
 
   const fetchProducts = async () => {
     try {
@@ -34,7 +34,7 @@ export default function ProductGrid({
       setError(null)
 
       // Build query parameters
-      const queryParams: any = {
+      const queryParams: Record<string, unknown> = {
         limit: 20,
       }
 
@@ -105,7 +105,7 @@ export default function ProductGrid({
         </div>
         <p className="text-ocean-500">
           {searchQuery 
-            ? `We couldn't find any products matching "${searchQuery}"`
+            ? `We couldn&apos;t find any products matching &quot;${searchQuery}&quot;`
             : "Check back soon for new arrivals!"
           }
         </p>

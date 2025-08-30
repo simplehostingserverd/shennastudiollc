@@ -56,7 +56,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
             <div className="transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex space-x-2">
               <Link
-                href={`/product/${product.handle}`}
+                href={`/products/${product.handle}`}
                 className="bg-white text-ocean-600 p-2 rounded-full shadow-lg hover:bg-ocean-50 transition-colors"
               >
                 <EyeIcon className="h-5 w-5" />

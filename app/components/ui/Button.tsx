@@ -2,7 +2,7 @@ import { cn } from "@/src/lib/utils"
 import { forwardRef } from "react"
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "coral" | "seafoam" | "outline" | "ghost"
+  variant?: "primary" | "secondary" | "coral" | "seafoam" | "maroon" | "outline" | "ghost"
   size?: "sm" | "md" | "lg"
   loading?: boolean
 }
@@ -24,6 +24,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           variant === "secondary" && "bg-ocean-100 text-ocean-700 hover:bg-ocean-200 focus:ring-ocean-500",
           variant === "coral" && "coral-gradient text-white hover:shadow-lg focus:ring-coral-500 shadow-md",
           variant === "seafoam" && "seafoam-gradient text-white hover:shadow-lg focus:ring-seafoam-500 shadow-md",
+          variant === "maroon" && "maroon-gradient text-white hover:shadow-lg focus:ring-maroon-500 shadow-md hover:opacity-90",
           variant === "outline" && "border-2 border-ocean-500 text-ocean-600 hover:bg-ocean-50 focus:ring-ocean-500",
           variant === "ghost" && "text-ocean-600 hover:bg-ocean-50 focus:ring-ocean-500",
           className

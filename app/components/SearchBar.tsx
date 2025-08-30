@@ -28,14 +28,14 @@ export default function SearchBar() {
         const hits = searchResults.results[0]?.hits || []
         
         // Transform Algolia results to Product format
-        const transformedResults: Product[] = hits.map((hit: any) => ({
+        const transformedResults: Product[] = hits.map((hit: unknown) => ({
           id: hit.objectID,
           title: hit.title,
           description: hit.description,
           handle: hit.handle,
           status: hit.status,
           images: [{ url: hit.image, alt: hit.title }],
-          variants: hit.variants?.map((v: any) => ({
+          variants: hit.variants?.map((v: unknown) => ({
             id: v.id,
             title: v.title,
             sku: '',
@@ -94,7 +94,7 @@ export default function SearchBar() {
       {query.length > 1 && results.length === 0 && !isSearching && (
         <div className="mt-6 text-center py-8">
           <div className="text-4xl mb-2">🏝️</div>
-          <p className="text-ocean-600">No treasures found for "{query}". Try different keywords!</p>
+          <p className="text-ocean-600">No treasures found for &quot;{query}&quot;. Try different keywords!</p>
         </div>
       )}
     </div>
