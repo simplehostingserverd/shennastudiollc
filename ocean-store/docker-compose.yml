@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: ocean-store-postgres
+    environment:
+      POSTGRES_DB: ocean_store
+      POSTGRES_USER: medusa_user
+      POSTGRES_PASSWORD: medusa_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medusa_user -d ocean_store"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: ocean-store-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  medusa-backend:
+    build:
+      context: ./ocean-backend
+      dockerfile: Dockerfile
+    container_name: ocean-store-medusa
+    ports:
+      - "9000:9000"
+      - "7001:7001"  # Admin panel port
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://medusa_user:medusa_password@postgres:5432/ocean_store
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=some_jwt_secret
+      - COOKIE_SECRET=some_cookie_secret
+      - ADMIN_CORS=http://localhost:7001,http://localhost:3000
+      - STORE_CORS=http://localhost:3000
+      - MEDUSA_ADMIN_ONBOARDING_TYPE=default
+      - MEDUSA_ADMIN_ONBOARDING_NEXTJS=true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ocean-store-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://medusa-backend:9000
+      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${ALGOLIA_APPLICATION_ID:-}
+      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${ALGOLIA_SEARCH_API_KEY:-}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+    depends_on:
+      - medusa-backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
