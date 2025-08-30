@@ -5,6 +5,7 @@ import { ShoppingCartIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outli
 import Button from "./ui/Button"
 import { useCart } from "@/app/context/CartContext"
 import { useState } from "react"
+import Image from "next/image"
 
 export default function Navbar() {
   const { itemCount } = useCart()
@@ -16,9 +17,11 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
-            <img
+            <Image
               src="/ShennasLogo.png"
               alt="Shenna's Studio Logo"
+              width={40}
+              height={40}
               className="h-10 w-auto object-contain group-hover:scale-105 transition-transform"
             />
             <span className="text-xl font-display font-bold bg-maroon-gradient bg-clip-text text-transparent">

@@ -1,14 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useParams } from "next/navigation"
 import { Product } from "@/src/lib/medusa"
 import medusa from "@/src/lib/medusa"
 import { useCart } from "@/app/context/CartContext"
 import Button from "@/app/components/ui/Button"
-import { ShoppingCartIcon, HeartIcon, StarIcon } from "@heroicons/react/24/outline"
+import { ShoppingCartIcon, HeartIcon } from "@heroicons/react/24/outline"
 import { HeartIcon as HeartSolidIcon, StarIcon as StarSolidIcon } from "@heroicons/react/24/solid"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -22,11 +23,7 @@ export default function ProductDetailPage() {
   const [isFavorite, setIsFavorite] = useState(false)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
 
-  useEffect(() => {
-    fetchProduct()
-  }, [handle])
-
-  const fetchProduct = async () => {
+  const fetchProduct = useCallback(async () => {
     try {
       setLoading(true)
       const response = await medusa.store.products.list({ handle })
@@ -43,7 +40,11 @@ export default function ProductDetailPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [handle])
+
+  useEffect(() => {
+    fetchProduct()
+  }, [fetchProduct])
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return
@@ -129,21 +130,29 @@ export default function ProductDetailPage() {
           {/* Product Images */}
           <div className="space-y-4">
             <div className="bg-white rounded-2xl p-4 shadow-lg">
-              <img
-                src={product.images?.[0]?.url || "/placeholder-product.jpg"}
-                alt={product.title}
-                className="w-full h-96 object-cover rounded-xl"
-              />
+              <div className="relative h-96">
+                <Image
+                  src={product.images?.[0]?.url || "/placeholder-product.jpg"}
+                  alt={product.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover rounded-xl"
+                />
+              </div>
             </div>
             {product.images && product.images.length > 1 && (
               <div className="grid grid-cols-4 gap-2">
                 {product.images.slice(1, 5).map((image, index) => (
                   <div key={index} className="bg-white rounded-lg p-2 shadow">
-                    <img
-                      src={image.url}
-                      alt={`${product.title} ${index + 2}`}
-                      className="w-full h-20 object-cover rounded"
-                    />
+                    <div className="relative h-20">
+                      <Image
+                        src={image.url}
+                        alt={`${product.title} ${index + 2}`}
+                        fill
+                        sizes="100px"
+                        className="object-cover rounded"
+                      />
+                    </div>
                   </div>
                 ))}
               </div>

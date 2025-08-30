@@ -8,6 +8,7 @@ import { HeartIcon, ShoppingCartIcon, EyeIcon } from "@heroicons/react/24/outlin
 import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid"
 import Link from "next/link"
 import { Product } from "@/src/lib/medusa"
+import Image from "next/image"
 
 interface ProductCardProps {
   product: Product
@@ -42,10 +43,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           {imageLoading && (
             <div className="absolute inset-0 animate-pulse bg-ocean-100"></div>
           )}
-          <img
+          <Image
             src={imageUrl}
             alt={product.title}
-            className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className={`object-cover transition-transform duration-500 group-hover:scale-105 ${
               imageLoading ? 'opacity-0' : 'opacity-100'
             }`}
             onLoad={() => setImageLoading(false)}

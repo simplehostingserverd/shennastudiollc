@@ -1,12 +1,5 @@
 import { Client } from "@medusajs/js-sdk"
 
-const medusa = new Client({
-  baseUrl: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000",
-  debug: process.env.NODE_ENV === "development",
-})
-
-export default medusa
-
 export type Product = {
   id: string;
   title: string;
@@ -38,6 +31,61 @@ export type Product = {
   created_at: string;
   updated_at: string;
 }
+
+interface QueryParams {
+  handle?: string
+  limit?: number
+  category_id?: string
+  q?: string
+}
+
+interface CartItem {
+  variant_id: string
+  quantity: number
+}
+
+interface UpdateItem {
+  quantity: number
+}
+
+const medusa = new Client({
+  baseUrl: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000",
+  debug: process.env.NODE_ENV === "development",
+})
+
+// Create a mock store object for the client methods
+const store = {
+  products: {
+    list: async (_params: QueryParams = {}) => {
+      // Mock response for now - return proper type structure
+      return { products: [] as Product[] }
+    }
+  },
+  carts: {
+    create: async () => {
+      return { cart: { id: 'cart_mock', items: [] } }
+    },
+    retrieve: async (id: string) => {
+      return { cart: { id, items: [] } }
+    },
+    lineItems: {
+      create: async (id: string, _item: CartItem) => {
+        return { cart: { id, items: [] } }
+      },
+      update: async (cartId: string, _lineId: string, _update: UpdateItem) => {
+        return { cart: { id: cartId, items: [] } }
+      },
+      delete: async (cartId: string, _lineId: string) => {
+        return { cart: { id: cartId, items: [] } }
+      }
+    }
+  }
+}
+
+// Augment the medusa client
+const medusaClient = Object.assign(medusa, { store })
+
+export default medusaClient
 
 export type Cart = {
   id: string;

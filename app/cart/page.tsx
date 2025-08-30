@@ -5,6 +5,7 @@ import Button from "@/app/components/ui/Button"
 import { formatPrice } from "@/src/lib/utils"
 import { TrashIcon, MinusIcon, PlusIcon, ShoppingBagIcon } from "@heroicons/react/24/outline"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function CartPage() {
   const { items, updateItem, removeItem, clearCart, total, subtotal, itemCount, isLoading, cartId } = useCart()
@@ -58,9 +59,11 @@ export default function CartPage() {
                   <div className="flex items-start gap-4">
                     {/* Product Image */}
                     <div className="flex-shrink-0">
-                      <img
+                      <Image
                         src={item.thumbnail || "/placeholder-product.jpg"}
                         alt={item.title}
+                        width={96}
+                        height={96}
                         className="w-24 h-24 object-cover rounded-xl"
                       />
                     </div>

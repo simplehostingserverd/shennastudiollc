@@ -7,6 +7,7 @@ import Button from "@/app/components/ui/Button"
 import { Product } from "@/src/lib/medusa"
 import medusa from "@/src/lib/medusa"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
@@ -48,9 +49,11 @@ export default function HomePage() {
           <div className="mb-6">
             <div className="text-8xl mb-4 animate-float">🐢</div>
             <div className="flex flex-col items-center mb-6">
-              <img
+              <Image
                 src="/ShennasLogo.png"
                 alt="Shenna's Studio Logo"
+                width={96}
+                height={96}
                 className="h-20 md:h-24 mb-4 object-contain"
               />
               <h1 className="text-5xl md:text-7xl font-display font-bold bg-maroon-gradient bg-clip-text text-transparent">

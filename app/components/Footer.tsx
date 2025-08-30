@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { HeartIcon } from "@heroicons/react/24/solid"
+import Image from "next/image"
 
 export default function Footer() {
   return (
@@ -11,9 +12,11 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <img
+              <Image
                 src="/ShennasLogo.png"
                 alt="Shenna's Studio Logo"
+                width={48}
+                height={48}
                 className="h-12 w-auto object-contain"
               />
               <span className="text-2xl font-display font-bold text-white">Shenna&apos;s Studio</span>

@@ -5,6 +5,23 @@ import { algoliaClient } from "@/src/lib/algolia"
 import ProductGrid from "./ProductGrid"
 import { Product } from "@/src/lib/medusa"
 
+interface AlgoliaHit {
+  objectID: string
+  title: string
+  description: string
+  handle: string
+  status: string
+  image?: string
+  created_at?: string
+  variants?: Array<{
+    id: string
+    title: string
+    price: number
+    currency: string
+    options: Record<string, string>
+  }>
+}
+
 export default function SearchBar() {
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<Product[]>([])
@@ -25,17 +42,22 @@ export default function SearchBar() {
           }]
         })
         
-        const hits = searchResults.results[0]?.hits || []
+        // Check if it's a regular search result or a facet search result
+        const firstResult = searchResults.results[0]
+        const hits = 'hits' in firstResult ? firstResult.hits : []
         
         // Transform Algolia results to Product format
-        const transformedResults: Product[] = hits.map((hit: unknown) => ({
-          id: hit.objectID,
-          title: hit.title,
-          description: hit.description,
-          handle: hit.handle,
-          status: hit.status,
-          images: [{ url: hit.image, alt: hit.title }],
-          variants: hit.variants?.map((v: unknown) => ({
+        const transformedResults: Product[] = hits.map((hit) => {
+          const algoliaHit = hit as unknown as AlgoliaHit
+          return ({
+          id: algoliaHit.objectID,
+          title: algoliaHit.title,
+          description: algoliaHit.description,
+          handle: algoliaHit.handle,
+          status: algoliaHit.status,
+          images: [{ url: algoliaHit.image || '/placeholder-product.jpg', alt: algoliaHit.title }],
+          options: [],
+          variants: algoliaHit.variants?.map((v) => ({
             id: v.id,
             title: v.title,
             sku: '',
@@ -48,9 +70,10 @@ export default function SearchBar() {
             options: v.options
           })) || [],
           weight: 0,
-          created_at: new Date(hit.created_at || Date.now()).toISOString(),
-          updated_at: new Date(hit.created_at || Date.now()).toISOString()
-        }))
+          created_at: new Date(algoliaHit.created_at || Date.now()).toISOString(),
+          updated_at: new Date(algoliaHit.created_at || Date.now()).toISOString()
+          })
+        })
         
         setResults(transformedResults)
       } catch (error) {

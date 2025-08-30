@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server"
 import Stripe from "stripe"
 
+interface CartItem {
+  title: string
+  description: string
+  thumbnail: string
+  unit_price: number
+  quantity: number
+}
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-12-18.acacia",
+  apiVersion: "2025-08-27.basil",
 })
 
 export async function POST(request: NextRequest) {
@@ -18,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create line items for Stripe
-    const lineItems = items.map((item: any) => ({
+    const lineItems = items.map((item: CartItem) => ({
       price_data: {
         currency: "usd",
         product_data: {

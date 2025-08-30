@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import ProductCard from "./ProductCard"
 import { Product } from "@/src/lib/medusa"
 import medusa from "@/src/lib/medusa"
@@ -22,13 +22,7 @@ export default function ProductGrid({
   const [loading, setLoading] = useState(!initialProducts)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (!initialProducts) {
-      fetchProducts()
-    }
-  }, [category, searchQuery, initialProducts, fetchProducts])
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -60,7 +54,13 @@ export default function ProductGrid({
     } finally {
       setLoading(false)
     }
-  }
+  }, [category, searchQuery])
+
+  useEffect(() => {
+    if (!initialProducts) {
+      fetchProducts()
+    }
+  }, [initialProducts, fetchProducts])
 
   if (loading) {
     return (
