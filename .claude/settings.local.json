@@ -15,7 +15,12 @@
       "Bash(curl:*)",
       "Bash(ngrok:*)",
       "Bash(timeout:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git rm:*)",
+      "Bash(docker logs:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker-compose:*)",
+      "Bash(start \"Docker Desktop\" \"C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe\")"
     ],
     "deny": [],
     "ask": []

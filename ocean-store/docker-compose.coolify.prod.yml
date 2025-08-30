@@ -1,0 +1,103 @@
+version: '3.8'
+
+name: shennas-studio-coolify-production
+
+services:
+  # Medusa Backend API - Production with external DBs
+  medusa-backend:
+    build:
+      context: ./ocean-backend
+      dockerfile: Dockerfile
+    container_name: shennas-medusa-backend-prod
+    restart: unless-stopped
+    ports:
+      - "9000:9000"    # API
+      - "7001:7001"    # Admin Panel
+    environment:
+      # External Database (Coolify managed)
+      - DATABASE_URL=postgres://postgres:Sd2ugVNqmj2NZ4IvRDRVJ60N66C8SkFF0HeXgCN8EehziYh27oBAvc4VO9IwZiuT@swcck000wc0o444cg808oo44:5432/postgres
+      - REDIS_URL=redis://default:uDHR58Q2T3HUDV09xqfMMw1gTLz7l2e8PRjEbH8GDsBq5L8cxF6knZxpg0rIP3rE@ns4cskowscs08c4kgs8kswgw:6379/0
+      
+      # Security
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET:-Ip/YHC0sc5jJ14zB+XUuA/V9mOrRujTE8YvqySCEK3cQUhLQWhFvF6MDmg5VTJ+W}
+      - COOKIE_SECRET=${COOKIE_SECRET:-cLwStjcBgDkBAAHhHT0rbC3LDg9fN2hgz6X+VHjnKreVDfo8qGhm618k0EkRwdsL}
+      
+      # CORS Configuration
+      - STORE_CORS=${STORE_CORS:-https://shennasstudio.com,https://www.shennasstudio.com}
+      - ADMIN_CORS=${ADMIN_CORS:-https://admin.shennasstudio.com}
+      - AUTH_CORS=${AUTH_CORS:-https://shennasstudio.com,https://www.shennasstudio.com}
+      
+      # Admin Setup
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennasstudio.com}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-ChangeThisPassword123!}
+      
+      # Medusa Configuration
+      - MEDUSA_ADMIN_ONBOARDING_TYPE=default
+      - MEDUSA_ADMIN_ONBOARDING_NEXTJS=true
+    volumes:
+      - medusa_uploads:/app/uploads
+      - medusa_static:/app/static
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 120s
+    networks:
+      - coolify
+
+  # Next.js Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shennas-frontend-prod
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Backend Connection
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-https://api.shennasstudio.com}
+      
+      # Payment Processing
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-}
+      
+      # Search (Optional)
+      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${ALGOLIA_APPLICATION_ID:-}
+      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${ALGOLIA_SEARCH_API_KEY:-}
+      
+      # Image Optimization
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME:-}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY:-}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET:-}
+      
+      # App Configuration
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    depends_on:
+      medusa-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - coolify
+
+# Named Volumes
+volumes:
+  medusa_uploads:
+    driver: local
+  medusa_static:
+    driver: local
+
+# Networks
+networks:
+  coolify:
+    external: true
