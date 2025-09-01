@@ -11,7 +11,7 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install --legacy-peer-deps && npm cache clean --force
 
-# Copy source code
+# Copy source code (excluding ocean-backend via .dockerignore)
 COPY . .
 
 # Build the Next.js app
