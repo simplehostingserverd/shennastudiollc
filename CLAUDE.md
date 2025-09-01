@@ -8,7 +8,7 @@ Shenna's Studio is an ocean-themed e-commerce platform built with Next.js and Me
 
 ## Architecture
 
-- **Frontend**: Next.js 15.5.2 application in `/ocean-store/` with App Router
+- **Frontend**: Next.js 15.5.2 application in root directory with App Router
 - **Backend**: Medusa 2.10.0 e-commerce backend in `/ocean-backend/`
 - **Database**: PostgreSQL 15
 - **Cache**: Redis 7
@@ -36,7 +36,7 @@ Shenna's Studio is an ocean-themed e-commerce platform built with Next.js and Me
 - `npm run test:integration:modules` - Run module integration tests
 - `npm run test:unit` - Run unit tests
 
-### Frontend (`ocean-store/`)
+### Frontend (Root Directory)
 - `npm run dev` - Start Next.js development server with Turbopack
 - `npm run build` - Build Next.js application with Turbopack
 - `npm start` - Start production Next.js server
@@ -48,31 +48,30 @@ Shenna's Studio is an ocean-themed e-commerce platform built with Next.js and Me
 
 ```
 shennastudiollc/
-├── ocean-backend/          # Medusa e-commerce backend
+├── app/                   # Next.js App Router pages and components
+│   ├── about/
+│   ├── api/              # API routes
+│   ├── cart/             # Shopping cart pages
+│   ├── checkout/         # Checkout flow
+│   ├── components/       # Reusable React components
+│   ├── contact/
+│   ├── context/          # React context providers
+│   └── products/
+├── ocean-backend/         # Medusa e-commerce backend
 │   ├── src/
-│   │   ├── admin/         # Admin customizations
-│   │   ├── api/           # API routes
-│   │   ├── jobs/          # Background jobs
-│   │   ├── links/         # Module links
-│   │   ├── modules/       # Custom modules
-│   │   ├── scripts/       # Utility scripts (seed, create-admin)
-│   │   ├── subscribers/   # Event subscribers
-│   │   └── workflows/     # Business workflows
-│   └── medusa-config.ts   # Medusa configuration
-├── ocean-store/           # Next.js frontend application
-│   ├── app/               # App Router pages and components
-│   │   ├── about/
+│   │   ├── admin/        # Admin customizations
 │   │   ├── api/          # API routes
-│   │   ├── cart/         # Shopping cart pages
-│   │   ├── checkout/     # Checkout flow
-│   │   ├── components/   # Reusable React components
-│   │   ├── contact/
-│   │   └── context/      # React context providers
-│   └── src/lib/          # Shared utilities
-├── src/lib/               # Root-level shared libraries
-├── prisma/                # Database schema and migrations
-├── scripts/               # Utility scripts
-└── docker-compose.yml     # Docker orchestration
+│   │   ├── jobs/         # Background jobs
+│   │   ├── links/        # Module links
+│   │   ├── modules/      # Custom modules
+│   │   ├── scripts/      # Utility scripts (seed, create-admin)
+│   │   ├── subscribers/  # Event subscribers
+│   │   └── workflows/    # Business workflows
+│   └── medusa-config.ts  # Medusa configuration
+├── src/lib/              # Shared utilities
+├── prisma/               # Database schema and migrations
+├── scripts/              # Utility scripts
+└── docker-compose.yml    # Docker orchestration
 ```
 
 ## Environment Setup

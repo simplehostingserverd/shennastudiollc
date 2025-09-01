@@ -8,9 +8,7 @@ const nextConfig: NextConfig = {
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
-  experimental: {
-    serverComponentsExternalPackages: ['@medusajs/js-sdk'],
-  },
+  serverExternalPackages: ['@medusajs/js-sdk'],
 };
 
 export default nextConfig;
