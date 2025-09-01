@@ -9,9 +9,15 @@ interface CartItem {
   quantity: number
 }
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-08-27.basil",
-})
+// Initialize Stripe only when needed to avoid build-time errors
+function getStripe() {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error("STRIPE_SECRET_KEY is not configured")
+  }
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2025-08-27.basil",
+  })
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,6 +30,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    // Get Stripe instance
+    const stripe = getStripe()
 
     // Create line items for Stripe
     const lineItems = items.map((item: CartItem) => ({
