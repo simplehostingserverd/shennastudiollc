@@ -1,0 +1,85 @@
+services:
+  # Backend Service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.coolify
+    container_name: shenna-backend
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "7001:7001"
+    environment:
+      # Database Connection
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      
+      # Security
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+      
+      # CORS Configuration
+      - STORE_CORS=${STORE_CORS}
+      - ADMIN_CORS=${ADMIN_CORS}
+      - AUTH_CORS=${AUTH_CORS}
+      
+      # Admin Setup
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennasstudio.com}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      
+      # Auto-initialization
+      - AUTO_MIGRATE=${AUTO_MIGRATE:-true}
+      - AUTO_SEED=${AUTO_SEED:-true}
+      - AUTO_CREATE_ADMIN=${AUTO_CREATE_ADMIN:-true}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 120s
+
+  # Frontend Service
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.coolify.frontend
+    container_name: shenna-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Backend Connection
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://backend:9000}
+      
+      # Payment Processing
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+      
+      # Search (Algolia)
+      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${ALGOLIA_APPLICATION_ID}
+      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${ALGOLIA_SEARCH_API_KEY}
+      
+      # Image Optimization (Cloudinary)
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      
+      # App Configuration
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+
+networks:
+  default:
+    name: shenna-network

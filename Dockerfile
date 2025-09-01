@@ -8,7 +8,7 @@ RUN apk add --no-cache curl
 FROM base AS frontend-builder
 WORKDIR /app/frontend
 COPY ocean-store/package*.json ./
-RUN npm ci --only=production
+RUN npm install --omit=dev --no-audit --no-fund
 COPY ocean-store/ ./
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -18,7 +18,7 @@ RUN npm run build
 FROM base AS backend-builder  
 WORKDIR /app/backend
 COPY ocean-backend/package*.json ./
-RUN npm ci --only=production
+RUN npm install --omit=dev --no-audit --no-fund
 COPY ocean-backend/ ./
 RUN npm run build
 

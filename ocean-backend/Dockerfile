@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies (including dev dependencies for building)
-RUN npm ci && npm cache clean --force
+RUN npm install && npm cache clean --force
 
 # Copy source code
 COPY . .
@@ -18,7 +18,7 @@ COPY . .
 RUN npm run build
 
 # Remove dev dependencies after build
-RUN npm ci --only=production && npm cache clean --force
+RUN npm install --omit=dev && npm cache clean --force
 
 # Create startup script with auto-initialization
 RUN echo '#!/bin/sh' > /app/startup.sh && \

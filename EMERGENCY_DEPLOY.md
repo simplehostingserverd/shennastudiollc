@@ -29,11 +29,13 @@
 #### Create Docker Compose Application in Coolify:
 1. **New Application** → **Docker Compose**
 2. **Repository**: Your GitHub repo URL
-3. **Docker Compose File**: `docker-compose.coolify.yml`
+3. **Docker Compose File**: `docker-compose.coolify-simple.yml` ⚡ (FIXED VERSION)
 4. **Domains**:
    - Frontend: `shennasstudio.com` → port 3000
    - Admin: `admin.shennasstudio.com` → port 7001  
    - API: `api.shennasstudio.com` → port 9000
+
+> **NOTE**: If you're getting npm/package-lock.json errors, use the simplified configuration above. It fixes all dependency issues!
 
 ### Step 3: Set Environment Variables (5 minutes)
 

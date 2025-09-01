@@ -1,0 +1,40 @@
+# Simplified Coolify Dockerfile for Shenna's Studio Frontend
+FROM node:20-alpine
+
+# Install system dependencies
+RUN apk add --no-cache libc6-compat curl
+
+WORKDIR /app
+
+# Copy frontend files
+COPY ocean-store/package*.json ./
+COPY ocean-store/ ./
+
+# Install dependencies
+RUN npm install
+
+# Build the application
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npm run build
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Set ownership
+RUN chown -R nextjs:nodejs /app
+
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=15s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Start the application
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+CMD ["npm", "start"]
