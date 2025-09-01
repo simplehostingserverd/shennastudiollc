@@ -26,16 +26,17 @@
 
 ### Step 2: Deploy Application (10 minutes)
 
-#### Deploy Backend in Coolify:
-1. **New Application** → **Simple Dockerfile**
+#### Deploy with Docker Compose in Coolify:
+1. **New Application** → **Docker Compose** 
 2. **Repository**: Your GitHub repo URL
-3. **Build Pack**: Docker (will automatically use root Dockerfile)
-4. **Ports**: 9000 (API), 7001 (Admin)
+3. **Docker Compose File**: `docker-compose.coolify-simple.yml`
+4. **Services**: Will create both backend and frontend
 5. **Domains**:
+   - Frontend: `shennasstudio.com` → port 3000
    - API: `api.shennasstudio.com` → port 9000
    - Admin: `admin.shennasstudio.com` → port 7001
 
-> **✅ FIXED**: Stripe version corrected to ^7.9.0 and Nixpacks disabled. Root Dockerfile now builds backend only.
+> **✅ FIXED**: TypeScript error in create-admin.ts resolved. Stripe version corrected. Use Docker Compose for full stack deployment.
 
 ### Step 3: Set Environment Variables (5 minutes)
 

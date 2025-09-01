@@ -1,15 +1,9 @@
-import { createMedusaContainer, Modules } from "@medusajs/framework/utils"
+import { ExecArgs } from "@medusajs/framework/types"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 
-const createAdminUser = async () => {
-  const { modules } = await createMedusaContainer({
-    modulesConfig: {
-      [Modules.USER]: {
-        resolve: "@medusajs/user",
-      },
-    },
-  })
-
-  const userService = modules.user
+export default async function createAdminUser({ container }: ExecArgs) {
+  const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
+  const userService = container.resolve(Modules.USER)
 
   // Default admin credentials - change these in production!
   const adminEmail = process.env.ADMIN_EMAIL || "admin@shennasstudio.com"
@@ -22,7 +16,7 @@ const createAdminUser = async () => {
     })
 
     if (existingUser.length > 0) {
-      console.log("✅ Admin user already exists:", adminEmail)
+      logger.info("✅ Admin user already exists:", adminEmail)
       return
     }
 
@@ -33,32 +27,18 @@ const createAdminUser = async () => {
       last_name: "User",
     })
 
-    console.log("✅ Admin user created successfully!")
-    console.log("📧 Email:", adminEmail)
-    console.log("🔐 Password:", adminPassword)
-    console.log("🌐 Admin Panel URL: http://localhost:7001")
-    console.log("🚀 Production Admin URL: https://your-domain.com:7001")
-    console.log("")
-    console.log("⚠️  IMPORTANT: Change the default password immediately after first login!")
-    console.log("⚠️  IMPORTANT: Use strong credentials for production!")
+    logger.info("✅ Admin user created successfully!")
+    logger.info("📧 Email:", adminEmail)
+    logger.info("🔐 Password:", adminPassword)
+    logger.info("🌐 Admin Panel URL: http://localhost:7001")
+    logger.info("🚀 Production Admin URL: https://your-domain.com:7001")
+    logger.warn("⚠️  IMPORTANT: Change the default password immediately after first login!")
+    logger.warn("⚠️  IMPORTANT: Use strong credentials for production!")
 
   } catch (error) {
-    console.error("❌ Error creating admin user:", error)
+    logger.error("❌ Error creating admin user:", error)
     throw error
   }
 }
 
-export default createAdminUser
-
-// Run the script if called directly
-if (require.main === module) {
-  createAdminUser()
-    .then(() => {
-      console.log("✨ Setup completed!")
-      process.exit(0)
-    })
-    .catch((error) => {
-      console.error("💥 Setup failed:", error)
-      process.exit(1)
-    })
-}
+// Export the function as default for use with `medusa exec`
