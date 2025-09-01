@@ -58,4 +58,3 @@ export default async function productCreateHandler({
 export const config: SubscriberConfig = {
   event: "product.created",
 }
-```

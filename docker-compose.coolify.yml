@@ -1,12 +1,12 @@
 version: '3.8'
 
-name: shennas-studio
+name: shenna-studio-coolify
 
 services:
-  # PostgreSQL Database
+  # PostgreSQL Database (for Coolify development)
   postgres:
     image: postgres:15-alpine
-    container_name: shennas-postgres
+    container_name: shenna-postgres-dev
     restart: unless-stopped
     environment:
       POSTGRES_DB: ocean_store
@@ -25,10 +25,10 @@ services:
       retries: 5
       start_period: 30s
 
-  # Redis Cache
+  # Redis Cache (for Coolify development)
   redis:
     image: redis:7-alpine
-    container_name: shennas-redis
+    container_name: shenna-redis-dev
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -41,7 +41,7 @@ services:
     build:
       context: ./ocean-backend
       dockerfile: Dockerfile
-    container_name: shennas-medusa-backend
+    container_name: shenna-medusa-backend-dev
     restart: unless-stopped
     ports:
       - "9000:9000"    # API
@@ -52,18 +52,18 @@ services:
       - REDIS_URL=redis://redis:6379
       
       # Security
-      - NODE_ENV=production
-      - JWT_SECRET=${JWT_SECRET:-your-super-secure-jwt-secret-minimum-32-characters-change-in-production}
-      - COOKIE_SECRET=${COOKIE_SECRET:-your-super-secure-cookie-secret-minimum-32-characters-change-in-production}
+      - NODE_ENV=development
+      - JWT_SECRET=your-super-secure-jwt-secret-minimum-32-characters-change-in-production
+      - COOKIE_SECRET=your-super-secure-cookie-secret-minimum-32-characters-change-in-production
       
-      # CORS Configuration
-      - STORE_CORS=${STORE_CORS:-http://localhost:3000,https://shennastudio.com,https://www.shennastudio.com}
-      - ADMIN_CORS=${ADMIN_CORS:-http://localhost:7001,https://admin.shennastudio.com}
-      - AUTH_CORS=${AUTH_CORS:-http://localhost:3000,https://shennastudio.com,https://www.shennastudio.com}
+      # CORS Configuration for development
+      - STORE_CORS=http://localhost:3000,https://shennastudio.com,https://www.shennastudio.com
+      - ADMIN_CORS=http://localhost:7001,https://admin.shennastudio.com
+      - AUTH_CORS=http://localhost:3000,https://shennastudio.com,https://www.shennastudio.com
       
       # Admin Setup
-      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennastudio.com}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-ChangeThisPassword123!}
+      - ADMIN_EMAIL=admin@shennastudio.com
+      - ADMIN_PASSWORD=ChangeThisPassword123!
       
       # Auto-initialization
       - AUTO_MIGRATE=true
@@ -91,9 +91,9 @@ services:
   # Next.js Frontend
   frontend:
     build:
-      context: ./ocean-store
-      dockerfile: Dockerfile
-    container_name: shennas-frontend
+      context: ./
+      dockerfile: ./ocean-store/Dockerfile
+    container_name: shenna-frontend-dev
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -101,21 +101,21 @@ services:
       # Backend Connection
       - NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000
       
-      # Payment Processing
-      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-sk_test_your_stripe_secret_key}
-      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-pk_test_your_stripe_publishable_key}
+      # Payment Processing (use test keys for development)
+      - STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
       
       # Search (Optional)
-      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${ALGOLIA_APPLICATION_ID:-}
-      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${ALGOLIA_SEARCH_API_KEY:-}
+      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=
+      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=
       
-      # Image Optimization
-      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME:-}
-      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY:-}
-      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET:-}
+      # Image Optimization (Optional)
+      - CLOUDINARY_CLOUD_NAME=
+      - CLOUDINARY_API_KEY=
+      - CLOUDINARY_API_SECRET=
       
       # App Configuration
-      - NODE_ENV=production
+      - NODE_ENV=development
       - NEXT_TELEMETRY_DISABLED=1
       - PORT=3000
       - HOSTNAME=0.0.0.0
@@ -128,7 +128,6 @@ services:
       timeout: 15s
       retries: 5
       start_period: 90s
-
 
 # Named Volumes
 volumes:
@@ -144,5 +143,5 @@ volumes:
 # Networks
 networks:
   default:
-    name: shennas-network
+    name: shenna-network-dev
     driver: bridge
