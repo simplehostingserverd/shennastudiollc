@@ -35,7 +35,8 @@
       "Bash(docker:*)",
       "Bash(chmod:*)",
       "Bash(./quick-deploy-test.sh:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []
