@@ -1,0 +1,14 @@
+# Disable Nixpacks - Use Docker instead
+providers = []
+
+[phases.setup]
+nixPkgs = []
+
+[phases.install]
+cmds = ["echo 'Using Docker instead of Nixpacks'"]
+
+[phases.build]
+cmds = ["echo 'Build handled by Docker'"]
+
+[phases.start]
+cmd = "echo 'Start handled by Docker'"

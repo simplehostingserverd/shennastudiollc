@@ -19,7 +19,7 @@
     "@mui/icons-material": "^7.3.1",
     "@mui/material": "^7.3.1",
     "@prisma/client": "^6.15.0",
-    "@stripe/stripe-js": "^8.2.0",
+    "@stripe/stripe-js": "^7.9.0",
     "algolia": "^0.0.0",
     "algoliasearch": "^5.36.0",
     "autoprefixer": "^10.4.20",

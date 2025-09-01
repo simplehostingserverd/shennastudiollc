@@ -1,0 +1,6 @@
+# Coolify Configuration
+# This file tells Coolify to use Docker Compose instead of Nixpacks
+
+version: "3.8"
+build_pack: docker-compose
+dockerfile: docker-compose.coolify-simple.yml

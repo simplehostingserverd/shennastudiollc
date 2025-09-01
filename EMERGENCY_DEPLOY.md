@@ -1,8 +1,8 @@
 # 🚨 EMERGENCY DEPLOYMENT - Coolify VPS (30 Minutes)
 
-**Status**: ✅ READY TO DEPLOY  
+**Status**: ✅ READY TO DEPLOY - NIXPACKS ISSUE FIXED  
 **Time Required**: 15-20 minutes  
-**Last Updated**: 2025-09-01
+**Last Updated**: 2025-09-01 - Fixed Stripe version + Nixpacks override
 
 ## 🔥 QUICK START (Do this NOW)
 
@@ -26,16 +26,16 @@
 
 ### Step 2: Deploy Application (10 minutes)
 
-#### Create Docker Compose Application in Coolify:
-1. **New Application** → **Docker Compose**
+#### Deploy Backend in Coolify:
+1. **New Application** → **Simple Dockerfile**
 2. **Repository**: Your GitHub repo URL
-3. **Docker Compose File**: `docker-compose.coolify-simple.yml` ⚡ (FIXED VERSION)
-4. **Domains**:
-   - Frontend: `shennasstudio.com` → port 3000
-   - Admin: `admin.shennasstudio.com` → port 7001  
+3. **Build Pack**: Docker (will automatically use root Dockerfile)
+4. **Ports**: 9000 (API), 7001 (Admin)
+5. **Domains**:
    - API: `api.shennasstudio.com` → port 9000
+   - Admin: `admin.shennasstudio.com` → port 7001
 
-> **NOTE**: If you're getting npm/package-lock.json errors, use the simplified configuration above. It fixes all dependency issues!
+> **✅ FIXED**: Stripe version corrected to ^7.9.0 and Nixpacks disabled. Root Dockerfile now builds backend only.
 
 ### Step 3: Set Environment Variables (5 minutes)
 

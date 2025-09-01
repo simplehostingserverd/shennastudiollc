@@ -1,49 +1,57 @@
-# Multi-service Dockerfile for Shenna's Studio Ocean Store
-# This builds both the frontend and backend services
+# Simple Backend Dockerfile for Coolify (Single Service)
+FROM node:20-alpine
 
-FROM node:20-alpine AS base
-RUN apk add --no-cache curl
+# Install system dependencies
+RUN apk add --no-cache curl netcat-openbsd
 
-# Build Frontend
-FROM base AS frontend-builder
-WORKDIR /app/frontend
-COPY ocean-store/package*.json ./
-RUN npm install --omit=dev --no-audit --no-fund
-COPY ocean-store/ ./
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
+WORKDIR /app
 
-# Build Backend
-FROM base AS backend-builder  
-WORKDIR /app/backend
+# Copy backend files only
 COPY ocean-backend/package*.json ./
-RUN npm install --omit=dev --no-audit --no-fund
+
+# Install dependencies
+RUN npm install
+
+# Copy source code
 COPY ocean-backend/ ./
+
+# Build the application
 RUN npm run build
 
-# Production Frontend Image
-FROM base AS frontend
-WORKDIR /app
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Clean up dev dependencies
+RUN npm prune --production
 
-COPY --from=frontend-builder /app/frontend/public ./public
-COPY --from=frontend-builder --chown=nextjs:nodejs /app/frontend/.next/standalone ./
-COPY --from=frontend-builder --chown=nextjs:nodejs /app/frontend/.next/static ./.next/static
+# Create startup script
+RUN echo '#!/bin/sh' > /app/start.sh && \
+    echo 'echo "🌊 Starting Shenna Studio Backend..."' >> /app/start.sh && \
+    echo 'echo "Database: $DATABASE_URL"' >> /app/start.sh && \
+    echo 'echo "Redis: $REDIS_URL"' >> /app/start.sh && \
+    echo '' >> /app/start.sh && \
+    echo 'if [ "$AUTO_MIGRATE" = "true" ]; then' >> /app/start.sh && \
+    echo '  echo "🔄 Running database migrations..."' >> /app/start.sh && \
+    echo '  npx medusa db:migrate || echo "Migration failed, continuing..."' >> /app/start.sh && \
+    echo 'fi' >> /app/start.sh && \
+    echo '' >> /app/start.sh && \
+    echo 'if [ "$AUTO_CREATE_ADMIN" = "true" ]; then' >> /app/start.sh && \
+    echo '  echo "👤 Creating admin user..."' >> /app/start.sh && \
+    echo '  npm run create-admin || echo "Admin creation failed, continuing..."' >> /app/start.sh && \
+    echo 'fi' >> /app/start.sh && \
+    echo '' >> /app/start.sh && \
+    echo 'if [ "$AUTO_SEED" = "true" ]; then' >> /app/start.sh && \
+    echo '  echo "🌱 Seeding database..."' >> /app/start.sh && \
+    echo '  npm run seed || echo "Seeding failed, continuing..."' >> /app/start.sh && \
+    echo 'fi' >> /app/start.sh && \
+    echo '' >> /app/start.sh && \
+    echo 'echo "🚀 Starting server..."' >> /app/start.sh && \
+    echo 'exec npm start' >> /app/start.sh && \
+    chmod +x /app/start.sh
 
-USER nextjs
-EXPOSE 3000
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-CMD ["node", "server.js"]
-
-# Production Backend Image
-FROM base AS backend
-WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=backend-builder /app/backend ./
+# Expose ports
 EXPOSE 9000 7001
-CMD ["npm", "start"]
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=15s --start-period=120s --retries=5 \
+  CMD curl -f http://localhost:9000/health || exit 1
+
+# Start the application
+CMD ["/app/start.sh"]
