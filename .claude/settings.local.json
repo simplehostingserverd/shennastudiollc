@@ -36,7 +36,10 @@
       "Bash(chmod:*)",
       "Bash(./quick-deploy-test.sh:*)",
       "Bash(taskkill:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(cmd /c:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(npm start)"
     ],
     "deny": [],
     "ask": []

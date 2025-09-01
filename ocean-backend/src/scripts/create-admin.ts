@@ -11,32 +11,32 @@ export default async function createAdminUser({ container }: ExecArgs) {
 
   try {
     // Check if admin user already exists
-    const existingUser = await userService.list({
+    const existingUsers = await userService.listUsers({
       email: adminEmail,
     })
 
-    if (existingUser.length > 0) {
-      logger.info("✅ Admin user already exists:", adminEmail)
+    if (existingUsers.length > 0) {
+      logger.info(`✅ Admin user already exists: ${adminEmail}`)
       return
     }
 
     // Create the admin user
-    const adminUser = await userService.create({
+    const adminUser = await userService.createUsers({
       email: adminEmail,
       first_name: "Admin",
       last_name: "User",
     })
 
     logger.info("✅ Admin user created successfully!")
-    logger.info("📧 Email:", adminEmail)
-    logger.info("🔐 Password:", adminPassword)
+    logger.info(`📧 Email: ${adminEmail}`)
+    logger.info(`🔐 Password: ${adminPassword}`)
     logger.info("🌐 Admin Panel URL: http://localhost:7001")
     logger.info("🚀 Production Admin URL: https://your-domain.com:7001")
     logger.warn("⚠️  IMPORTANT: Change the default password immediately after first login!")
     logger.warn("⚠️  IMPORTANT: Use strong credentials for production!")
 
   } catch (error) {
-    logger.error("❌ Error creating admin user:", error)
+    logger.error(`❌ Error creating admin user: ${error}`)
     throw error
   }
 }
