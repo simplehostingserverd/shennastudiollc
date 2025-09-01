@@ -26,7 +26,8 @@
       "WebSearch",
       "Bash(npm view:*)",
       "Bash(npm ls:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git config:*)"
     ],
     "deny": [],
     "ask": []

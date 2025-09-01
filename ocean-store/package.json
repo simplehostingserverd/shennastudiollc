@@ -19,10 +19,10 @@
     "@mui/icons-material": "^7.3.1",
     "@mui/material": "^7.3.1",
     "@prisma/client": "^6.15.0",
-    "@stripe/stripe-js": "^7.9.0",
+    "@stripe/stripe-js": "^8.2.0",
     "algolia": "^0.0.0",
     "algoliasearch": "^5.36.0",
-    "autoprefixer": "^10.4.21",
+    "autoprefixer": "^10.4.20",
     "bcryptjs": "^3.0.2",
     "chart.js": "^4.5.0",
     "cloudinary": "^2.7.0",
@@ -30,12 +30,12 @@
     "dotenv": "^17.2.1",
     "next": "15.5.2",
     "next-auth": "^4.24.7",
-    "postcss": "^8.5.6",
+    "postcss": "^8.6.0",
     "prisma": "^6.15.0",
     "react": "19.1.0",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "19.1.0",
-    "stripe": "^18.5.0",
+    "stripe": "^19.1.0",
     "tailwind-merge": "^2.2.0",
     "tailwindcss": "^3.4.17"
   },
@@ -52,5 +52,13 @@
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
+  },
+  "overrides": {
+    "axios": "^1.7.7",
+    "braces": "^3.0.3",
+    "ws": "^8.18.0",
+    "path-to-regexp": "^8.2.0",
+    "micromatch": "^4.0.8",
+    "postcss": "^8.5.6"
   }
 }
