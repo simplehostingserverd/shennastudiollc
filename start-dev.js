@@ -84,10 +84,11 @@ async function checkPrerequisites() {
     return allGood;
 }
 
-function startFrontend() {
-    logInfo('Starting Next.js frontend...');
+function startFrontend(useTurbopack = false) {
+    const mode = useTurbopack ? 'dev:turbo' : 'dev';
+    logInfo(`Starting Next.js frontend ${useTurbopack ? '(with Turbopack)' : '(standard mode)'}...`);
     
-    const frontend = spawn('npm', ['run', 'dev'], {
+    const frontend = spawn('npm', ['run', mode], {
         stdio: ['inherit', 'pipe', 'pipe'],
         shell: true
     });
@@ -186,8 +187,11 @@ async function main() {
     const processes = [];
     
     try {
+        // Check if we should use Turbopack (pass --turbo flag)
+        const useTurbopack = process.argv.includes('--turbo');
+        
         // Start frontend
-        const frontend = startFrontend();
+        const frontend = startFrontend(useTurbopack);
         processes.push(frontend);
         
         // Wait a moment, then start backend

@@ -47,7 +47,6 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-ocean-500 opacity-20"></div>
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
           <div className="mb-6">
-            <div className="text-8xl mb-4 animate-float">🐢</div>
             <div className="flex flex-col items-center mb-6">
               <Image
                 src="/ShennasLogo.png"
@@ -56,7 +55,7 @@ export default function HomePage() {
                 height={96}
                 className="h-20 md:h-24 mb-4 object-contain"
               />
-              <h1 className="text-5xl md:text-7xl font-display font-bold bg-maroon-gradient bg-clip-text text-transparent">
+              <h1 className="text-5xl md:text-7xl font-display font-bold text-white">
                 Shenna&apos;s Studio
               </h1>
             </div>
@@ -86,12 +85,6 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-        
-        {/* Floating elements */}
-        <div className="absolute top-20 left-10 text-4xl animate-float opacity-60">🌊</div>
-        <div className="absolute top-40 right-16 text-3xl animate-float opacity-40" style={{ animationDelay: '1s' }}>🐠</div>
-        <div className="absolute bottom-32 left-20 text-3xl animate-float opacity-50" style={{ animationDelay: '2s' }}>🐙</div>
-        <div className="absolute bottom-20 right-10 text-4xl animate-float opacity-30" style={{ animationDelay: '3s' }}>🦀</div>
       </section>
 
       {/* Search Section */}

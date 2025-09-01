@@ -1,171 +1,188 @@
-# 🌊 Coolify VPS Deployment Guide for Shenna Studio
+# Coolify Deployment Guide - Shenna's Studio
 
-## 🎯 Overview
-This guide explains how to deploy Shenna's Studio Ocean Store to a Coolify VPS with **automatic database initialization**. The deployment includes auto-migration, auto-seeding, and auto-admin creation - no manual setup required!
+## Quick Deployment Overview
 
-**Updated**: January 2025 - Now includes health check endpoints and improved Docker configurations.
+This setup provides **fully automated deployment** with database creation, migration, admin setup, and seeding.
 
-## ✅ Prerequisites
-- Coolify VPS with managed PostgreSQL and Redis databases (for production)
-- Docker and Docker Compose available on the VPS
-- Domain `shennastudio.com` configured with SSL
-- GitHub repository access
+## Architecture
 
-## Configuration Files
+- **Backend**: Medusa.js e-commerce API + Admin Panel
+- **Frontend**: Next.js application  
+- **Database**: PostgreSQL with automatic setup
+- **Cache**: Redis for sessions and caching
 
-### Development Mode (with local databases)
-For local development with containerized databases:
+---
+
+## 🚀 Backend Deployment (Medusa API + Admin)
+
+### 1. Create New Service in Coolify
+- **Service Type**: Docker
+- **Source**: Git Repository
+- **Dockerfile**: `Dockerfile.coolify`
+
+### 2. Required Environment Variables
+
 ```bash
-docker-compose -f docker-compose.coolify.yml up -d
+# Database (Coolify will provide)
+DATABASE_URL=postgresql://user:password@host:port/database
+REDIS_URL=redis://host:port
+
+# Security (CHANGE THESE!)
+JWT_SECRET=your-super-secure-jwt-secret-minimum-32-characters-2024
+COOKIE_SECRET=your-super-secure-cookie-secret-minimum-32-characters-2024
+
+# CORS (Update with your domains)
+STORE_CORS=https://your-frontend-domain.com
+ADMIN_CORS=https://your-backend-domain.com
+AUTH_CORS=https://your-frontend-domain.com
+
+# Admin Account (CHANGE THESE!)
+ADMIN_EMAIL=admin@yourdomain.com
+ADMIN_PASSWORD=YourSecurePassword123!
+
+# Auto-initialization (Leave these as true)
+AUTO_MIGRATE=true
+AUTO_CREATE_ADMIN=true
+AUTO_SEED=true
+
+# Medusa Config
+NODE_ENV=production
+MEDUSA_ADMIN_ONBOARDING_TYPE=default
 ```
 
-### Production Mode (with external Coolify databases)
-For production deployment with external managed databases:
+### 3. Port Configuration
+- **Internal Port**: 9000 (API)
+- **Admin Port**: 7001 (Admin Panel)
+- **Health Check**: `/health`
+
+### 4. What Happens Automatically
+1. ✅ **Database Connection**: Waits for DB to be ready (up to 60 seconds)
+2. ✅ **Database Creation**: Creates database if it doesn't exist
+3. ✅ **Migrations**: Runs all database migrations
+4. ✅ **Admin User**: Creates admin account automatically
+5. ✅ **Sample Data**: Seeds database with products and data
+6. ✅ **Health Checks**: Verifies all services before starting
+
+---
+
+## 🎨 Frontend Deployment (Next.js)
+
+### 1. Create New Service in Coolify
+- **Service Type**: Docker  
+- **Source**: Same Git Repository
+- **Dockerfile**: `Dockerfile.coolify.frontend`
+
+### 2. Required Environment Variables
+
 ```bash
-docker-compose -f docker-compose.coolify.prod.yml up -d
+# Backend Connection
+NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://your-backend-domain.com
+
+# Payment Processing (Optional)
+STRIPE_SECRET_KEY=sk_test_or_live_your_stripe_key
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_or_live_your_stripe_key
+
+# Search (Optional)
+NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=your_algolia_app_id
+NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=your_algolia_search_key
+
+# Image Optimization (Optional)
+CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+CLOUDINARY_API_KEY=your_cloudinary_key
+CLOUDINARY_API_SECRET=your_cloudinary_secret
+
+# App Configuration
+NODE_ENV=production
+NEXT_TELEMETRY_DISABLED=1
 ```
 
-### 🗄️ Database Configuration
+### 3. Port Configuration
+- **Internal Port**: 3000
+- **Health Check**: `/api/health`
 
-#### Development (Local containers):
-- **PostgreSQL**: `postgresql://medusa_user:medusa_secure_password_2024@postgres:5432/ocean_store`
-- **Redis**: `redis://redis:6379`
+---
 
-#### Production (Coolify managed):
-- **PostgreSQL**: Use Coolify's managed PostgreSQL service
-- **Redis**: Use Coolify's managed Redis service
-- **Environment Variables**: Configure via `.env` file (see `.env.production.example`)
+## 📋 Deployment Checklist
 
-### 🚀 Key Features
-- ✅ **Auto-Migration**: Database schema automatically updated on startup
-- ✅ **Auto-Seeding**: Sample products and data automatically created
-- ✅ **Auto-Admin**: Admin user automatically created with your credentials
-- ✅ **Health Checks**: Built-in monitoring for all services
-- ✅ **Production Ready**: Optimized for Coolify deployment
+### Pre-Deployment
+- [ ] **Database Service**: Create PostgreSQL service in Coolify
+- [ ] **Redis Service**: Create Redis service in Coolify  
+- [ ] **Domain Names**: Set up domains for frontend and backend
+- [ ] **Environment Variables**: Update all the template values above
 
-## Deployment Steps
+### Post-Deployment
+- [ ] **Backend Health**: Check `https://your-backend-domain.com/health`
+- [ ] **Admin Panel**: Access `https://your-backend-domain.com:7001`
+- [ ] **Frontend**: Check `https://your-frontend-domain.com`
+- [ ] **Admin Login**: Test with your ADMIN_EMAIL and ADMIN_PASSWORD
+- [ ] **API Connection**: Verify frontend can connect to backend
 
-### 🛠️ Development Deployment (Local Testing)
+---
 
-1. **Clone Repository**
-   ```bash
-   git clone https://github.com/your-username/shennastudiollc.git
-   cd shennastudiollc
-   ```
+## 🔧 Environment Configuration
 
-2. **Start Development Environment (All-in-One)**
-   ```bash
-   # Start all services with auto-initialization
-   docker-compose -f docker-compose.coolify.yml up -d
-   
-   # Check logs to see auto-initialization progress
-   docker-compose -f docker-compose.coolify.yml logs -f medusa-backend
-   ```
-   
-   **That's it!** The system will:
-   - Start PostgreSQL and Redis containers
-   - Build and start the Medusa backend
-   - Automatically run migrations
-   - Create the admin user
-   - Seed sample products
-   - Start the Next.js frontend
+### Production Secrets (Update These!)
 
-3. **Verify Development Deployment**
-   - **Frontend**: http://localhost:3000
-   - **Backend API**: http://localhost:9000
-   - **Admin Panel**: http://localhost:7001
-   - **Default Admin**: admin@shennastudio.com / ChangeThisPassword123!
-
-### 🚀 Production Deployment (Coolify VPS)
-
-1. **Configure Environment Variables**
-   ```bash
-   # Copy and configure production environment
-   cp .env.production.example .env
-   # Edit .env with your actual Coolify database credentials and secrets
-   ```
-
-2. **Deploy to Coolify VPS (Automatic Setup)**
-   ```bash
-   # Production deployment with Coolify managed databases
-   docker-compose -f docker-compose.coolify.prod.yml up -d
-   ```
-   
-   **✨ No Manual Setup Required!** The system automatically:
-   - Connects to your Coolify PostgreSQL and Redis
-   - Runs database migrations
-   - Creates your admin user
-   - Seeds sample products
-   - Starts all services with health checks
-
-3. **Verify Production Deployment**
-   - **Store**: https://shennastudio.com
-   - **Admin**: https://admin.shennastudio.com  
-   - **API**: https://api.shennastudio.com
-   - **Admin Login**: Check your `.env` file for `ADMIN_EMAIL` and `ADMIN_PASSWORD`
-
-## Service Configuration
-
-### Frontend (Next.js)
-- **Port**: 3000
-- **Container**: shennas-frontend
-- **Backend URL**: https://api.shennasstudio.com
-
-### Backend (Medusa)
-- **API Port**: 9000
-- **Admin Port**: 7001
-- **Container**: shennas-medusa-backend
-- **External Databases**: PostgreSQL and Redis managed by Coolify
-
-## 🌐 Production URLs
-- **Store**: https://shennastudio.com
-- **Admin**: https://admin.shennastudio.com  
-- **API**: https://api.shennastudio.com
-
-## 🔍 Monitoring & Health Checks
-Built-in health monitoring:
 ```bash
-# Check service health
-curl -f https://shennastudio.com
-curl -f https://api.shennastudio.com/health
-curl -f https://admin.shennastudio.com
+# Generate secure secrets (32+ characters each)
+JWT_SECRET="$(openssl rand -base64 32)"
+COOKIE_SECRET="$(openssl rand -base64 32)"
 
-# View logs
-docker-compose -f docker-compose.coolify.prod.yml logs -f
+# Strong admin password
+ADMIN_PASSWORD="YourVerySecurePassword2024!"
 ```
 
-## 👤 Admin Access
-- **Email**: From your `.env` file (`ADMIN_EMAIL`)
-- **Password**: From your `.env` file (`ADMIN_PASSWORD`)
-- **⚠️ Important**: Change the admin password immediately after first login!
+### Database URLs Format
+```bash
+# PostgreSQL
+DATABASE_URL=postgresql://username:password@host:5432/database_name
 
-## 🛡️ Security Features
-- Auto-generated strong secrets (configure in `.env`)
-- Production CORS configuration
-- Secure database connections
-- SSL/HTTPS ready
-- Environment-based configuration
+# Redis  
+REDIS_URL=redis://host:6379
+```
 
-## 📝 Key Benefits
-- **Zero Manual Setup**: Everything auto-initializes
-- **Coolify Optimized**: Designed specifically for Coolify VPS
-- **Production Ready**: Includes all security best practices
-- **Easy Updates**: Simple docker-compose commands
-- **Monitoring**: Built-in health checks and logging
+---
 
 ## 🚨 Troubleshooting
-If deployment fails:
-1. Check Coolify database credentials in `.env`
-2. Verify domain SSL certificates
-3. Check logs: `docker-compose logs -f medusa-backend`
-4. Ensure Coolify PostgreSQL and Redis are running
 
-## 🔄 Updates & Maintenance
-```bash
-# Update to latest version
-git pull origin main
-docker-compose -f docker-compose.coolify.prod.yml up -d --build
+### Backend Issues
+- **Logs**: Check Coolify logs for startup sequence
+- **Database**: Verify DATABASE_URL is accessible
+- **Migrations**: Look for "🔄 Running database migrations..." message
+- **Admin**: Check "👤 Creating admin user..." message
 
-# Backup database (if needed)
-# Use Coolify's built-in backup features
-```
+### Frontend Issues  
+- **Build**: Check for Next.js build errors
+- **API Connection**: Verify NEXT_PUBLIC_MEDUSA_BACKEND_URL
+- **CORS**: Ensure backend STORE_CORS includes frontend domain
+
+### Common Solutions
+1. **Database Connection Failed**: Check DATABASE_URL and network access
+2. **Admin Creation Failed**: Verify ADMIN_EMAIL format and password strength  
+3. **CORS Errors**: Update CORS environment variables with correct domains
+4. **Build Timeout**: Increase Coolify build timeout for large applications
+
+---
+
+## 🎯 Access Points After Deployment
+
+- **🛒 Store**: https://your-frontend-domain.com
+- **👤 Admin Panel**: https://your-backend-domain.com:7001  
+- **🔌 API**: https://your-backend-domain.com/store/products
+- **💚 Health Check**: https://your-backend-domain.com/health
+
+---
+
+## 🔄 Updates and Maintenance
+
+### Code Updates
+1. **Push to Git**: Changes automatically deploy via Coolify
+2. **Database**: Migrations run automatically on each deployment
+3. **Zero Downtime**: Health checks ensure smooth deployments
+
+### Database Maintenance
+- **Migrations**: Automatic on every deployment
+- **Backups**: Configure in Coolify database service
+- **Scaling**: Use Coolify's horizontal scaling features
+
+This setup provides a **production-ready, fully automated deployment** with all database operations handled automatically! 🚀

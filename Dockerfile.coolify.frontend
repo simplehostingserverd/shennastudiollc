@@ -7,11 +7,14 @@ RUN apk add --no-cache libc6-compat curl
 WORKDIR /app
 
 # Copy frontend files
-COPY ocean-store/package*.json ./
-COPY ocean-store/ ./
+COPY package*.json ./
+COPY . ./
 
 # Install dependencies
 RUN npm install
+
+# Generate Prisma client if needed
+RUN npx prisma generate || echo "No Prisma schema found, skipping..."
 
 # Build the application
 ENV NODE_ENV=production

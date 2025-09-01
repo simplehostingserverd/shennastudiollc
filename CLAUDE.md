@@ -19,8 +19,10 @@ Shenna's Studio is an ocean-themed e-commerce platform built with Next.js and Me
 ## Development Commands
 
 ### Root Level
-- `npm run dev` - Start Next.js frontend with Turbopack
-- `npm run build` - Build Next.js frontend with Turbopack
+- `npm run dev` - Start Next.js frontend (standard mode)  
+- `npm run dev:turbo` - Start Next.js frontend with Turbopack
+- `npm run build` - Build Next.js frontend (standard mode)
+- `npm run build:turbo` - Build Next.js frontend with Turbopack
 - `npm start` - Start production Next.js server
 - `npm run lint` - Run ESLint
 - `npm run db:seed` - Seed Prisma database
@@ -37,8 +39,10 @@ Shenna's Studio is an ocean-themed e-commerce platform built with Next.js and Me
 - `npm run test:unit` - Run unit tests
 
 ### Frontend (Root Directory)
-- `npm run dev` - Start Next.js development server with Turbopack
-- `npm run build` - Build Next.js application with Turbopack
+- `npm run dev` - Start Next.js development server (standard mode)
+- `npm run dev:turbo` - Start Next.js development server with Turbopack  
+- `npm run build` - Build Next.js application (standard mode)
+- `npm run build:turbo` - Build Next.js application with Turbopack
 - `npm start` - Start production Next.js server
 - `npm run lint` - Run ESLint
 - `npm run db:seed` - Seed Prisma database
