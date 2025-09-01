@@ -27,9 +27,17 @@
       "Bash(npm view:*)",
       "Bash(npm ls:*)",
       "Bash(git push:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(claude mcp add:*)",
+      "Bash(/mcp)",
+      "Bash(claude mcp:*)",
+      "Bash(rm:*)",
+      "Bash(docker:*)",
+      "Bash(chmod:*)",
+      "Bash(./quick-deploy-test.sh:*)"
     ],
     "deny": [],
     "ask": []
-  }
+  },
+  "enableAllProjectMcpServers": false
 }

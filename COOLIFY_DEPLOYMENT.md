@@ -3,6 +3,8 @@
 ## 🎯 Overview
 This guide explains how to deploy Shenna's Studio Ocean Store to a Coolify VPS with **automatic database initialization**. The deployment includes auto-migration, auto-seeding, and auto-admin creation - no manual setup required!
 
+**Updated**: January 2025 - Now includes health check endpoints and improved Docker configurations.
+
 ## ✅ Prerequisites
 - Coolify VPS with managed PostgreSQL and Redis databases (for production)
 - Docker and Docker Compose available on the VPS

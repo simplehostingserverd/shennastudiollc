@@ -17,9 +17,9 @@ RUN npm run build
 # Build Backend
 FROM base AS backend-builder  
 WORKDIR /app/backend
-COPY ocean-store/ocean-backend/package*.json ./
+COPY ocean-backend/package*.json ./
 RUN npm ci --only=production
-COPY ocean-store/ocean-backend/ ./
+COPY ocean-backend/ ./
 RUN npm run build
 
 # Production Frontend Image

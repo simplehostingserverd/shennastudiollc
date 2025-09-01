@@ -3,81 +3,87 @@ version: '3.8'
 name: shenna-studio-coolify
 
 services:
-  # PostgreSQL Database (for Coolify development)
-  postgres:
-    image: postgres:15-alpine
-    container_name: shenna-postgres-dev
+  # Frontend Service
+  frontend:
+    build:
+      context: ./
+      dockerfile: ./ocean-store/Dockerfile
+      target: runner
+    container_name: shenna-frontend
     restart: unless-stopped
+    ports:
+      - "3000:3000"
     environment:
-      POSTGRES_DB: ocean_store
-      POSTGRES_USER: medusa_user
-      POSTGRES_PASSWORD: medusa_secure_password_2024
-      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      # Backend Connection - Use internal service name for backend
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://backend:9000}
+      
+      # Payment Processing
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-}
+      
+      # Search (Algolia)
+      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${ALGOLIA_APPLICATION_ID:-}
+      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${ALGOLIA_SEARCH_API_KEY:-}
+      
+      # Image Optimization (Cloudinary)
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME:-}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY:-}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET:-}
+      
+      # App Configuration
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    depends_on:
+      backend:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U medusa_user -d ocean_store"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+    networks:
+      - shenna-network
 
-  # Redis Cache (for Coolify development)
-  redis:
-    image: redis:7-alpine
-    container_name: shenna-redis-dev
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
-
-  # Medusa Backend API
-  medusa-backend:
+  # Backend Service  
+  backend:
     build:
       context: ./ocean-backend
       dockerfile: Dockerfile
-    container_name: shenna-medusa-backend-dev
+    container_name: shenna-backend
     restart: unless-stopped
     ports:
       - "9000:9000"    # API
       - "7001:7001"    # Admin Panel
     environment:
-      # Database
-      - DATABASE_URL=postgresql://medusa_user:medusa_secure_password_2024@postgres:5432/ocean_store
-      - REDIS_URL=redis://redis:6379
+      # Database Connection - Coolify will provide these
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
       
       # Security
-      - NODE_ENV=development
-      - JWT_SECRET=your-super-secure-jwt-secret-minimum-32-characters-change-in-production
-      - COOKIE_SECRET=your-super-secure-cookie-secret-minimum-32-characters-change-in-production
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
       
-      # CORS Configuration for development
-      - STORE_CORS=http://localhost:3000,https://shennastudio.com,https://www.shennastudio.com
-      - ADMIN_CORS=http://localhost:7001,https://admin.shennastudio.com
-      - AUTH_CORS=http://localhost:3000,https://shennastudio.com,https://www.shennastudio.com
+      # CORS Configuration
+      - STORE_CORS=${STORE_CORS:-http://localhost:3000}
+      - ADMIN_CORS=${ADMIN_CORS:-http://localhost:7001}
+      - AUTH_CORS=${AUTH_CORS:-http://localhost:3000}
       
       # Admin Setup
-      - ADMIN_EMAIL=admin@shennastudio.com
-      - ADMIN_PASSWORD=ChangeThisPassword123!
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennasstudio.com}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       
       # Auto-initialization
-      - AUTO_MIGRATE=true
-      - AUTO_SEED=true
-      - AUTO_CREATE_ADMIN=true
+      - AUTO_MIGRATE=${AUTO_MIGRATE:-true}
+      - AUTO_SEED=${AUTO_SEED:-true}
+      - AUTO_CREATE_ADMIN=${AUTO_CREATE_ADMIN:-true}
       
       # Medusa Configuration
       - MEDUSA_ADMIN_ONBOARDING_TYPE=default
       - MEDUSA_ADMIN_ONBOARDING_NEXTJS=true
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_started
     volumes:
       - medusa_uploads:/app/uploads
       - medusa_static:/app/static
@@ -87,54 +93,11 @@ services:
       timeout: 15s
       retries: 5
       start_period: 120s
-
-  # Next.js Frontend
-  frontend:
-    build:
-      context: ./
-      dockerfile: ./ocean-store/Dockerfile
-    container_name: shenna-frontend-dev
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    environment:
-      # Backend Connection
-      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000
-      
-      # Payment Processing (use test keys for development)
-      - STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
-      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
-      
-      # Search (Optional)
-      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=
-      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=
-      
-      # Image Optimization (Optional)
-      - CLOUDINARY_CLOUD_NAME=
-      - CLOUDINARY_API_KEY=
-      - CLOUDINARY_API_SECRET=
-      
-      # App Configuration
-      - NODE_ENV=development
-      - NEXT_TELEMETRY_DISABLED=1
-      - PORT=3000
-      - HOSTNAME=0.0.0.0
-    depends_on:
-      medusa-backend:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 30s
-      timeout: 15s
-      retries: 5
-      start_period: 90s
+    networks:
+      - shenna-network
 
 # Named Volumes
 volumes:
-  postgres_data:
-    driver: local
-  redis_data:
-    driver: local
   medusa_uploads:
     driver: local
   medusa_static:
@@ -142,6 +105,5 @@ volumes:
 
 # Networks
 networks:
-  default:
-    name: shenna-network-dev
+  shenna-network:
     driver: bridge
