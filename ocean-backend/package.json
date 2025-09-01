@@ -31,7 +31,7 @@
     "@mikro-orm/knex": "6.4.3",
     "@mikro-orm/migrations": "6.4.3",
     "@mikro-orm/postgresql": "6.4.3",
-    "awilix": "^12.0.5",
+    "awilix": "^8.0.1",
     "pg": "^8.13.1"
   },
   "devDependencies": {
@@ -49,7 +49,7 @@
     "react-dom": "^19.1.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
-    "vite": "^7.1.4",
+    "vite": "^5.4.19",
     "yalc": "^1.0.0-pre.53"
   },
   "overrides": {
