@@ -1,4 +1,4 @@
-import { Client } from "@medusajs/js-sdk"
+import Medusa from "@medusajs/js-sdk"
 
 export type Product = {
   id: string;
@@ -48,7 +48,7 @@ interface UpdateItem {
   quantity: number
 }
 
-const medusa = new Client({
+const medusa = new Medusa({
   baseUrl: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000",
   debug: process.env.NODE_ENV === "development",
 })
