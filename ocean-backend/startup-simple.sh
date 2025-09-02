@@ -12,4 +12,8 @@ echo "DATABASE_URL: ${DATABASE_URL:0:20}..." # Show first 20 chars only for secu
 
 # Start server directly without complex initialization
 echo "🚀 Starting Medusa server..."
+echo "Server will bind to 0.0.0.0:9000 and 0.0.0.0:7001"
+export HOST=0.0.0.0
+export PORT=9000
+export ADMIN_PORT=7001
 exec npm start

@@ -64,4 +64,8 @@ if [ "$AUTO_SEED" = "true" ]; then
 fi
 
 echo "🚀 Starting Medusa server..."
+echo "Server will bind to 0.0.0.0:9000 and 0.0.0.0:7001"
+export HOST=0.0.0.0
+export PORT=9000
+export ADMIN_PORT=7001
 exec npm start
