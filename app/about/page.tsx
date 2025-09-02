@@ -265,30 +265,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Personal Dedication */}
-      <section className="py-16 bg-gradient-to-br from-coral-100 to-seafoam-100">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-white bg-opacity-80 backdrop-blur-sm rounded-2xl p-8 shadow-lg">
-            <div className="text-4xl mb-6">💝</div>
-            <blockquote className="text-lg md:text-xl text-ocean-800 font-medium italic leading-relaxed mb-6">
-              &quot;Shenna I will always love you until the day I part!&quot;
-            </blockquote>
-            <div className="prose prose-ocean text-center mx-auto">
-              <p className="text-ocean-700 mb-4">
-                This project was made with love and compassion for Aria and Rozio and my beautiful love Shenna.
-              </p>
-              <p className="text-ocean-700">
-                Thanks to Shenna I&apos;ve become a wiser, stronger man and individual. May many more blessings come in the near future.
-              </p>
-            </div>
-            <div className="flex justify-center space-x-2 mt-6">
-              <span className="text-2xl">💙</span>
-              <span className="text-2xl">🌊</span>
-              <span className="text-2xl">💙</span>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
