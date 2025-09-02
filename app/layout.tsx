@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   description: "Discover beautiful ocean-themed products that celebrate marine life and support ocean conservation. A family business crafting treasures from sea turtle mugs to coral jewelry.",
   keywords: "ocean, marine, sea turtle, coral, jewelry, mugs, ocean conservation, nautical, beach, sea, family business, handcrafted",
   icons: {
-    icon: '/ShennasLogo.ico',
-    shortcut: '/ShennasLogo.ico',
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
     apple: '/ShennasLogo.png',
   },
 }
