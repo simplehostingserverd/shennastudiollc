@@ -43,7 +43,7 @@ export default function ShippingPage() {
             <div className="bg-ocean-50 rounded-lg p-6">
               <p className="text-ocean-700 mb-4">
                 All orders are carefully handpacked and processed within 1-2 business days. 
-                You'll receive a tracking number via email once your order ships.
+                You&apos;ll receive a tracking number via email once your order ships.
               </p>
               <p className="text-ocean-600">
                 Orders placed after 2 PM EST will be processed the next business day.
