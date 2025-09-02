@@ -22,7 +22,7 @@ export default function HomePage() {
       setLoading(true)
       const response = await medusa.store.product.list({ limit: 8 })
       if (response.products) {
-        setFeaturedProducts(response.products)
+        setFeaturedProducts(response.products as Product[])
       }
     } catch (error) {
       console.error("Error fetching products:", error)

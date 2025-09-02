@@ -6,24 +6,24 @@ export type Product = {
   description: string | null;
   handle: string;
   status: string;
-  images: Array<{ url: string; alt?: string }>;
-  options: Array<{
+  images: Array<{ url: string; alt?: string }> | null;
+  options?: Array<{
     id: string;
     title: string;
     values: Array<{ id: string; value: string }>;
-  }>;
-  variants: Array<{
+  }> | null;
+  variants?: Array<{
     id: string;
     title: string;
-    sku: string;
-    inventory_quantity: number;
-    prices: Array<{
+    sku?: string;
+    inventory_quantity?: number;
+    prices?: Array<{
       id: string;
       amount: number;
       currency_code: string;
     }>;
-    options: Record<string, string>;
-  }>;
+    options?: Record<string, string>;
+  }> | null;
   weight?: number;
   length?: number;
   height?: number;

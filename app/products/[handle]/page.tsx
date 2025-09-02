@@ -28,7 +28,7 @@ export default function ProductDetailPage() {
       setLoading(true)
       const response = await medusa.store.product.list({ handle })
       if (response.products && response.products.length > 0) {
-        const foundProduct = response.products[0]
+        const foundProduct = response.products[0] as Product
         setProduct(foundProduct)
         // Select first variant by default
         if (foundProduct.variants && foundProduct.variants.length > 0) {
