@@ -38,43 +38,51 @@ Shenna's Studio is an ocean-themed e-commerce platform built with Next.js and Me
 - `npm run test:integration:modules` - Run module integration tests
 - `npm run test:unit` - Run unit tests
 
-### Frontend (Root Directory)
-- `npm run dev` - Start Next.js development server (standard mode)
-- `npm run dev:turbo` - Start Next.js development server with Turbopack  
-- `npm run build` - Build Next.js application (standard mode)
-- `npm run build:turbo` - Build Next.js application with Turbopack
-- `npm start` - Start production Next.js server
-- `npm run lint` - Run ESLint
-- `npm run db:seed` - Seed Prisma database
-- `npm run algolia:index` - Index products to Algolia
+## TypeScript Configuration
+
+- **Frontend**: Uses Next.js TypeScript config with App Router support
+- **Backend**: Standard TypeScript with Node.js 20+ target
+- **Path Mapping**: Frontend uses `@/*` for absolute imports from root
+- **Build Target**: ES2017 for broad compatibility
+
+## Key Dependencies
+
+- **Frontend**: Next.js 15.5.2, React 19, Tailwind CSS, Stripe, NextAuth, Prisma
+- **Backend**: Medusa 2.10.0, MikroORM, PostgreSQL, Redis
+- **Testing**: Jest with experimental VM modules (backend only)
+- **Build Tools**: SWC compiler, Turbopack (optional)
 
 ## Project Structure
 
 ```
 shennastudiollc/
 ├── app/                   # Next.js App Router pages and components
-│   ├── about/
+│   ├── about/            # About page components
 │   ├── api/              # API routes
 │   ├── cart/             # Shopping cart pages
 │   ├── checkout/         # Checkout flow
 │   ├── components/       # Reusable React components
-│   ├── contact/
+│   ├── contact/          # Contact page
 │   ├── context/          # React context providers
-│   └── products/
+│   ├── faq/              # FAQ pages
+│   ├── products/         # Product listing and detail pages
+│   ├── returns/          # Returns policy page
+│   └── shipping/         # Shipping information
 ├── ocean-backend/         # Medusa e-commerce backend
 │   ├── src/
-│   │   ├── admin/        # Admin customizations
-│   │   ├── api/          # API routes
+│   │   ├── admin/        # Admin panel customizations
+│   │   ├── api/          # Custom API routes
 │   │   ├── jobs/         # Background jobs
 │   │   ├── links/        # Module links
 │   │   ├── modules/      # Custom modules
 │   │   ├── scripts/      # Utility scripts (seed, create-admin)
 │   │   ├── subscribers/  # Event subscribers
 │   │   └── workflows/    # Business workflows
-│   └── medusa-config.ts  # Medusa configuration
+│   ├── integration-tests/ # HTTP and module integration tests
+│   └── medusa-config     # Medusa configuration
 ├── src/lib/              # Shared utilities
-├── prisma/               # Database schema and migrations
-├── scripts/              # Utility scripts
+├── prisma/               # Database schema and migrations (frontend)
+├── scripts/              # Frontend utility scripts
 └── docker-compose.yml    # Docker orchestration
 ```
 
@@ -158,8 +166,10 @@ Access at http://localhost:7001 (development) or configured admin URL.
 - Enable database backups
 - Monitor health check endpoints
 
-## Key Dependencies
+## Important Notes
 
-- **Frontend**: Next.js, React, Tailwind CSS, Stripe, Auth, Prisma
-- **Backend**: Medusa.js, PostgreSQL, Redis, MikroORM
-- **Shared**: Docker, ESLint, Prettier, TypeScript
+- **Node.js Version**: Backend requires Node.js 20+
+- **Package Overrides**: Both projects include security overrides for axios, braces, ws, and other dependencies
+- **Development Mode**: Use Turbopack (`npm run dev:turbo`) for faster development builds
+- **Database Migrations**: Always run `npx medusa db:migrate` after pulling backend changes
+- **Testing**: Backend tests require experimental VM modules flag in NODE_OPTIONS

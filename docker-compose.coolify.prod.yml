@@ -14,9 +14,9 @@ services:
       - "9000:9000"    # API
       - "7001:7001"    # Admin Panel
     environment:
-      # Database - Use Coolify managed PostgreSQL and Redis
-      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}
-      - REDIS_URL=redis://default:${REDIS_PASSWORD}@${REDIS_HOST}:6379/0
+      # Database - Use the provided DATABASE_URL and REDIS_URL directly
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
       
       # Security - Use strong production secrets
       - NODE_ENV=production
@@ -37,12 +37,12 @@ services:
       - AUTO_SEED=true
       - AUTO_CREATE_ADMIN=true
       
-      # Startup mode (set to "simple" to skip initialization and start faster)
-      - STARTUP_MODE=${STARTUP_MODE:-simple}
+      # Startup mode
+      - STARTUP_MODE=${STARTUP_MODE:-full}
       
       # Medusa Configuration
-      - MEDUSA_ADMIN_ONBOARDING_TYPE=default
-      - MEDUSA_ADMIN_ONBOARDING_NEXTJS=true
+      - MEDUSA_ADMIN_ONBOARDING_TYPE=${MEDUSA_ADMIN_ONBOARDING_TYPE:-default}
+      - MEDUSA_ADMIN_ONBOARDING_NEXTJS=${MEDUSA_ADMIN_ONBOARDING_NEXTJS:-true}
     volumes:
       - medusa_uploads:/app/uploads
       - medusa_static:/app/static
