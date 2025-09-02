@@ -28,12 +28,12 @@ export default function AboutPage() {
             the beauty of the ocean into your everyday life.
           </p>
         </div>
-        
+
         {/* Floating elements - hidden on mobile */}
         <div className="absolute top-20 left-10 text-4xl animate-float opacity-60 hidden sm:block">🐢</div>
-        <div className="absolute top-40 right-16 text-3xl animate-float opacity-40 hidden sm:block" style={{ animationDelay: '1s' }}>🐠</div>
-        <div className="absolute bottom-32 left-20 text-3xl animate-float opacity-50 hidden md:block" style={{ animationDelay: '2s' }}>🦀</div>
-        <div className="absolute bottom-20 right-10 text-4xl animate-float opacity-30 hidden sm:block" style={{ animationDelay: '3s' }}>🌺</div>
+        <div className="absolute top-40 right-16 text-3xl animate-float opacity-40 hidden sm:block" style={{ animationDelay: "1s" }}>🐠</div>
+        <div className="absolute bottom-32 left-20 text-3xl animate-float opacity-50 hidden md:block" style={{ animationDelay: "2s" }}>🦀</div>
+        <div className="absolute bottom-20 right-10 text-4xl animate-float opacity-30 hidden sm:block" style={{ animationDelay: "3s" }}>🌺</div>
       </section>
 
       {/* Our Story Section */}
@@ -102,7 +102,7 @@ export default function AboutPage() {
               <h3 className="text-2xl font-display font-bold text-ocean-900 mb-2">
                 Shenna
               </h3>
-              <p className="text-coral-600 font-medium mb-4">Creative Founder & Visionary</p>
+              <p className="text-coral-600 font-medium mb-4">Creative Founder &amp; Visionary</p>
               <p className="text-ocean-600 leading-relaxed mb-6">
                 The creative heart behind Shenna&apos;s Studio. Shenna&apos;s passion for ocean 
                 conservation and artistic expression drives every design decision, 
@@ -129,7 +129,7 @@ export default function AboutPage() {
               <h3 className="text-2xl font-display font-bold text-ocean-900 mb-2">
                 Michael
               </h3>
-              <p className="text-ocean-600 font-medium mb-4">Technical Co-Founder & Owner of SoftwarePros Inc</p>
+              <p className="text-ocean-600 font-medium mb-4">Technical Co-Founder &amp; Owner of SoftwarePros Inc</p>
               <p className="text-ocean-600 leading-relaxed mb-6">
                 A 20-year software architecture veteran who brings technical excellence 
                 to Shenna&apos;s Studio. As owner of SoftwarePros Inc, Michael&apos;s expertise ensures our online presence 
@@ -240,7 +240,7 @@ export default function AboutPage() {
           <p className="text-xl text-ocean-100 mb-8 max-w-2xl mx-auto">
             We&apos;d love to welcome you to our family! Come visit us in beautiful Brownsville, Texas.
           </p>
-          
+
           <div className="bg-white bg-opacity-10 rounded-2xl p-8 mb-8 backdrop-blur-sm">
             <div className="text-3xl mb-4">📍</div>
             <div className="text-lg space-y-2">
@@ -271,7 +271,7 @@ export default function AboutPage() {
           <div className="bg-white bg-opacity-80 backdrop-blur-sm rounded-2xl p-8 shadow-lg">
             <div className="text-4xl mb-6">💝</div>
             <blockquote className="text-lg md:text-xl text-ocean-800 font-medium italic leading-relaxed mb-6">
-              "Shenna I will always love you until the day I part!"
+              &quot;Shenna I will always love you until the day I part!&quot;
             </blockquote>
             <div className="prose prose-ocean text-center mx-auto">
               <p className="text-ocean-700 mb-4">
