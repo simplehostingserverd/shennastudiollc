@@ -1,39 +1,35 @@
-FROM node:20-alpine
+# 1. Build Stage
+FROM node:20-alpine AS builder
 
-# Install curl for health checks
-RUN apk add --no-cache curl
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
+COPY . .
+RUN npm run build
+
+# 2. Production Runtime Stage
+FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Set production environment by default
-ENV NODE_ENV=production
+# Create non-root user for security
+RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 
-# Copy package files
-COPY package*.json ./
+# Copy only necessary files from the builder
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
 
-# Install all dependencies (including dev dependencies needed for build)
-RUN npm install --legacy-peer-deps && npm cache clean --force
+# Adjust ownership for security
+RUN chown -R nextjs:nodejs /app
 
-# Copy source code (excluding ocean-backend via .dockerignore)
-COPY . .
+USER nextjs
 
-# Build the Next.js app
-RUN npm run build
-
-# Ensure public assets are available for standalone mode
-RUN cp -R public .next/standalone/
-RUN cp -R .next/static .next/standalone/.next/
-
-# Remove dev dependencies
-RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
-
-# Expose port
 EXPOSE 3000
+ENV NODE_ENV=production
+ENV HOSTNAME=0.0.0.0
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=15s --start-period=90s --retries=5 \
   CMD curl -f http://localhost:3000 || exit 1
 
-# Start the application using standalone mode
-WORKDIR /app/.next/standalone
 CMD ["node", "server.js"]
