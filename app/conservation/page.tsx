@@ -29,7 +29,7 @@ export default function ConservationPage() {
               Our Conservation Mission
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              At Shenna's Studio, we're passionate about protecting the incredible marine ecosystem 
+              At Shenna&apos;s Studio, we&apos;re passionate about protecting the incredible marine ecosystem 
               that surrounds South Padre Island, especially the magnificent sea turtles that call our waters home.
             </p>
           </div>
@@ -70,8 +70,8 @@ export default function ConservationPage() {
                   South Padre Island, Texas
                 </h2>
                 <p className="text-ocean-100 text-lg mb-6 leading-relaxed">
-                  Our home on South Padre Island places us at the heart of one of Texas's most important 
-                  sea turtle nesting areas. Every year, we witness the miracle of Kemp's ridley, loggerhead, 
+                  Our home on South Padre Island places us at the heart of one of Texas&apos;s most important 
+                  sea turtle nesting areas. Every year, we witness the miracle of Kemp&apos;s ridley, loggerhead, 
                   and green sea turtles returning to our shores to nest.
                 </p>
                 <p className="text-ocean-100 text-lg leading-relaxed">
@@ -84,7 +84,7 @@ export default function ConservationPage() {
                 <ul className="space-y-3 text-ocean-100">
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-white rounded-full mr-3"></span>
-                    Kemp's Ridley Sea Turtle (Critically Endangered)
+                    Kemp&apos;s Ridley Sea Turtle (Critically Endangered)
                   </li>
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-white rounded-full mr-3"></span>
@@ -162,7 +162,7 @@ export default function ConservationPage() {
                   Sea Turtle Inc.
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  The world's largest sea turtle facility, located right here on South Padre Island, 
+                  The world&apos;s largest sea turtle facility, located right here on South Padre Island, 
                   dedicated to rescue, rehabilitation, and release of sea turtles.
                 </p>
                 <div className="text-ocean-500 font-semibold">South Padre Island, TX</div>
