@@ -39,7 +39,8 @@
       "Bash(node:*)",
       "Bash(cmd /c:*)",
       "Bash(cmd.exe:*)",
-      "Bash(npm start)"
+      "Bash(npm start)",
+      "Bash(npm run lint)"
     ],
     "deny": [],
     "ask": []

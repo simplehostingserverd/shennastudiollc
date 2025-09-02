@@ -20,9 +20,9 @@ RUN npm run build
 # Remove dev dependencies after build
 RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
 
-# Copy and make startup script executable
-COPY startup.sh /app/startup.sh
-RUN chmod +x /app/startup.sh
+# Copy and make startup scripts executable
+COPY startup.sh startup-simple.sh /app/
+RUN chmod +x /app/startup.sh /app/startup-simple.sh
 
 # Install netcat for database connection checking
 RUN apk add --no-cache netcat-openbsd
@@ -30,5 +30,5 @@ RUN apk add --no-cache netcat-openbsd
 # Expose ports
 EXPOSE 9000 7001
 
-# Use startup script
-CMD ["/app/startup.sh"]
+# Use startup script (can be overridden with STARTUP_MODE=simple)
+CMD ["sh", "-c", "if [ \"$STARTUP_MODE\" = \"simple\" ]; then exec /app/startup-simple.sh; else exec /app/startup.sh; fi"]
