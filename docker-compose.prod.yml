@@ -98,7 +98,6 @@ services:
       
       # Payment Processing
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-sk_test_your_stripe_secret_key}
-      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-pk_test_your_stripe_publishable_key}
       
       # Search (Optional)
       - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${ALGOLIA_APPLICATION_ID:-}
