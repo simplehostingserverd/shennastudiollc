@@ -20,7 +20,7 @@ export default function HomePage() {
   const fetchFeaturedProducts = async () => {
     try {
       setLoading(true)
-      const response = await medusa.store.products.list({ limit: 8 })
+      const response = await medusa.store.product.list({ limit: 8 })
       if (response.products) {
         setFeaturedProducts(response.products)
       }

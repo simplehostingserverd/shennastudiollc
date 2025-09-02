@@ -26,7 +26,7 @@ export default function ProductDetailPage() {
   const fetchProduct = useCallback(async () => {
     try {
       setLoading(true)
-      const response = await medusa.store.products.list({ handle })
+      const response = await medusa.store.product.list({ handle })
       if (response.products && response.products.length > 0) {
         const foundProduct = response.products[0]
         setProduct(foundProduct)

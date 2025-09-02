@@ -40,7 +40,7 @@ export default function ProductGrid({
         queryParams.q = searchQuery
       }
 
-      const response = await medusa.store.products.list(queryParams)
+      const response = await medusa.store.product.list(queryParams)
       
       if (response.products) {
         setProducts(response.products)

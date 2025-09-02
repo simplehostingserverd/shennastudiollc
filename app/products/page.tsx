@@ -18,7 +18,7 @@ export default function ProductsPage() {
     try {
       setLoading(true)
       setError(null)
-      const response = await medusa.store.products.list({ limit: 50 })
+      const response = await medusa.store.product.list({ limit: 50 })
       if (response.products) {
         setProducts(response.products)
       }
