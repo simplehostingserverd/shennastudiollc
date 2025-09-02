@@ -1,8 +1,8 @@
 # 1. Build Stage
 FROM node:20-alpine AS builder
 
-# Install system dependencies for build
-RUN apk add --no-cache libc6-compat
+# Install system dependencies for build including ffmpeg for video conversion
+RUN apk add --no-cache libc6-compat ffmpeg
 
 WORKDIR /app
 
@@ -14,6 +14,9 @@ RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
+
+# Convert video files before building
+RUN chmod +x ./scripts/convert-videos.sh && ./scripts/convert-videos.sh
 
 # Build Next.js application
 RUN npm run build
