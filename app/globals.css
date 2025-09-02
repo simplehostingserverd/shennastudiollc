@@ -115,3 +115,28 @@ button:hover {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* Mobile Video Optimizations for iOS/iPhone */
+video {
+  -webkit-playsinline: true;
+  -webkit-appearance: none;
+  outline: none;
+}
+
+/* iOS Safari video fix */
+video::-webkit-media-controls {
+  display: none !important;
+}
+
+video::-webkit-media-controls-enclosure {
+  display: none !important;
+}
+
+/* Better mobile video performance */
+@media (max-width: 768px) {
+  video {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+  }
+}

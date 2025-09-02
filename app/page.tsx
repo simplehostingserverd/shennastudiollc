@@ -41,8 +41,13 @@ export default function HomePage() {
           loop
           muted
           playsInline
+          webkit-playsinline="true"
+          controls={false}
+          preload="metadata"
+          poster="/ShennasLogo.png"
         >
           <source src="/videobackground.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
         </video>
         <div className="absolute inset-0 bg-ocean-500 opacity-20"></div>
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
