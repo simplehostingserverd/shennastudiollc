@@ -38,7 +38,7 @@ services:
       - AUTO_CREATE_ADMIN=true
       
       # Startup mode (set to "simple" to skip initialization and start faster)
-      - STARTUP_MODE=${STARTUP_MODE:-full}
+      - STARTUP_MODE=${STARTUP_MODE:-simple}
       
       # Medusa Configuration
       - MEDUSA_ADMIN_ONBOARDING_TYPE=default
@@ -47,11 +47,11 @@ services:
       - medusa_uploads:/app/uploads
       - medusa_static:/app/static
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl -f http://localhost:9000/health || nc -z localhost 9000"]
-      interval: 30s
-      timeout: 30s
-      retries: 10
-      start_period: 300s
+      test: ["CMD", "nc", "-z", "localhost", "9000"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   # Next.js Frontend (Production)
   frontend:

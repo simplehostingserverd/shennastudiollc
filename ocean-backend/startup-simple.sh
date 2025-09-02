@@ -9,6 +9,10 @@ fi
 
 echo "✅ Environment variables loaded"
 echo "DATABASE_URL: ${DATABASE_URL:0:20}..." # Show first 20 chars only for security
+echo "NODE_ENV: ${NODE_ENV:-development}"
+echo "STORE_CORS: ${STORE_CORS:-not set}"
+echo "ADMIN_CORS: ${ADMIN_CORS:-not set}"
+echo "AUTH_CORS: ${AUTH_CORS:-not set}"
 
 # Start server directly without complex initialization
 echo "🚀 Starting Medusa server..."
