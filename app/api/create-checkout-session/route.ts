@@ -53,8 +53,8 @@ export async function POST(request: NextRequest) {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: `https://checkout.shennastudio.com/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `https://checkout.shennastudio.com/cart`,
+      success_url: `https://shennastudio.com/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `https://shennastudio.com/cart`,
       metadata: {
         cart_id: cartId || "",
       },

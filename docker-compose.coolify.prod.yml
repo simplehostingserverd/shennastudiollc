@@ -26,9 +26,9 @@ services:
       - COOKIE_SECRET=${COOKIE_SECRET}
       
       # CORS Configuration for production
-      - STORE_CORS=https://shennastudio.com,https://www.shennastudio.com,https://checkout.shennastudio.com
+      - STORE_CORS=https://shennastudio.com,https://www.shennastudio.com
       - ADMIN_CORS=https://admin.shennastudio.com
-      - AUTH_CORS=https://shennastudio.com,https://www.shennastudio.com,https://checkout.shennastudio.com
+      - AUTH_CORS=https://shennastudio.com,https://www.shennastudio.com
       
       # Admin Setup
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennastudio.com}
