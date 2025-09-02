@@ -5,16 +5,16 @@ import medusa from "@/src/lib/medusa"
 
 interface CartItem {
   id: string
-  variant_id: string
-  product_id: string
+  variant_id?: string
+  product_id?: string
   title: string
   description?: string
-  thumbnail: string
-  variant: {
+  thumbnail?: string
+  variant?: {
     id: string
     title: string
     sku?: string
-    options: Record<string, string>
+    options?: Record<string, string>
   }
   quantity: number
   unit_price: number
@@ -48,7 +48,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setIsLoading(true)
         const response = await medusa.store.cart.retrieve(id)
         if (response.cart) {
-          setItems(response.cart.items || [])
+          setItems((response.cart.items || []) as CartItem[])
         }
       } catch (error) {
         console.error("Error loading cart:", error)
@@ -73,7 +73,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (response.cart) {
         setCartId(response.cart.id)
         localStorage.setItem("cart_id", response.cart.id)
-        setItems(response.cart.items || [])
+        setItems((response.cart.items || []) as CartItem[])
       }
     } catch (error) {
       console.error("Error creating cart:", error)
@@ -101,7 +101,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       })
 
       if (response.cart) {
-        setItems(response.cart.items || [])
+        setItems((response.cart.items || []) as CartItem[])
       }
     } catch (error) {
       console.error("Error adding item to cart:", error)
@@ -120,7 +120,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       })
 
       if (response.cart) {
-        setItems(response.cart.items || [])
+        setItems((response.cart.items || []) as CartItem[])
       }
     } catch (error) {
       console.error("Error updating cart item:", error)
@@ -137,7 +137,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const response = await medusa.store.cart.deleteLineItem(cartId, itemId)
 
       if (response.parent) {
-        setItems(response.parent.items || [])
+        setItems((response.parent.items || []) as CartItem[])
       }
     } catch (error) {
       console.error("Error removing cart item:", error)
