@@ -5,6 +5,9 @@ RUN apk add --no-cache curl
 
 WORKDIR /app
 
+# Set production environment by default
+ENV NODE_ENV=production
+
 # Copy package files
 COPY package*.json ./
 
