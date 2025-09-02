@@ -37,6 +37,14 @@ echo "NPM version: $(npm --version)"
 echo "Current directory: $(pwd)"
 echo "Files in /app: $(ls -la /app | head -10)"
 
+# Build app at runtime (when env vars are available)
+echo "🔨 Building Medusa application..."
+if npm run build; then
+  echo "✅ Build completed successfully"
+else
+  echo "⚠️  Build failed, but continuing to start server..."
+fi
+
 # Start server directly without complex initialization
 echo "🚀 Starting Medusa server..."
 echo "Server will bind to 0.0.0.0:9000 and 0.0.0.0:7001"

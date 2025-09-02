@@ -17,11 +17,9 @@ RUN npm install --legacy-peer-deps && npm cache clean --force
 # Copy source code
 COPY . .
 
-# Build the app
-RUN npm run build
-
-# Remove dev dependencies after build
-RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
+# Skip build during Docker build - will build at runtime when env vars are available
+# Build step moved to startup scripts when environment variables are available
+# Keep dev dependencies for runtime build
 
 # Copy and make startup scripts executable
 COPY startup.sh startup-simple.sh /app/
