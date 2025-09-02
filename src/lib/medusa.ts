@@ -53,37 +53,7 @@ const medusa = new Client({
   debug: process.env.NODE_ENV === "development",
 })
 
-// Create a mock store object for the client methods
-const store = {
-  products: {
-    list: async (_params: QueryParams = {}) => {
-      // Mock response for now - return proper type structure
-      return { products: [] as Product[] }
-    }
-  },
-  carts: {
-    create: async () => {
-      return { cart: { id: 'cart_mock', items: [] } }
-    },
-    retrieve: async (id: string) => {
-      return { cart: { id, items: [] } }
-    },
-    lineItems: {
-      create: async (id: string, _item: CartItem) => {
-        return { cart: { id, items: [] } }
-      },
-      update: async (cartId: string, _lineId: string, _update: UpdateItem) => {
-        return { cart: { id: cartId, items: [] } }
-      },
-      delete: async (cartId: string, _lineId: string) => {
-        return { cart: { id: cartId, items: [] } }
-      }
-    }
-  }
-}
-
-// Augment the medusa client
-const medusaClient = Object.assign(medusa, { store })
+const medusaClient = medusa
 
 export default medusaClient
 

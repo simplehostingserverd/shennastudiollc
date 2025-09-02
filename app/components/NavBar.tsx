@@ -49,6 +49,12 @@ export default function Navbar() {
             >
               About
             </Link>
+            <Link 
+              href="/contact" 
+              className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium"
+            >
+              Contact
+            </Link>
           </div>
 
           {/* Right Side Actions */}
@@ -116,6 +122,13 @@ export default function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 About
+              </Link>
+              <Link 
+                href="/contact" 
+                className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contact
               </Link>
               <Button variant="primary" size="sm" className="w-full mt-4">
                 Shop Now
