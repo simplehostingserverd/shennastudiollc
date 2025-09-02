@@ -16,6 +16,8 @@ services:
     environment:
       # Database - Use the provided DATABASE_URL and REDIS_URL directly
       - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_SSL=${DATABASE_SSL:-false}
+      - DATABASE_SSL_REJECT_UNAUTHORIZED=${DATABASE_SSL_REJECT_UNAUTHORIZED:-true}
       - REDIS_URL=${REDIS_URL}
       
       # Security - Use strong production secrets
