@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e  # Exit on any error
 echo "🌊 Starting Shenna Studio Backend (Simple Mode)..."
 
 # Basic environment check
@@ -14,10 +15,39 @@ echo "STORE_CORS: ${STORE_CORS:-not set}"
 echo "ADMIN_CORS: ${ADMIN_CORS:-not set}"
 echo "AUTH_CORS: ${AUTH_CORS:-not set}"
 
+# Check if we can connect to database
+echo "🔍 Testing database connectivity..."
+DB_HOST=$(echo $DATABASE_URL | sed -n "s/.*@\([^:]*\):.*/\1/p")
+DB_PORT=$(echo $DATABASE_URL | sed -n "s/.*:\([0-9]*\)\/.*/\1/p")
+DB_PORT=${DB_PORT:-5432}
+
+if [ -n "$DB_HOST" ]; then
+  echo "Testing connection to $DB_HOST:$DB_PORT..."
+  if nc -z $DB_HOST $DB_PORT; then
+    echo "✅ Database is reachable"
+  else
+    echo "⚠️  Database not reachable, but continuing..."
+  fi
+fi
+
+# Check Node.js and npm
+echo "🔍 Checking Node.js environment..."
+echo "Node version: $(node --version)"
+echo "NPM version: $(npm --version)"
+echo "Current directory: $(pwd)"
+echo "Files in /app: $(ls -la /app | head -10)"
+
 # Start server directly without complex initialization
 echo "🚀 Starting Medusa server..."
 echo "Server will bind to 0.0.0.0:9000 and 0.0.0.0:7001"
 export HOST=0.0.0.0
 export PORT=9000
 export ADMIN_PORT=7001
+
+echo "📋 Final environment check before starting:"
+echo "HOST: $HOST"
+echo "PORT: $PORT"
+echo "ADMIN_PORT: $ADMIN_PORT"
+
+echo "🎬 Executing: npm start"
 exec npm start

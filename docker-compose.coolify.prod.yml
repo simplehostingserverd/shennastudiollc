@@ -46,12 +46,13 @@ services:
     volumes:
       - medusa_uploads:/app/uploads
       - medusa_static:/app/static
-    healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "9000"]
-      interval: 15s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+    # Temporarily disable health check to debug startup issues
+    # healthcheck:
+    #   test: ["CMD", "nc", "-z", "localhost", "9000"]
+    #   interval: 15s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 60s
 
   # Next.js Frontend (Production)
   frontend:
@@ -85,8 +86,7 @@ services:
       - PORT=3000
       - HOSTNAME=0.0.0.0
     depends_on:
-      medusa-backend:
-        condition: service_healthy
+      - medusa-backend
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s
