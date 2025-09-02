@@ -24,7 +24,7 @@ const faqData: FAQItem[] = [
   {
     category: "Products",
     question: "Are your products really ocean-themed?",
-    answer: "Absolutely! Every item in our collection is carefully designed to celebrate marine life and ocean conservation. We're passionate about bringing the beauty of the ocean into your daily life."
+    answer: "Absolutely! Every item in our collection is carefully designed to celebrate marine life and ocean conservation. We&apos;re passionate about bringing the beauty of the ocean into your daily life."
   },
   {
     category: "Products",
@@ -39,7 +39,7 @@ const faqData: FAQItem[] = [
   {
     category: "Orders",
     question: "How can I track my order?",
-    answer: "Once your order ships, you'll receive a tracking number via email. You can use this to track your package on our shipping partner's website."
+    answer: "Once your order ships, you&apos;ll receive a tracking number via email. You can use this to track your package on our shipping partner&apos;s website."
   },
   {
     category: "Returns",
@@ -49,7 +49,7 @@ const faqData: FAQItem[] = [
   {
     category: "Returns",
     question: "How long do refunds take?",
-    answer: "Refunds are processed within 3-5 business days of receiving your returned item. You'll see the credit appear on your original payment method within 7-10 business days."
+    answer: "Refunds are processed within 3-5 business days of receiving your returned item. You&apos;ll see the credit appear on your original payment method within 7-10 business days."
   },
   {
     category: "Conservation",
@@ -174,7 +174,7 @@ export default function FAQPage() {
             Still Need Help?
           </h2>
           <p className="text-ocean-600 mb-6">
-            Can't find what you're looking for? Our customer service team is here to help.
+            Can&apos;t find what you&apos;re looking for? Our customer service team is here to help.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/contact">
