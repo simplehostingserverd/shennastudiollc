@@ -74,13 +74,13 @@ export default function CartPage() {
                         {item.title}
                       </h3>
                       <p className="text-sm text-ocean-600 mb-2 line-clamp-2">
-                        {item.description}
+                        {item.description || 'No description available'}
                       </p>
                       
                       {/* Variant Options */}
-                      {item.variant.options && Object.keys(item.variant.options).length > 0 && (
+                      {item.variant?.options && Object.keys(item.variant.options).length > 0 && (
                         <div className="flex flex-wrap gap-1 mb-3">
-                          {Object.entries(item.variant.options).map(([key, value]) => (
+                          {Object.entries(item.variant?.options || {}).map(([key, value]) => (
                             <span
                               key={key}
                               className="inline-block bg-ocean-100 text-ocean-700 text-xs px-2 py-1 rounded-full"
