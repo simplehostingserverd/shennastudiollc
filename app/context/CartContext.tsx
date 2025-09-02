@@ -69,7 +69,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const createCart = async () => {
     try {
-      const response = await medusa.store.cart.create()
+      const response = await medusa.store.cart.create({})
       if (response.cart) {
         setCartId(response.cart.id)
         localStorage.setItem("cart_id", response.cart.id)

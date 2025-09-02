@@ -77,9 +77,11 @@ export default function Navbar() {
             </Link>
 
             {/* CTA Button */}
-            <Button variant="primary" size="sm" className="hidden sm:inline-flex">
-              Shop Now
-            </Button>
+            <Link href="/products">
+              <Button variant="primary" size="sm" className="hidden sm:inline-flex">
+                Shop Now
+              </Button>
+            </Link>
 
             {/* Mobile Menu Button */}
             <button
@@ -130,9 +132,11 @@ export default function Navbar() {
               >
                 Contact
               </Link>
-              <Button variant="primary" size="sm" className="w-full mt-4">
-                Shop Now
-              </Button>
+              <Link href="/products">
+                <Button variant="primary" size="sm" className="w-full mt-4">
+                  Shop Now
+                </Button>
+              </Link>
             </div>
           </div>
         )}
