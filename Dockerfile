@@ -11,7 +11,7 @@ ENV NODE_ENV=production
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install all dependencies (including dev dependencies needed for build)
 RUN npm install --legacy-peer-deps && npm cache clean --force
 
 # Copy source code (excluding ocean-backend via .dockerignore)

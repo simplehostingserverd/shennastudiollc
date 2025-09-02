@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   output: 'standalone',
   images: {
     domains: ['localhost', 'res.cloudinary.com', 'shennastudio.com', 'www.shennastudio.com'],
@@ -11,4 +10,4 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ['@medusajs/js-sdk'],
 };
 
-export default nextConfig;
+module.exports = nextConfig;
