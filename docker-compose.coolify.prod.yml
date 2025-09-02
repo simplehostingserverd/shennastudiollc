@@ -54,11 +54,11 @@ services:
       - "coolify.managed=true"
       - "coolify.name=backend"
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9000/health || exit 1"]
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
       interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 120s
+      timeout: 15s
+      retries: 5
+      start_period: 180s
 
   # Next.js Frontend (Production)
   frontend:
@@ -92,19 +92,18 @@ services:
       - PORT=3000
       - HOSTNAME=0.0.0.0
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     networks:
       - shenna-network-prod
     labels:
       - "coolify.managed=true"
       - "coolify.name=frontend"
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s
       timeout: 15s
       retries: 5
-      start_period: 90s
+      start_period: 120s
 
 # Named Volumes for production
 volumes:
