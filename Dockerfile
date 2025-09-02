@@ -20,6 +20,10 @@ COPY . .
 # Build the Next.js app
 RUN npm run build
 
+# Ensure public assets are available for standalone mode
+RUN cp -R public .next/standalone/
+RUN cp -R .next/static .next/standalone/.next/
+
 # Remove dev dependencies
 RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
 
@@ -30,5 +34,6 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=15s --start-period=90s --retries=5 \
   CMD curl -f http://localhost:3000 || exit 1
 
-# Start the application
-CMD ["npm", "start"]
+# Start the application using standalone mode
+WORKDIR /app/.next/standalone
+CMD ["node", "server.js"]

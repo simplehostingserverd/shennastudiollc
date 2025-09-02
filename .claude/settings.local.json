@@ -40,7 +40,8 @@
       "Bash(cmd /c:*)",
       "Bash(cmd.exe:*)",
       "Bash(npm start)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Read(C:\\Users\\apple\\Pictures\\Screenshots/**)"
     ],
     "deny": [],
     "ask": []
