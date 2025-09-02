@@ -4,7 +4,7 @@ name: shenna-studio-production
 
 services:
   # Medusa Backend API (Production with external Coolify databases)
-  medusa-backend:
+  backend:
     build:
       context: ./ocean-backend
       dockerfile: Dockerfile
@@ -64,8 +64,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      # Backend Connection
-      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.shennastudio.com
+      # Backend Connection - Set this in Coolify environment variables
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL}
       
       # Payment Processing - Use production Stripe keys
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
@@ -86,7 +86,7 @@ services:
       - PORT=3000
       - HOSTNAME=0.0.0.0
     depends_on:
-      - medusa-backend
+      - backend
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s
