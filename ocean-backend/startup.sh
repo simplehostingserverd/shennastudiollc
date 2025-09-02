@@ -53,13 +53,13 @@ if [ "$AUTO_CREATE_ADMIN" = "true" ]; then
   fi
 fi
 
-# Auto-seed if enabled
+# Auto-seed if enabled (skip on errors to allow server to start)
 if [ "$AUTO_SEED" = "true" ]; then
   echo "🌱 Seeding database with sample data..."
-  if timeout 120 npm run seed; then
+  if timeout 120 npm run seed 2>/dev/null; then
     echo "✅ Database seeding completed"
   else
-    echo "⚠️  Database seeding failed or timed out, but continuing..."
+    echo "⚠️  Database seeding failed or timed out, but continuing to allow server startup..."
   fi
 fi
 

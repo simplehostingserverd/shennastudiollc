@@ -11,8 +11,8 @@ ENV NODE_ENV=production
 # Copy package files first for better Docker layer caching
 COPY package*.json ./
 
-# Install all dependencies (needed for build)
-RUN npm install --legacy-peer-deps && npm cache clean --force
+# Install all dependencies including dev dependencies (needed for TypeScript build)
+RUN npm install --include=dev --legacy-peer-deps && npm cache clean --force
 
 # Copy source code
 COPY . .
