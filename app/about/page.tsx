@@ -29,22 +29,22 @@ export default function AboutPage() {
           </p>
         </div>
         
-        {/* Floating elements */}
-        <div className="absolute top-20 left-10 text-4xl animate-float opacity-60">🐢</div>
-        <div className="absolute top-40 right-16 text-3xl animate-float opacity-40" style={{ animationDelay: '1s' }}>🐠</div>
-        <div className="absolute bottom-32 left-20 text-3xl animate-float opacity-50" style={{ animationDelay: '2s' }}>🦀</div>
-        <div className="absolute bottom-20 right-10 text-4xl animate-float opacity-30" style={{ animationDelay: '3s' }}>🌺</div>
+        {/* Floating elements - hidden on mobile */}
+        <div className="absolute top-20 left-10 text-4xl animate-float opacity-60 hidden sm:block">🐢</div>
+        <div className="absolute top-40 right-16 text-3xl animate-float opacity-40 hidden sm:block" style={{ animationDelay: '1s' }}>🐠</div>
+        <div className="absolute bottom-32 left-20 text-3xl animate-float opacity-50 hidden md:block" style={{ animationDelay: '2s' }}>🦀</div>
+        <div className="absolute bottom-20 right-10 text-4xl animate-float opacity-30 hidden sm:block" style={{ animationDelay: '3s' }}>🌺</div>
       </section>
 
       {/* Our Story Section */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-display font-bold text-ocean-900 mb-6">
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-ocean-900 mb-6">
                 Our Story
               </h2>
-              <div className="space-y-6 text-lg text-ocean-700 leading-relaxed">
+              <div className="space-y-4 md:space-y-6 text-base md:text-lg text-ocean-700 leading-relaxed">
                 <p>
                   What started as a simple idea has blossomed into a thriving family business 
                   that brings the wonder and beauty of ocean life to homes across the world. 
@@ -93,9 +93,9 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Shenna */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg card-hover text-center">
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg card-hover text-center">
               <div className="w-24 h-24 bg-coral-gradient rounded-full mx-auto mb-6 flex items-center justify-center">
                 <span className="text-3xl text-white">S</span>
               </div>
@@ -122,7 +122,7 @@ export default function AboutPage() {
             </div>
 
             {/* Michael */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg card-hover text-center">
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg card-hover text-center">
               <div className="w-24 h-24 bg-ocean-gradient rounded-full mx-auto mb-6 flex items-center justify-center">
                 <span className="text-3xl text-white">M</span>
               </div>
@@ -146,7 +146,7 @@ export default function AboutPage() {
                   <span className="text-ocean-600">🚀</span>
                 </div>
               </div>
-              <div className="flex justify-center space-x-4">
+              <div className="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4">
                 <Link 
                   href="https://www.softwarepros.org/" 
                   target="_blank"
@@ -154,7 +154,7 @@ export default function AboutPage() {
                 >
                   SoftwarePros Inc
                 </Link>
-                <span className="text-ocean-300">•</span>
+                <span className="text-ocean-300 hidden sm:inline">•</span>
                 <Link 
                   href="https://www.linkedin.com/in/michael-t-538480375/" 
                   target="_blank"
@@ -162,7 +162,7 @@ export default function AboutPage() {
                 >
                   LinkedIn
                 </Link>
-                <span className="text-ocean-300">•</span>
+                <span className="text-ocean-300 hidden sm:inline">•</span>
                 <Link 
                   href="https://instagram.com/softwareprosdev" 
                   target="_blank"
@@ -188,7 +188,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-coral-gradient rounded-full mx-auto mb-6 flex items-center justify-center">
                 <span className="text-2xl text-white">🌊</span>

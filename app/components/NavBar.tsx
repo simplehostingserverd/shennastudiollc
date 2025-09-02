@@ -24,7 +24,7 @@ export default function Navbar() {
               height={40}
               className="h-10 w-auto object-contain group-hover:scale-105 transition-transform"
             />
-            <span className="text-xl font-display font-bold bg-maroon-gradient bg-clip-text text-transparent">
+            <span className="text-xl font-display font-bold text-white">
               Shenna&apos;s Studio
             </span>
           </Link>
