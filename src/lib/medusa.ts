@@ -32,21 +32,22 @@ export type Product = {
   updated_at: string;
 }
 
-interface QueryParams {
-  handle?: string
-  limit?: number
-  category_id?: string
-  q?: string
-}
+// Commented out unused interfaces - keep for future use
+// interface QueryParams {
+//   handle?: string
+//   limit?: number
+//   category_id?: string
+//   q?: string
+// }
 
-interface CartItem {
-  variant_id: string
-  quantity: number
-}
+// interface CartItem {
+//   variant_id: string
+//   quantity: number
+// }
 
-interface UpdateItem {
-  quantity: number
-}
+// interface UpdateItem {
+//   quantity: number
+// }
 
 const medusa = new Medusa({
   baseUrl: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000",
