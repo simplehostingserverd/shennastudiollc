@@ -3,7 +3,7 @@ import Medusa from "@medusajs/js-sdk"
 export type Product = {
   id: string;
   title: string;
-  description: string;
+  description: string | null;
   handle: string;
   status: string;
   images: Array<{ url: string; alt?: string }>;

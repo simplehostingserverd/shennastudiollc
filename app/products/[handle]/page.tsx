@@ -192,7 +192,7 @@ export default function ProductDetailPage() {
             </div>
 
             <div className="prose text-ocean-700">
-              <p>{product.description}</p>
+              <p>{product.description || 'No description available'}</p>
             </div>
 
             {/* Variant Selection */}

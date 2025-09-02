@@ -93,7 +93,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {product.title}
           </h3>
           <p className="text-sm text-ocean-600 mb-3 line-clamp-2">
-            {product.description}
+            {product.description || 'No description available'}
           </p>
         </div>
 
