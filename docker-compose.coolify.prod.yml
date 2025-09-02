@@ -46,13 +46,14 @@ services:
     volumes:
       - medusa_uploads:/app/uploads
       - medusa_static:/app/static
-    # Temporarily disable health check to debug startup issues
-    # healthcheck:
-    #   test: ["CMD", "nc", "-z", "localhost", "9000"]
-    #   interval: 15s
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 60s
+    networks:
+      - shenna-network-prod
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9000/health" || "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
 
   # Next.js Frontend (Production)
   frontend:
@@ -86,9 +87,12 @@ services:
       - PORT=3000
       - HOSTNAME=0.0.0.0
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    networks:
+      - shenna-network-prod
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000" || "exit", "1"]
       interval: 30s
       timeout: 15s
       retries: 5
@@ -103,6 +107,5 @@ volumes:
 
 # Networks
 networks:
-  default:
-    name: shenna-network-prod
+  shenna-network-prod:
     driver: bridge
