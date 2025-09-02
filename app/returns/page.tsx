@@ -10,7 +10,7 @@ export default function ReturnsPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-display font-bold text-ocean-900 mb-4">
-            Returns & Exchanges
+            Returns &amp; Exchanges
           </h1>
           <p className="text-lg text-ocean-600">
             Your satisfaction is our priority - easy returns within 30 days
@@ -23,7 +23,7 @@ export default function ReturnsPage() {
             <h2 className="text-2xl font-bold text-ocean-900 mb-6">Return Policy</h2>
             <div className="prose prose-ocean max-w-none">
               <p className="text-ocean-700 mb-4">
-                We want you to love your ocean treasures! If you're not completely satisfied with your purchase, 
+                We want you to love your ocean treasures! If you&apos;re not completely satisfied with your purchase, 
                 you can return items within <strong>30 days</strong> of delivery for a full refund.
               </p>
               <ul className="text-ocean-700 space-y-2">
@@ -51,7 +51,7 @@ export default function ReturnsPage() {
                   <span className="text-2xl font-bold text-ocean-600">2</span>
                 </div>
                 <h3 className="text-lg font-semibold text-ocean-900 mb-2">Get Label</h3>
-                <p className="text-ocean-600 text-sm">We'll send you a prepaid return shipping label</p>
+                <p className="text-ocean-600 text-sm">We&apos;ll send you a prepaid return shipping label</p>
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 bg-ocean-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -68,11 +68,11 @@ export default function ReturnsPage() {
             <h2 className="text-2xl font-bold text-ocean-900 mb-6">Exchanges</h2>
             <div className="bg-seafoam-50 rounded-lg p-6">
               <p className="text-seafoam-800 mb-4">
-                Need a different size or color? We're happy to exchange items within 30 days. 
-                Simply follow the return process above and let us know what you'd like instead.
+                Need a different size or color? We&apos;re happy to exchange items within 30 days. 
+                Simply follow the return process above and let us know what you&apos;d like instead.
               </p>
               <p className="text-seafoam-700">
-                We'll process exchanges as soon as we receive your returned item.
+                We&apos;ll process exchanges as soon as we receive your returned item.
               </p>
             </div>
           </section>
@@ -82,7 +82,7 @@ export default function ReturnsPage() {
             <h2 className="text-2xl font-bold text-ocean-900 mb-6">Damaged or Defective Items</h2>
             <div className="bg-coral-50 rounded-lg p-6">
               <p className="text-coral-800 mb-4">
-                If your item arrives damaged or defective, we'll make it right immediately:
+                If your item arrives damaged or defective, we&apos;ll make it right immediately:
               </p>
               <ul className="text-coral-800 space-y-2">
                 <li>• Free return shipping</li>
