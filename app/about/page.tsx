@@ -19,7 +19,7 @@ export default function AboutPage() {
           preload="metadata"
           poster="/ShennasLogo.png"
         >
-          <source src="/videobackground.mp4" type="video/mp4" />
+          <source src="/shennadive.MOV" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         <div className="absolute inset-0 bg-ocean-500 opacity-20"></div>
