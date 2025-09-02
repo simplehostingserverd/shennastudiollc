@@ -15,8 +15,8 @@
 # Startup Configuration
 STARTUP_MODE=simple
 
-# Redis - Fix the URL to use your actual Redis host
-REDIS_URL=redis://default:uDHR58Q2T3HUDV09xqfMMw1gTLz7l2e8PRjEbH8GDsBq5L8cxF6knZxpg0rIP3rE@your-redis-host:6379/0
+# Redis - Use the correct Coolify Redis host
+REDIS_URL=redis://default:uDHR58Q2T3HUDV09xqfMMw1gTLz7l2e8PRjEbH8GDsBq5L8cxF6knZxpg0rIP3rE@ns4cskowscs08c4kgs8kswgw:6379/0
 
 # Stripe - Production Keys Only (Remove test keys)
 STRIPE_SECRET_KEY=sk_live_YOUR_LIVE_SECRET_KEY_HERE
