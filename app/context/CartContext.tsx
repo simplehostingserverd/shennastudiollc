@@ -46,7 +46,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const loadCart = async (id: string) => {
       try {
         setIsLoading(true)
-        const response = await medusa.store.carts.retrieve(id)
+        const response = await medusa.store.cart.retrieve(id)
         if (response.cart) {
           setItems(response.cart.items || [])
         }
@@ -69,7 +69,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const createCart = async () => {
     try {
-      const response = await medusa.store.carts.create()
+      const response = await medusa.store.cart.create()
       if (response.cart) {
         setCartId(response.cart.id)
         localStorage.setItem("cart_id", response.cart.id)
@@ -95,7 +95,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         throw new Error("Failed to create cart")
       }
 
-      const response = await medusa.store.carts.lineItems.create(currentCartId, {
+      const response = await medusa.store.cart.createLineItem(currentCartId, {
         variant_id: variantId,
         quantity,
       })
@@ -115,7 +115,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     try {
       setIsLoading(true)
-      const response = await medusa.store.carts.lineItems.update(cartId, itemId, {
+      const response = await medusa.store.cart.updateLineItem(cartId, itemId, {
         quantity,
       })
 
@@ -134,10 +134,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     try {
       setIsLoading(true)
-      const response = await medusa.store.carts.lineItems.delete(cartId, itemId)
+      const response = await medusa.store.cart.deleteLineItem(cartId, itemId)
 
-      if (response.cart) {
-        setItems(response.cart.items || [])
+      if (response.parent) {
+        setItems(response.parent.items || [])
       }
     } catch (error) {
       console.error("Error removing cart item:", error)
@@ -153,7 +153,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setIsLoading(true)
       // Remove all items individually
       for (const item of items) {
-        await medusa.store.carts.lineItems.delete(cartId, item.id)
+        await medusa.store.cart.deleteLineItem(cartId, item.id)
       }
       setItems([])
     } catch (error) {
