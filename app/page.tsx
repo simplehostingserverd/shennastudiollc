@@ -39,7 +39,6 @@ export default function HomePage() {
           className="absolute inset-0 w-full h-full object-cover opacity-20"
           autoPlay
           loop
-          muted
           playsInline
           webkit-playsinline="true"
           controls={false}
