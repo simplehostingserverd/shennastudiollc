@@ -6,7 +6,14 @@
       "Bash(npx eslint:*)",
       "Bash(cp:*)",
       "Bash(sed:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(pnpm:*)",
+      "Read(//c/Users/Shadow/Documents/shennastudiobox/**)",
+      "Bash(curl:*)",
+      "Bash(docker-compose:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

@@ -21,7 +21,13 @@ This is a monorepo structure with the frontend in the root directory and backend
 
 ## Development Commands
 
-### Docker Development (Recommended)
+### Quick Start (Recommended)
+```bash
+node start-dev.js                                         # Start both frontend and backend
+node start-dev.js --turbo                                # Start with Turbopack (faster)
+```
+
+### Docker Development (Alternative)
 ```bash
 docker-compose up -d --build                              # Start all services
 docker-compose exec medusa-backend npx medusa db:migrate  # Run migrations
@@ -184,6 +190,28 @@ The system includes auto-initialization that creates the admin user on first run
 - Use strong secrets in production
 - Enable database backups
 - Monitor health check endpoints
+
+## Frontend Architecture Patterns
+
+### Component Structure
+- **Pages**: App Router structure in `app/` directory with route-based folders
+- **Components**: Reusable UI components in `app/components/`
+- **Context**: React Context providers for global state (CartContext, etc.)
+- **API Integration**: Medusa.js SDK client in `src/lib/medusa.ts`
+
+### Key Design Patterns
+- **Product Fetching**: Uses Medusa SDK with error handling and loading states
+- **Dynamic Imports**: Medusa client is dynamically imported to avoid SSR issues
+- **Collection Filtering**: Client-side filtering using keyword matching
+- **Background Images**: Uses CSS classes with Tailwind for ocean-themed backgrounds
+- **State Management**: React hooks with useCallback for performance optimization
+
+### Common Issues & Solutions
+- **Backend Connection**: Frontend expects backend at `localhost:9000`, ensure backend is running
+- **Background Images**: CSS classes like `products-page-background` must be defined in `globals.css`
+- **Medusa Client**: Always check if client is initialized before API calls
+- **CORS**: Backend must include frontend domain in STORE_CORS configuration
+- **Environment Variables**: All `NEXT_PUBLIC_*` vars are exposed to browser
 
 ## Important Notes
 

@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import { CartProvider } from "@/app/context/CartContext"
 import Navbar from "@/app/components/NavBar"
 import Footer from "@/app/components/Footer"
-import MouseAnimation from "@/app/components/MouseAnimation";
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -21,7 +20,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="min-h-screen flex flex-col">
         <CartProvider>
-          <MouseAnimation />
           <Navbar />
           <main className="flex-grow">
             {children}

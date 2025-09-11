@@ -1,35 +1,70 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import ProductGrid from "@/app/components/ProductGrid"
 import SearchBar from "@/app/components/SearchBar"
 import Button from "@/app/components/ui/Button"
 import { Product } from "@/src/lib/medusa"
-import medusa from "@/src/lib/medusa"
+
+interface MedusaClient {
+  store?: {
+    product?: {
+      list?: (params: { limit?: number }) => Promise<{ products?: Product[] }>
+    }
+  }
+}
 import Link from "next/link"
 import Image from "next/image"
 
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
   const [, setLoading] = useState(true)
+  const [medusa, setMedusa] = useState<MedusaClient | null>(null)
 
   useEffect(() => {
-    fetchFeaturedProducts()
+    const initMedusa = async () => {
+      try {
+        const { default: medusaClient } = await import("@/src/lib/medusa")
+        setMedusa(medusaClient as unknown as MedusaClient)
+      } catch (error) {
+        console.error("Failed to initialize Medusa client:", error)
+      }
+    }
+    initMedusa()
   }, [])
 
-  const fetchFeaturedProducts = async () => {
+  const fetchFeaturedProducts = useCallback(async () => {
+    if (!medusa) return
+    
     try {
       setLoading(true)
-      const response = await medusa.store.product.list({ limit: 8 })
-      if (response.products) {
+      // Check if medusa client is properly initialized
+      if (!medusa?.store?.product?.list) {
+        console.warn("Medusa product API not available")
+        return
+      }
+      
+      const response = await medusa.store.product.list({ 
+        limit: 8
+      })
+      
+      if (response?.products) {
         setFeaturedProducts(response.products as Product[])
       }
     } catch (error) {
       console.error("Error fetching products:", error)
+      // Set empty array on error to prevent UI issues
+      setFeaturedProducts([])
     } finally {
       setLoading(false)
     }
-  }
+  }, [medusa])
+
+  useEffect(() => {
+    if (medusa) {
+      fetchFeaturedProducts()
+    }
+  }, [medusa, fetchFeaturedProducts])
 
   return (
     <div className="min-h-screen">
@@ -51,22 +86,9 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-ocean-500 opacity-20"></div>
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
           <div className="mb-6">
-            <div className="flex flex-col items-center mb-6">
-              <Image
-                src="/ShennasLogo.png"
-                alt="Shenna's Studio Logo"
-                width={96}
-                height={96}
-                className="h-20 md:h-24 mb-4 object-contain"
-              />
-              <h1 className="text-5xl md:text-7xl font-display font-bold text-white">
-                Shenna&apos;s Studio
-              </h1>
-            </div>
-            <p className="text-xl md:text-2xl text-ocean-100 mb-8 max-w-2xl mx-auto">
-              A family business crafting beautiful ocean-themed treasures that celebrate marine life 
-              and support ocean conservation efforts.
-            </p>
+            <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-6">
+              Shenna&apos;s Studio
+            </h1>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="#featured">
@@ -95,6 +117,15 @@ export default function HomePage() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
+            <div className="flex justify-center mb-6">
+              <Image
+                src="/ShennasLogo.png"
+                alt="Shenna's Studio Logo"
+                width={300}
+                height={300}
+                className="object-contain"
+              />
+            </div>
             <h2 className="text-3xl font-display font-bold text-ocean-900 mb-4">
               Find Your Perfect Ocean Treasure
             </h2>

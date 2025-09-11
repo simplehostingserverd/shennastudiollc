@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { algoliaClient } from "@/src/lib/algolia"
 import ProductGrid from "./ProductGrid"
-import { Product } from "@/src/lib/medusa"
+import { Product, ProductOptionValue } from "@/src/lib/medusa"
 
 interface AlgoliaHit {
   objectID: string
@@ -67,7 +67,18 @@ export default function SearchBar() {
               amount: v.price * 100, // Convert back to cents
               currency_code: v.currency.toLowerCase()
             }],
-            options: v.options
+            options: Object.entries(v.options || {}).reduce((acc, [key, value]) => ({
+              ...acc,
+              [key]: {
+                id: `${key}_${value}`,
+                value: value,
+                metadata: null,
+                option_id: key,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+                deleted_at: null
+              }
+            }), {} as Record<string, ProductOptionValue>)
           })) || [],
           weight: 0,
           created_at: new Date(algoliaHit.created_at || Date.now()).toISOString(),

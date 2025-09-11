@@ -140,3 +140,34 @@ video::-webkit-media-controls-enclosure {
     will-change: transform;
   }
 }
+
+/* Custom text-white opacity override */
+.text-white {
+  color: rgb(255 255 255 / 48%) !important;
+}
+
+.products-page-background {
+  background: linear-gradient(135deg, #0c4a6e 0%, #075985 25%, #0369a1 50%, #0284c7 75%, #0ea5e9 100%);
+  background-size: 400% 400%;
+  animation: ocean-wave 8s ease-in-out infinite;
+  position: relative;
+}
+
+.products-page-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(14, 165, 233, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 40%, rgba(6, 182, 212, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(34, 211, 238, 0.3) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+@keyframes ocean-wave {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}

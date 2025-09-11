@@ -20,8 +20,8 @@ export default function Navbar() {
             <Image
               src="/ShennasLogo.png"
               alt="Shenna's Studio Logo"
-              width={40}
-              height={40}
+              width={150}
+              height={150}
               className="h-10 w-auto object-contain group-hover:scale-105 transition-transform"
             />
             <span className="text-xl font-display font-bold text-white">
