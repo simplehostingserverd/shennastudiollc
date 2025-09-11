@@ -7,7 +7,7 @@ import { formatPrice } from "@/src/lib/utils"
 import { HeartIcon, ShoppingCartIcon, EyeIcon } from "@heroicons/react/24/outline"
 import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid"
 import Link from "next/link"
-import { Product } from "@/src/lib/medusa"
+import { Product, ProductOptionValue } from "@/src/lib/medusa"
 import Image from "next/image"
 
 interface ProductCardProps {
@@ -115,12 +115,13 @@ export default function ProductCard({ product }: ProductCardProps) {
         {variant?.options && Object.keys(variant.options).length > 0 && (
           <div className="mb-4">
             <div className="flex flex-wrap gap-1">
-              {Object.entries(variant.options).map(([key, value]) => (
+              {Object.entries(variant.options).map(
+                ([key, value]: [string, ProductOptionValue]) => (
                 <span
                   key={key}
                   className="inline-block bg-ocean-100 text-ocean-700 text-xs px-2 py-1 rounded-full"
                 >
-                  {value}
+                  {value.value}
                 </span>
               ))}
             </div>

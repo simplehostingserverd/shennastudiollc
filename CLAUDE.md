@@ -8,17 +8,28 @@ Shenna's Studio is an ocean-themed e-commerce platform built with Next.js and Me
 
 ## Architecture
 
-- **Frontend**: Next.js 15.5.2 application in root directory with App Router
-- **Backend**: Medusa 2.10.0 e-commerce backend in `/ocean-backend/`
-- **Database**: PostgreSQL 15
-- **Cache**: Redis 7
+This is a monorepo structure with the frontend in the root directory and backend in `/ocean-backend/`.
+
+- **Frontend**: Next.js 15.5.2 application in root directory with App Router, standalone output mode
+- **Backend**: Medusa 2.10.1 e-commerce backend in `/ocean-backend/` 
+- **Database**: PostgreSQL 15 (containerized on port 5433)
+- **Cache**: Redis 7 (containerized on port 6379)
 - **Payment**: Stripe integration
 - **Search**: Algolia (optional)
 - **Images**: Cloudinary (optional)
+- **Deployment**: Docker Compose orchestration with health checks
 
 ## Development Commands
 
-### Root Level
+### Docker Development (Recommended)
+```bash
+docker-compose up -d --build                              # Start all services
+docker-compose exec medusa-backend npx medusa db:migrate  # Run migrations
+docker-compose exec medusa-backend npm run create-admin   # Create admin user  
+docker-compose exec medusa-backend npm run seed          # Seed data
+```
+
+### Root Level (Frontend)
 - `npm run dev` - Start Next.js frontend (standard mode)  
 - `npm run dev:turbo` - Start Next.js frontend with Turbopack
 - `npm run build` - Build Next.js frontend (standard mode)
@@ -47,9 +58,9 @@ Shenna's Studio is an ocean-themed e-commerce platform built with Next.js and Me
 
 ## Key Dependencies
 
-- **Frontend**: Next.js 15.5.2, React 19, Tailwind CSS, Stripe, NextAuth, Prisma
-- **Backend**: Medusa 2.10.0, MikroORM, PostgreSQL, Redis
-- **Testing**: Jest with experimental VM modules (backend only)
+- **Frontend**: Next.js 15.5.2, React 19.1.1, Tailwind CSS, Stripe, NextAuth 5.0.0-beta.28, Prisma 6.15.0
+- **Backend**: Medusa 2.10.1, MikroORM 6.4.3, PostgreSQL, Redis, TypeScript 5.7.2
+- **Testing**: Jest 30.1.2 with experimental VM modules (backend only)
 - **Build Tools**: SWC compiler, Turbopack (optional)
 
 ## Project Structure
@@ -79,11 +90,14 @@ shennastudiollc/
 │   │   ├── subscribers/  # Event subscribers
 │   │   └── workflows/    # Business workflows
 │   ├── integration-tests/ # HTTP and module integration tests
-│   └── medusa-config     # Medusa configuration
+│   └── medusa-config.ts  # Medusa configuration
 ├── src/lib/              # Shared utilities
 ├── prisma/               # Database schema and migrations (frontend)
 ├── scripts/              # Frontend utility scripts
-└── docker-compose.yml    # Docker orchestration
+├── public/               # Static assets (images, favicon, etc.)
+├── docker-compose.yml    # Docker orchestration for development
+├── docker-compose.prod.yml # Production Docker configuration
+└── Dockerfile            # Multi-stage Docker build
 ```
 
 ## Environment Setup
@@ -122,14 +136,17 @@ docker-compose exec medusa-backend npm run seed
 ```
 
 ### Service URLs
-- Frontend: http://localhost:3000
-- Medusa Admin: http://localhost:7001
-- Medusa API: http://localhost:9000
-- PostgreSQL: localhost:5433
-- Redis: localhost:6379
+- **Frontend**: http://localhost:3000 (Next.js storefront)
+- **Medusa Admin**: http://localhost:7001 (Admin dashboard)
+- **Medusa API**: http://localhost:9000 (Backend API)
+- **PostgreSQL**: localhost:5433 (Database)
+- **Redis**: localhost:6379 (Cache)
 
 ### Production Deployment
-Use `docker-compose.prod.yml` for production with external databases (see COOLIFY_DEPLOYMENT.md).
+- Use `docker-compose.prod.yml` for production with external databases
+- See `COOLIFY_DEPLOYMENT.md` for Coolify deployment instructions
+- See `PRODUCTION-SETUP.md` for general production setup
+- Contains auto-initialization features (AUTO_MIGRATE, AUTO_SEED, AUTO_CREATE_ADMIN)
 
 ## Database Management
 
@@ -152,10 +169,12 @@ Use `docker-compose.prod.yml` for production with external databases (see COOLIF
 ## Admin Panel
 
 Default credentials (change immediately in production):
-- Email: admin@shennasstudio.com
-- Password: AdminPassword123!
+- **Email**: admin@shennastudio.com
+- **Password**: ChangeThisPassword123!
 
 Access at http://localhost:7001 (development) or configured admin URL.
+
+The system includes auto-initialization that creates the admin user on first run via Docker environment variables.
 
 ## Deployment Notes
 
@@ -173,3 +192,24 @@ Access at http://localhost:7001 (development) or configured admin URL.
 - **Development Mode**: Use Turbopack (`npm run dev:turbo`) for faster development builds
 - **Database Migrations**: Always run `npx medusa db:migrate` after pulling backend changes
 - **Testing**: Backend tests require experimental VM modules flag in NODE_OPTIONS
+- **Next.js Configuration**: Uses standalone output mode for optimized Docker builds
+- **Container Architecture**: Health checks are configured for all services
+- **Image Optimization**: Configured for Cloudinary domains and unoptimized static assets
+- **Container Persistence**: Uses Docker volumes for PostgreSQL data, Redis data, and Medusa uploads
+
+## Container Architecture Details
+
+The Docker setup includes:
+- **Multi-stage builds**: Optimized for production deployment
+- **Health checks**: All services have proper health monitoring
+- **Named volumes**: Data persistence for database and file uploads
+- **Network isolation**: Services communicate via Docker network
+- **Auto-initialization**: Backend automatically migrates, seeds, and creates admin on startup
+- **Service dependencies**: Proper startup order with health check dependencies
+
+# Important Instructions
+
+- Do what has been asked; nothing more, nothing less
+- NEVER create files unless they're absolutely necessary for achieving your goal
+- ALWAYS prefer editing an existing file to creating a new one
+- NEVER proactively create documentation files (*.md) or README files unless explicitly requested by the User

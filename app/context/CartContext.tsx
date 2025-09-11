@@ -74,10 +74,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setCartId(response.cart.id)
         localStorage.setItem("cart_id", response.cart.id)
         setItems((response.cart.items || []) as CartItem[])
+        return response.cart // Return the newly created cart
       }
     } catch (error) {
       console.error("Error creating cart:", error)
     }
+    return null
   }
 
   const addItem = async (variantId: string, quantity: number = 1) => {
@@ -87,8 +89,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       // Create cart if it doesn't exist
       if (!currentCartId) {
-        await createCart()
-        currentCartId = cartId
+        const newCart = await createCart()
+        if (newCart) {
+          currentCartId = newCart.id
+        }
       }
 
       if (!currentCartId) {

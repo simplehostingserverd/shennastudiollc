@@ -41,7 +41,15 @@
       "Bash(cmd.exe:*)",
       "Bash(npm start)",
       "Bash(npm run lint)",
-      "Read(C:\\Users\\apple\\Pictures\\Screenshots/**)"
+      "Read(C:\\Users\\apple\\Pictures\\Screenshots/**)",
+      "Bash(where docker)",
+      "Bash(tasklist:*)",
+      "Bash(pnpm:*)",
+      "Bash(npm run create-admin:*)",
+      "Bash(findstr:*)",
+      "Bash(dir)",
+      "Bash(netstat:*)",
+      "Bash(DEBUG=*)"
     ],
     "deny": [],
     "ask": []

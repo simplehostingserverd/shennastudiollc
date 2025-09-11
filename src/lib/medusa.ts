@@ -22,7 +22,7 @@ export type Product = {
       amount: number;
       currency_code: string;
     }>;
-    options?: Record<string, string>;
+    options?: Record<string, ProductOptionValue>;
   }> | null;
   weight?: number;
   length?: number;
@@ -31,6 +31,16 @@ export type Product = {
   created_at: string;
   updated_at: string;
 }
+
+export type ProductOptionValue = {
+  id: string;
+  value: string;
+  metadata: Record<string, unknown> | null;
+  option_id: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+};
 
 // Commented out unused interfaces - keep for future use
 // interface QueryParams {
@@ -52,6 +62,7 @@ export type Product = {
 const medusa = new Medusa({
   baseUrl: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000",
   debug: process.env.NODE_ENV === "development",
+  publishableKey: process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
 })
 
 const medusaClient = medusa
