@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import fs from 'fs'
-// import path from 'path' // unused
-import { execSync } from 'child_process'
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
 
 console.log('🔍 SHENNA\'S STUDIO - COMPREHENSIVE ISSUE DIAGNOSIS\n');
 console.log('='.repeat(60));
@@ -144,7 +144,7 @@ async function runAudit(projectPath, projectName) {
                         return total;
                     }
                 }
-            } catch {
+            } catch (parseError) {
                 logWarning('Could not parse audit output');
             }
         }
@@ -198,7 +198,7 @@ async function checkOutdatedPackages(projectPath, projectName) {
                     });
                     return packages.length;
                 }
-            } catch {
+            } catch (parseError) {
                 // If we can't parse, just show raw output
                 if (error.stdout.trim()) {
                     logInfo('Outdated packages found (raw output):');

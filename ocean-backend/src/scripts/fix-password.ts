@@ -19,7 +19,7 @@ export default async function fixPassword({ container }: ExecArgs) {
     await client.connect()
 
     // Create user first
-    let userId = 'user_' + generateId()
+    const userId = 'user_' + generateId()
     await client.query(`
       INSERT INTO "user" (id, email, first_name, last_name, created_at, updated_at)
       VALUES ($1, $2, $3, $4, NOW(), NOW())
