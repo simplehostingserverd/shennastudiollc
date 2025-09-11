@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import ProductCard from "./ProductCard"
 import { Product } from "@/src/lib/medusa"
-import medusa from "@/src/lib/medusa"
+import createMedusaClient from "@/src/lib/medusa"
 
 interface ProductGridProps {
   products?: Product[]
@@ -40,6 +40,7 @@ export default function ProductGrid({
         queryParams.q = searchQuery
       }
 
+      const medusa = await createMedusaClient()
       const response = await medusa.store.product.list({
         ...queryParams
       })

@@ -32,7 +32,9 @@
     "@mikro-orm/knex": "6.4.3",
     "@mikro-orm/migrations": "6.4.3",
     "@mikro-orm/postgresql": "6.4.3",
+    "@vymalo/medusa-printful": "^1.0.10",
     "awilix": "^8.0.1",
+    "medusa-fulfillment-webshipper": "^1.4.3",
     "pg": "^8.13.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"

@@ -10,7 +10,7 @@ export default async function fixPassword({ container }: ExecArgs) {
   try {
     logger.info("🔧 Creating properly formatted admin credentials...")
 
-    const { Client } = require('pg')
+    const { Client } = await import('pg')
     const client = new Client({
       connectionString: 'postgresql://postgres:OCD1hg3mTa1170ND@db.ncmpqawcsdlnnhpsgjvz.supabase.co:5432/postgres',
       ssl: { rejectUnauthorized: false }
@@ -33,7 +33,7 @@ export default async function fixPassword({ container }: ExecArgs) {
     `, [authIdentityId, JSON.stringify({ user_id: userId })])
 
     // Create password hash using EXACT same format as existing working one
-    const crypto = require('crypto')
+    const crypto = await import('crypto')
     
     // Format from existing: scrypt + 0x00 + 0x0f + 6 zero bytes + 0x08 + 4 zero bytes + salt(16) + hash(64)
     const salt = crypto.randomBytes(16)

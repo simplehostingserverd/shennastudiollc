@@ -24,8 +24,9 @@ export default function HomePage() {
   useEffect(() => {
     const initMedusa = async () => {
       try {
-        const { default: medusaClient } = await import("@/src/lib/medusa")
-        setMedusa(medusaClient as unknown as MedusaClient)
+        const createMedusaClient = await import("@/src/lib/medusa")
+        const client = await createMedusaClient.default()
+        setMedusa(client as unknown as MedusaClient)
       } catch (error) {
         console.error("Failed to initialize Medusa client:", error)
       }

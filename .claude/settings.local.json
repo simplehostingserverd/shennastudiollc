@@ -13,7 +13,9 @@
       "Read(//c/Users/Shadow/Documents/shennastudiobox/**)",
       "Bash(curl:*)",
       "Bash(docker-compose:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Read(//c/Users/Shadow/Pictures/Screenshots/**)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

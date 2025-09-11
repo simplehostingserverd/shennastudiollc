@@ -1,4 +1,4 @@
-const { loadEnv } = require("@medusajs/utils");
+import { loadEnv } from "@medusajs/utils";
 loadEnv("test", process.cwd());
 
 module.exports = {

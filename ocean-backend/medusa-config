@@ -18,5 +18,16 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
-  }
+  },
+  modules: [
+    {
+      resolve: "@vymalo/medusa-printful",
+      options: {
+        api_key: process.env.PRINTFUL_API_KEY,
+        webhook_secret: process.env.PRINTFUL_WEBHOOK_SECRET,
+        enable_webhook: process.env.PRINTFUL_ENABLE_WEBHOOK === 'true',
+        sync_variants: process.env.PRINTFUL_SYNC_VARIANTS === 'true',
+      }
+    }
+  ]
 })

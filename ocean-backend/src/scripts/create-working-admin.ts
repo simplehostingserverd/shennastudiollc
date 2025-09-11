@@ -11,7 +11,7 @@ export default async function createWorkingAdmin({ container }: ExecArgs) {
     logger.info("🔄 Creating working admin with direct database approach...")
 
     // Use Node.js pg client directly
-    const { Client } = require('pg')
+    const { Client } = await import('pg')
     const client = new Client({
       connectionString: 'postgresql://postgres:OCD1hg3mTa1170ND@db.ncmpqawcsdlnnhpsgjvz.supabase.co:5432/postgres',
       ssl: { rejectUnauthorized: false }
@@ -49,7 +49,7 @@ export default async function createWorkingAdmin({ container }: ExecArgs) {
     `, [authIdentityId, JSON.stringify({ user_id: userId })])
 
     // Create a simple password hash (copying the format from existing)
-    const crypto = require('crypto')
+    const crypto = await import('crypto')
     const passwordBuffer = Buffer.from(adminPassword, 'utf8')
     const salt = crypto.randomBytes(16)
     const key = crypto.scryptSync(passwordBuffer, salt, 64)

@@ -68,8 +68,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Dynamically import medusa client only on client side
     const initMedusa = async () => {
       try {
-        const { default: medusaClient } = await import("@/src/lib/medusa")
-        setMedusa(medusaClient as unknown as MedusaClient)
+        const createMedusaClient = await import("@/src/lib/medusa")
+        const client = await createMedusaClient.default()
+        setMedusa(client as unknown as MedusaClient)
       } catch (error) {
         console.error("Failed to initialize Medusa client:", error)
       }

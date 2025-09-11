@@ -24,7 +24,7 @@ export default async function createAdminUser({ container }: ExecArgs) {
     }
 
     // Create the new admin user
-    const adminUser = await userService.createUsers({
+    await userService.createUsers({
       email: adminEmail,
       first_name: "New",
       last_name: "Admin",

@@ -1,4 +1,5 @@
-import Medusa from "@medusajs/js-sdk"
+// Dynamic import to avoid ESM issues
+let medusaClient: any = null
 
 export type Product = {
   id: string;
@@ -59,15 +60,70 @@ export type ProductOptionValue = {
 //   quantity: number
 // }
 
-const medusa = new Medusa({
-  baseUrl: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000",
-  debug: process.env.NODE_ENV === "development",
-  publishableKey: process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
-})
+// Create a factory function to initialize the client
+const createMedusaClient = async () => {
+  if (medusaClient) return medusaClient
+  
+  try {
+    // Try dynamic import first, fallback to require for compatibility
+    let Medusa
+    try {
+      const module = await import('@medusajs/js-sdk')
+      Medusa = module.Medusa || module.default
+    } catch {
+      // Fallback to CommonJS require in case of ESM issues
+      if (typeof require !== 'undefined') {
+        const module = require('@medusajs/js-sdk')
+        Medusa = module.Medusa || module.default || module
+      }
+    }
+    
+    if (Medusa) {
+      medusaClient = new Medusa({
+        baseUrl: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9004",
+        debug: process.env.NODE_ENV === "development",
+        publishableKey: process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
+      })
+      return medusaClient
+    } else {
+      throw new Error('Medusa SDK not available')
+    }
+  } catch (error) {
+    console.error('Failed to initialize Medusa client:', error)
+    console.log('Falling back to mock client - products will not load from backend')
+    // Return a mock client that handles basic operations
+    return {
+      store: {
+        product: {
+          list: async () => {
+            console.log('Mock client: returning empty product list')
+            return { products: [] }
+          },
+          retrieve: async () => null
+        },
+        collection: {
+          list: async () => {
+            console.log('Mock client: returning empty collection list')
+            return { collections: [] }
+          },
+          retrieve: async () => null
+        },
+        cart: {
+          create: async () => ({ cart: null }),
+          retrieve: async () => null,
+          addLineItem: async () => null,
+          updateLineItem: async () => null,
+          deleteLineItem: async () => null
+        },
+        region: {
+          list: async () => ({ regions: [] })
+        }
+      }
+    }
+  }
+}
 
-const medusaClient = medusa
-
-export default medusaClient
+export default createMedusaClient
 
 export type Cart = {
   id: string;

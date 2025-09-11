@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { useParams } from "next/navigation"
 import { Product } from "@/src/lib/medusa"
-import medusa from "@/src/lib/medusa"
+import createMedusaClient from "@/src/lib/medusa"
 import { useCart } from "@/app/context/CartContext"
 import Button from "@/app/components/ui/Button"
 import { ShoppingCartIcon, HeartIcon } from "@heroicons/react/24/outline"
@@ -26,6 +26,7 @@ export default function ProductDetailPage() {
   const fetchProduct = useCallback(async () => {
     try {
       setLoading(true)
+      const medusa = await createMedusaClient()
       const response = await medusa.store.product.list({ handle })
       if (response.products && response.products.length > 0) {
         const foundProduct = response.products[0] as Product
@@ -64,8 +65,8 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-ocean-50 py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen product-detail-background py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="animate-pulse">
             <div className="grid md:grid-cols-2 gap-12">
               <div className="bg-ocean-100 rounded-2xl h-96"></div>
@@ -88,8 +89,8 @@ export default function ProductDetailPage() {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-ocean-50 py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="min-h-screen product-detail-background py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <div className="text-6xl mb-6">🌊</div>
           <h1 className="text-2xl font-bold text-ocean-900 mb-4">Product Not Found</h1>
           <p className="text-ocean-600 mb-8">
@@ -113,16 +114,16 @@ export default function ProductDetailPage() {
   }).format(price / 100)
 
   return (
-    <div className="min-h-screen bg-ocean-50 py-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen product-detail-background py-20">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Breadcrumb */}
         <nav className="mb-8">
-          <div className="flex items-center space-x-2 text-sm text-ocean-600">
-            <Link href="/" className="hover:text-ocean-800">Home</Link>
+          <div className="flex items-center space-x-2 text-sm text-blue-600">
+            <Link href="/" className="hover:text-blue-800">Home</Link>
             <span>→</span>
-            <Link href="/products" className="hover:text-ocean-800">Products</Link>
+            <Link href="/products" className="hover:text-blue-800">Products</Link>
             <span>→</span>
-            <span className="text-ocean-900 font-medium">{product.title}</span>
+            <span className="text-blue-900 font-medium">{product.title}</span>
           </div>
         </nav>
 
@@ -160,10 +161,10 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Product Info */}
-          <div className="space-y-6">
+          <div className="space-y-6 bg-white rounded-2xl p-6 shadow-lg">
             <div>
               <div className="flex items-start justify-between mb-2">
-                <h1 className="text-3xl font-display font-bold text-ocean-900">
+                <h1 className="text-3xl font-display font-bold text-blue-900">
                   {product.title}
                 </h1>
                 <button
@@ -179,26 +180,26 @@ export default function ProductDetailPage() {
               </div>
               
               <div className="flex items-center space-x-4 mb-4">
-                <div className="text-2xl font-bold text-ocean-900">
+                <div className="text-2xl font-bold text-blue-900">
                   {formattedPrice}
                 </div>
                 <div className="flex items-center space-x-1">
                   {Array.from({ length: 5 }, (_, i) => (
                     <StarSolidIcon key={i} className="h-4 w-4 text-yellow-400" />
                   ))}
-                  <span className="text-sm text-ocean-600 ml-1">(24 reviews)</span>
+                  <span className="text-sm text-blue-600 ml-1">(24 reviews)</span>
                 </div>
               </div>
             </div>
 
-            <div className="prose text-ocean-700">
+            <div className="prose text-blue-700">
               <p>{product.description || 'No description available'}</p>
             </div>
 
             {/* Variant Selection */}
             {product.variants && product.variants.length > 1 && (
               <div>
-                <h3 className="text-lg font-semibold text-ocean-900 mb-3">Options</h3>
+                <h3 className="text-lg font-semibold text-blue-900 mb-3">Options</h3>
                 <div className="space-y-2">
                   {product.variants.map((variant) => (
                     <label key={variant.id} className="flex items-center space-x-3 cursor-pointer">
@@ -208,9 +209,9 @@ export default function ProductDetailPage() {
                         value={variant.id}
                         checked={selectedVariant === variant.id}
                         onChange={(e) => setSelectedVariant(e.target.value)}
-                        className="text-ocean-500 focus:ring-ocean-500"
+                        className="text-blue-500 focus:ring-blue-500"
                       />
-                      <span className="text-ocean-700">{variant.title}</span>
+                      <span className="text-blue-700">{variant.title}</span>
                     </label>
                   ))}
                 </div>
@@ -219,18 +220,18 @@ export default function ProductDetailPage() {
 
             {/* Quantity Selection */}
             <div>
-              <h3 className="text-lg font-semibold text-ocean-900 mb-3">Quantity</h3>
+              <h3 className="text-lg font-semibold text-blue-900 mb-3">Quantity</h3>
               <div className="flex items-center space-x-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 rounded-full bg-ocean-100 text-ocean-600 hover:bg-ocean-200 flex items-center justify-center transition-colors"
+                  className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 flex items-center justify-center transition-colors"
                 >
                   -
                 </button>
-                <span className="w-12 text-center font-medium text-ocean-900">{quantity}</span>
+                <span className="w-12 text-center font-medium text-blue-900">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 rounded-full bg-ocean-100 text-ocean-600 hover:bg-ocean-200 flex items-center justify-center transition-colors"
+                  className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 flex items-center justify-center transition-colors"
                 >
                   +
                 </button>
@@ -251,7 +252,7 @@ export default function ProductDetailPage() {
                 Add to Cart
               </Button>
               
-              <div className="text-sm text-ocean-600 space-y-1">
+              <div className="text-sm text-blue-600 space-y-1">
                 <p>🚚 Free shipping on orders over $50</p>
                 <p>🔒 Secure checkout with Stripe</p>
                 <p>🌊 10% goes to ocean conservation</p>
@@ -262,28 +263,28 @@ export default function ProductDetailPage() {
 
         {/* Product Features */}
         <div className="mt-16 bg-white rounded-2xl p-8 shadow-lg">
-          <h2 className="text-2xl font-display font-bold text-ocean-900 mb-6">
+          <h2 className="text-2xl font-display font-bold text-blue-900 mb-6">
             Why Choose Shenna&apos;s Studio?
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="text-4xl mb-4">🌊</div>
-              <h3 className="font-semibold text-ocean-900 mb-2">Ocean Conservation</h3>
-              <p className="text-ocean-600 text-sm">
+              <h3 className="font-semibold text-blue-900 mb-2">Ocean Conservation</h3>
+              <p className="text-blue-600 text-sm">
                 Every purchase supports marine protection efforts
               </p>
             </div>
             <div className="text-center">
               <div className="text-4xl mb-4">👨‍👩‍👧‍👦</div>
-              <h3 className="font-semibold text-ocean-900 mb-2">Family Crafted</h3>
-              <p className="text-ocean-600 text-sm">
+              <h3 className="font-semibold text-blue-900 mb-2">Family Crafted</h3>
+              <p className="text-blue-600 text-sm">
                 Made with love by our family for yours
               </p>
             </div>
             <div className="text-center">
               <div className="text-4xl mb-4">✨</div>
-              <h3 className="font-semibold text-ocean-900 mb-2">Premium Quality</h3>
-              <p className="text-ocean-600 text-sm">
+              <h3 className="font-semibold text-blue-900 mb-2">Premium Quality</h3>
+              <p className="text-blue-600 text-sm">
                 Carefully selected materials and craftsmanship
               </p>
             </div>

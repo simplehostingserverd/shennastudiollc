@@ -9,7 +9,7 @@ async function main() {
   await prisma.user.deleteMany()
 
   // Create a sample user
-  const user = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email: "oceanlover@example.com",
       name: "Ocean Lover",

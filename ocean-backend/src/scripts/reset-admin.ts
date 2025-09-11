@@ -20,7 +20,7 @@ export default async function resetAdminUser({ container }: ExecArgs) {
         await userService.deleteUsers([existingUsers[0].id])
         logger.info(`🗑️ Removed existing user: ${adminEmail}`)
       }
-    } catch (deleteError) {
+    } catch {
       logger.info("No existing user to delete")
     }
 
@@ -35,7 +35,7 @@ export default async function resetAdminUser({ container }: ExecArgs) {
 
     // Now create auth identity
     try {
-      const authUser = await authService.create({
+      await authService.create({
         provider_id: "emailpass",
         entity_id: adminUser.id,
         provider_metadata: {
@@ -53,7 +53,7 @@ export default async function resetAdminUser({ container }: ExecArgs) {
           email: adminEmail,
           password: adminPassword,
         })
-      } catch (altAuthError) {
+      } catch {
         logger.warn("⚠️ Alternative auth method also failed")
       }
     }

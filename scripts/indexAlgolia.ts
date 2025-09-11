@@ -6,7 +6,6 @@ config({ path: '.env.local' });
 
 const ALGOLIA_APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID;
 const ALGOLIA_ADMIN_KEY = process.env.ALGOLIA_ADMIN_API_KEY;
-const MEDUSA_BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000';
 
 if (!ALGOLIA_APP_ID || !ALGOLIA_ADMIN_KEY) {
   console.error('❌ Missing Algolia credentials in environment variables');
@@ -201,7 +200,7 @@ const indexProducts = async () => {
     console.log('🔄 Indexing products in Algolia...');
     
     // Clear the index first and add new records
-    const result = await algoliaClient.replaceAllObjects({ 
+    await algoliaClient.replaceAllObjects({ 
       indexName: 'products', 
       objects: algoliaRecords 
     });

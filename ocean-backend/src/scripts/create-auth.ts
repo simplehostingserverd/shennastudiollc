@@ -24,7 +24,6 @@ export default async function createAuthForUser({ container }: ExecArgs) {
     
     // Generate IDs
     const authIdPrefix = "authid_"
-    const providerIdPrefix = ""
     const authIdentityId = authIdPrefix + generateId()
     const providerIdentityId = generateId()
 
@@ -37,7 +36,7 @@ export default async function createAuthForUser({ container }: ExecArgs) {
     logger.info(`✅ Created auth_identity: ${authIdentityId}`)
 
     // Hash the password using scrypt (same as existing)
-    const crypto = require('crypto')
+    const crypto = await import('crypto')
     const salt = crypto.randomBytes(16)
     const hashedPassword = crypto.scryptSync(adminPassword, salt, 64)
     const passwordHash = `scrypt\0${salt.length.toString(16).padStart(8, '0')}\0\0\0\0${salt.toString('hex')}${hashedPassword.toString('hex')}`
