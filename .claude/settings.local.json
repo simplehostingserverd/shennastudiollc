@@ -15,7 +15,9 @@
       "Bash(docker-compose:*)",
       "Bash(grep:*)",
       "Read(//c/Users/Shadow/Pictures/Screenshots/**)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

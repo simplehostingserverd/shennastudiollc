@@ -1,5 +1,28 @@
 // Dynamic import to avoid ESM issues
-let medusaClient: any = null
+export type MedusaClient = {
+  store: {
+    product: {
+      list: (params?: Record<string, unknown>) => Promise<{ products: unknown[] }>
+      retrieve: (id: string) => Promise<Product | null>
+    }
+    collection: {
+      list: (params?: Record<string, unknown>) => Promise<{ collections: unknown[] }>
+      retrieve: (id: string) => Promise<unknown>
+    }
+    cart: {
+      create: (params?: Record<string, unknown>) => Promise<{ cart: Cart | null }>
+      retrieve: (id: string) => Promise<Cart | null>
+      addLineItem: (id: string, params: Record<string, unknown>) => Promise<unknown>
+      updateLineItem: (id: string, lineId: string, params: Record<string, unknown>) => Promise<unknown>
+      deleteLineItem: (id: string, lineId: string) => Promise<unknown>
+    }
+    region: {
+      list: () => Promise<{ regions: Region[] }>
+    }
+  }
+}
+
+let medusaClient: MedusaClient | null = null
 
 export type Product = {
   id: string;
@@ -61,21 +84,18 @@ export type ProductOptionValue = {
 // }
 
 // Create a factory function to initialize the client
-const createMedusaClient = async () => {
+const createMedusaClient = async (): Promise<MedusaClient> => {
   if (medusaClient) return medusaClient
   
   try {
-    // Try dynamic import first, fallback to require for compatibility
+    // Try dynamic import  
     let Medusa
     try {
-      const module = await import('@medusajs/js-sdk')
-      Medusa = module.Medusa || module.default
+      const sdkModule = await import('@medusajs/js-sdk')
+      // Use the default export which should be the Medusa class
+      Medusa = sdkModule.default
     } catch {
-      // Fallback to CommonJS require in case of ESM issues
-      if (typeof require !== 'undefined') {
-        const module = require('@medusajs/js-sdk')
-        Medusa = module.Medusa || module.default || module
-      }
+      throw new Error('Unable to import Medusa SDK')
     }
     
     if (Medusa) {

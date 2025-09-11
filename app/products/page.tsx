@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import ProductGrid from "@/app/components/ProductGrid"
-import { Product } from "@/src/lib/medusa"
-import Medusa from "@medusajs/js-sdk"
+import { Product, MedusaClient } from "@/src/lib/medusa"
 
 const collections = [
   { id: 'all', name: 'All Products', description: 'Browse our complete collection', handle: null },
@@ -23,7 +22,7 @@ export default function ProductsPage() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [medusa, setMedusa] = useState<Medusa | null>(null)
+  const [medusa, setMedusa] = useState<MedusaClient | null>(null)
   const [selectedCollection, setSelectedCollection] = useState('all')
 
   const fetchProducts = useCallback(async (collectionHandle?: string) => {
@@ -40,7 +39,7 @@ export default function ProductsPage() {
       }
       
       // Build query parameters
-      const queryParams: any = { limit: 50 }
+      const queryParams: Record<string, unknown> = { limit: 50 }
       
       // If a specific collection is selected, add collection filter
       if (collectionHandle && collectionHandle !== 'all') {
@@ -48,7 +47,7 @@ export default function ProductsPage() {
         try {
           const collectionResponse = await medusa.store.collection.list({ handle: collectionHandle.replace('/', '') })
           if (collectionResponse?.collections?.length > 0) {
-            queryParams.collection_id = collectionResponse.collections[0].id
+            queryParams.collection_id = (collectionResponse.collections[0] as unknown as { id: string }).id
           }
         } catch (collectionError) {
           console.warn('Collection not found, showing all products:', collectionError)
@@ -57,7 +56,7 @@ export default function ProductsPage() {
       
       const response = await medusa.store.product.list(queryParams)
       if (response?.products) {
-        const productList = response.products as Product[]
+        const productList = response.products as unknown as Product[]
         if (!collectionHandle || collectionHandle === 'all') {
           setProducts(productList)
           setFilteredProducts(productList)
@@ -115,7 +114,7 @@ export default function ProductsPage() {
         }))
       }
     }
-  }, [collections, fetchProducts, products])
+  }, [fetchProducts, products])
 
   const handleCollectionChange = useCallback((collectionId: string) => {
     handleCollectionFilter(collectionId)
@@ -184,7 +183,7 @@ export default function ProductsPage() {
           </h1>
           <p className="text-lg text-blue-700 mb-8">{error}</p>
           <button
-            onClick={fetchProducts}
+            onClick={() => fetchProducts()}
             className="bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 transition-colors font-medium"
           >
             Try Again
