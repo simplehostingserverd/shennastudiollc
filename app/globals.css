@@ -9,7 +9,7 @@
   --ocean-primary: #93c5fd;
   --ocean-secondary: #60a5fa;
   --coral-primary: #fbbf24;
-  --seafoam-primary: #34d399;
+  --seafoam-primary: #101A8C;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -54,7 +54,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .seafoam-gradient {
-  background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
+  background: linear-gradient(135deg, #101A8C 0%, #0D1670 50%, #091154 100%);
 }
 
 .glass-effect {

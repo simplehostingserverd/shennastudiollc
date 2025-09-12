@@ -26,7 +26,7 @@ function CheckoutSuccessContent() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="bg-white rounded-2xl p-8 shadow-lg">
           <div className="mb-8">
-            <CheckCircleIcon className="h-16 w-16 text-green-500 mx-auto mb-4" />
+            <CheckCircleIcon className="h-16 w-16 text-seafoam-500 mx-auto mb-4" />
             <h1 className="text-3xl font-display font-bold text-ocean-900 mb-2">
               Order Confirmed!
             </h1>

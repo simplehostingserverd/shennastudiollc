@@ -1,0 +1,83 @@
+version: '3.8'
+
+name: shennas-studio-coolify
+
+services:
+  # Main application service running both frontend and backend
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.coolify
+    container_name: shennas-studio-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  # Frontend
+      - "9000:9000"  # Backend API  
+      - "7001:7001"  # Admin Panel
+    environment:
+      # Database (use external database URLs in Coolify)
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      
+      # Security
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+      
+      # CORS Configuration (update with your actual domains)
+      - STORE_CORS=${STORE_CORS}
+      - ADMIN_CORS=${ADMIN_CORS}
+      - AUTH_CORS=${AUTH_CORS}
+      
+      # Admin Setup
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      
+      # Auto-initialization
+      - AUTO_MIGRATE=true
+      - AUTO_SEED=${AUTO_SEED:-false}
+      - AUTO_CREATE_ADMIN=true
+      
+      # Medusa Configuration
+      - MEDUSA_ADMIN_ONBOARDING_TYPE=default
+      - MEDUSA_ADMIN_ONBOARDING_NEXTJS=true
+      
+      # Frontend Environment Variables
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+      
+      # Optional services
+      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID:-}
+      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY:-}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME:-}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY:-}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET:-}
+      
+      # App Configuration
+      - NEXT_TELEMETRY_DISABLED=1
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    volumes:
+      # Persist uploads and static files
+      - app_uploads:/app/backend/uploads
+      - app_static:/app/backend/static
+    healthcheck:
+      test: |
+        curl -f http://localhost:3000/api/health || curl -f http://localhost:3000 || exit 1 &&
+        curl -f http://localhost:9000/health || exit 1
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 120s
+
+volumes:
+  app_uploads:
+    driver: local
+  app_static:
+    driver: local
+
+networks:
+  default:
+    name: shennas-coolify-network
+    driver: bridge
