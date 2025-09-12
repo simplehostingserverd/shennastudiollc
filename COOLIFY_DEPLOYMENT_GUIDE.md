@@ -317,6 +317,27 @@ curl https://admin.shennastudio.com/health
 - **Check**: SSL settings match your database provider
 - **Test**: Database connectivity from backend container
 
+#### 6. Module Configuration Errors
+- **Error**: `Cannot read properties of undefined (reading 'service')`
+- **Cause**: Invalid module configuration in medusa-config file
+- **Fix**: Temporarily set `modules: []` to get backend running
+- **Solution**: Add modules one by one with proper configuration
+- **Example Fix**:
+  ```javascript
+  // Instead of broken module config, start with empty:
+  modules: []
+  
+  // Then add modules properly:
+  modules: [
+    {
+      resolve: "@medusajs/some-module",
+      options: {
+        // proper options here
+      }
+    }
+  ]
+  ```
+
 ### Debug Commands:
 
 ```bash
