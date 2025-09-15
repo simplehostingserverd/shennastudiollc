@@ -18,8 +18,8 @@ RUN npm install --include=dev --legacy-peer-deps && npm cache clean --force
 COPY . .
 
 # Copy and make startup scripts executable
-COPY startup.sh startup-simple.sh /app/
-RUN chmod +x /app/startup.sh /app/startup-simple.sh
+COPY startup.sh startup-simple.sh startup-emergency.sh /app/
+RUN chmod +x /app/startup.sh /app/startup-simple.sh /app/startup-emergency.sh
 
 # Create uploads and static directories with proper permissions
 RUN mkdir -p /app/uploads /app/static && \
@@ -36,4 +36,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
     CMD curl -f http://localhost:9000/health || curl -f http://localhost:9000 || exit 1
 
 # Use startup script based on STARTUP_MODE
-CMD ["sh", "-c", "if [ \"$STARTUP_MODE\" = \"simple\" ]; then exec /app/startup-simple.sh; else exec /app/startup.sh; fi"]
+CMD ["sh", "-c", "if [ \"$STARTUP_MODE\" = \"emergency\" ]; then exec /app/startup-emergency.sh; elif [ \"$STARTUP_MODE\" = \"simple\" ]; then exec /app/startup-simple.sh; else exec /app/startup.sh; fi"]

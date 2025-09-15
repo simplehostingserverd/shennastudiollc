@@ -20,6 +20,12 @@ module.exports = defineConfig({
 
     // Redis for sessions, caches etc.
     redisUrl: process.env.REDIS_URL,
+    // Additional Redis options for authentication
+    redisOptions: {
+      lazyConnect: true,
+      maxRetriesPerRequest: 3,
+      retryDelayOnFailover: 100,
+    },
 
     // HTTP / security settings
     http: {
@@ -45,15 +51,15 @@ module.exports = defineConfig({
     databaseLogging: process.env.DATABASE_LOGGING === 'true' || false,
   },
 
-  // Admin dashboard config
+  // Admin dashboard config - DISABLED for now to fix deployment
   admin: {
     backendUrl: process.env.MEDUSA_BACKEND_URL || 'http://localhost:9000',
     // path if needed to customize
     path: process.env.ADMIN_PATH || '/app',
     // If building admin separately, outDir etc
     outDir: process.env.ADMIN_BUILD_DIR || './build',
-    // Optionally disable admin dashboard
-    disable: process.env.ADMIN_DISABLED === 'true' || false,
+    // Disable admin dashboard to prevent build errors
+    disable: true,
   },
 
   // Modules & Plugins (empty by default, add if needed)
