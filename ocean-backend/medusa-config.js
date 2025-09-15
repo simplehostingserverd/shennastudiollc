@@ -1,8 +1,8 @@
-import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+const { loadEnv, defineConfig } = require('@medusajs/framework/utils')
 
 loadEnv(process.env.NODE_ENV || 'production', process.cwd())
 
-export default defineConfig({
+module.exports = defineConfig({
   projectConfig: {
     // Database connection via Supabase (external Postgres)
     databaseUrl: process.env.DATABASE_URL,
@@ -35,7 +35,7 @@ export default defineConfig({
       // Optional cookie settings to enforce secure cookies etc
       cookieOptions: {
         secure: process.env.NODE_ENV === 'production',       // true in prod
-        sameSite: (process.env.COOKIE_SAMESITE as 'lax' | 'strict' | 'none') || 'lax',     // or 'none' if cross-site needed
+        sameSite: (process.env.COOKIE_SAMESITE || 'lax'),     // or 'none' if cross-site needed
       },
     },
 
