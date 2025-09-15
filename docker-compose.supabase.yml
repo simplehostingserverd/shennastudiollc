@@ -1,0 +1,126 @@
+version: '3.8'
+
+name: shennas-studio
+
+services:
+  # Redis Cache (still needed for sessions)
+  redis:
+    image: redis:7-alpine
+    container_name: shennas-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Medusa Backend API (using external Supabase)
+  medusa-backend:
+    build:
+      context: ./ocean-backend
+      dockerfile: Dockerfile
+    container_name: shennas-medusa-backend
+    restart: unless-stopped
+    ports:
+      - "9000:9000"    # API
+      - "7001:7001"    # Admin Panel
+    environment:
+      # External Supabase Database
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379
+
+      # Security
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+
+      # CORS Configuration
+      - STORE_CORS=${STORE_CORS}
+      - ADMIN_CORS=${ADMIN_CORS}
+      - AUTH_CORS=${AUTH_CORS}
+
+      # Admin Setup
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennastudio.com}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-AdminPassword123!}
+
+      # Auto-initialization
+      - AUTO_MIGRATE=${AUTO_MIGRATE:-true}
+      - AUTO_SEED=${AUTO_SEED:-false}
+      - AUTO_CREATE_ADMIN=${AUTO_CREATE_ADMIN:-true}
+
+      # Medusa Configuration
+      - MEDUSA_ADMIN_ONBOARDING_TYPE=default
+      - MEDUSA_ADMIN_ONBOARDING_NEXTJS=true
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - medusa_uploads:/app/uploads
+      - medusa_static:/app/static
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 120s
+
+  # Next.js Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shennas-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Backend Connection
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://medusa-backend:9000}
+
+      # Payment Processing
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+
+      # Search (Optional)
+      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${ALGOLIA_APPLICATION_ID:-}
+      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${ALGOLIA_SEARCH_API_KEY:-}
+
+      # Image Optimization
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME:-}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY:-}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET:-}
+
+      # App Configuration
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    depends_on:
+      medusa-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 90s
+
+# Named Volumes
+volumes:
+  redis_data:
+    driver: local
+  medusa_uploads:
+    driver: local
+  medusa_static:
+    driver: local
+
+# Networks
+networks:
+  default:
+    name: shennas-network
+    driver: bridge
