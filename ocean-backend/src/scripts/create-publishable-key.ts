@@ -57,7 +57,7 @@ export default async function createPublishableKey({ container }: ExecArgs) {
 
     return apiKey;
   } catch (error) {
-    logger.error("Failed to create publishable API key:", error);
+    logger.error("Failed to create publishable API key:", error as Error);
     throw error;
   }
 }

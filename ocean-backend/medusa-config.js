@@ -32,10 +32,12 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
 
-      // Optional cookie settings to enforce secure cookies etc
+      // Production-ready cookie settings
       cookieOptions: {
-        secure: process.env.NODE_ENV === 'production',       // true in prod
-        sameSite: (process.env.COOKIE_SAMESITE || 'lax'),     // or 'none' if cross-site needed
+        secure: process.env.NODE_ENV === 'production',       // HTTPS only in production
+        httpOnly: true,                                      // Prevent XSS attacks
+        sameSite: (process.env.COOKIE_SAMESITE || 'lax'),   // CSRF protection
+        maxAge: 24 * 60 * 60 * 1000,                       // 24 hours
       },
     },
 

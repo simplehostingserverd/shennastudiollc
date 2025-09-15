@@ -57,7 +57,7 @@ export default async function createAdminUser({ container }: ExecArgs) {
     await authService.createAuthIdentities({
       provider_identities: [{
         provider: "manual",
-        entity_id: adminUser[0].id,
+        entity_id: Array.isArray(adminUser) ? adminUser[0].id : adminUser.id,
         provider_metadata: {
           email: adminEmail,
           password: adminPassword

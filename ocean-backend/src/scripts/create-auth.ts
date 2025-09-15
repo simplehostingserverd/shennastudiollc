@@ -20,15 +20,15 @@ export default async function createAuthForUser({ container }: ExecArgs) {
     logger.info(`📧 Found user: ${user.email} (ID: ${user.id})`)
 
     // Get database connection
-    const connection = container.resolve("db_connection")
-    
+    const connection = container.resolve("db_connection") as any
+
     // Generate IDs
     const authIdPrefix = "authid_"
     const authIdentityId = authIdPrefix + generateId()
     const providerIdentityId = generateId()
 
     // Create auth_identity record
-    await connection.query(`
+    await (connection as any).query(`
       INSERT INTO auth_identity (id, app_metadata, created_at, updated_at)
       VALUES ($1, $2, NOW(), NOW())
     `, [authIdentityId, JSON.stringify({ user_id: user.id })])
@@ -42,14 +42,14 @@ export default async function createAuthForUser({ container }: ExecArgs) {
     const passwordHash = `scrypt\0${salt.length.toString(16).padStart(8, '0')}\0\0\0\0${salt.toString('hex')}${hashedPassword.toString('hex')}`
     const base64Hash = Buffer.from(passwordHash, 'hex').toString('base64')
 
-    // Create provider_identity record  
-    await connection.query(`
+    // Create provider_identity record
+    await (connection as any).query(`
       INSERT INTO provider_identity (id, entity_id, provider, auth_identity_id, provider_metadata, created_at, updated_at)
       VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
     `, [
       providerIdentityId,
       adminEmail,
-      'emailpass', 
+      'emailpass',
       authIdentityId,
       JSON.stringify({ password: base64Hash })
     ])

@@ -11,10 +11,10 @@ export default async function createWorkingAdmin({ container }: ExecArgs) {
     logger.info("🔄 Creating working admin with direct database approach...")
 
     // Use Node.js pg client directly
-    const { Client } = await import('pg')
+    const { Client } = await import('pg') as any
     const client = new Client({
-      connectionString: 'postgresql://postgres:OCD1hg3mTa1170ND@db.ncmpqawcsdlnnhpsgjvz.supabase.co:5432/postgres',
-      ssl: { rejectUnauthorized: false }
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false
     })
 
     await client.connect()
@@ -78,11 +78,11 @@ export default async function createWorkingAdmin({ container }: ExecArgs) {
 
     await client.end()
     logger.info("🎉 ADMIN CREATED SUCCESSFULLY!")
-    logger.info("=" * 50)
+    logger.info("==================================================")
     logger.info(`📧 Email: ${adminEmail}`)
     logger.info(`🔐 Password: ${adminPassword}`)
     logger.info(`🌐 Admin URL: http://localhost:9001/app`)
-    logger.info("=" * 50)
+    logger.info("==================================================")
 
   } catch (error) {
     logger.error(`❌ Error: ${error}`)

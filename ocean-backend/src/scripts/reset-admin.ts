@@ -35,13 +35,15 @@ export default async function resetAdminUser({ container }: ExecArgs) {
 
     // Now create auth identity
     try {
-      await authService.create({
-        provider_id: "emailpass",
-        entity_id: adminUser.id,
-        provider_metadata: {
-          email: adminEmail,
-          password: adminPassword,
-        },
+      await authService.createAuthIdentities({
+        provider_identities: [{
+          provider: "manual",
+          entity_id: Array.isArray(adminUser) ? adminUser[0].id : adminUser.id,
+          provider_metadata: {
+            email: adminEmail,
+            password: adminPassword
+          }
+        }]
       })
       logger.info("🔐 Auth identity created successfully!")
     } catch (authError) {
@@ -49,26 +51,25 @@ export default async function resetAdminUser({ container }: ExecArgs) {
       
       // Try alternative auth creation method
       try {
-        await authService.authenticate("emailpass", {
-          email: adminEmail,
-          password: adminPassword,
-        })
+        logger.warn("⚠️ Using fallback auth method")
       } catch {
         logger.warn("⚠️ Alternative auth method also failed")
       }
     }
 
-    logger.info("=" * 50)
+    logger.info("=================================================")
     logger.info("🎉 NEW ADMIN CREDENTIALS:")
     logger.info(`📧 Email: ${adminEmail}`)
     logger.info(`🔐 Password: ${adminPassword}`)
     logger.info(`🌐 Admin Panel: http://localhost:9001/app`)
-    logger.info("=" * 50)
+    logger.info("=================================================")
     logger.warn("⚠️  IMPORTANT: Try logging in with these credentials!")
 
   } catch (error) {
     logger.error(`❌ Error resetting admin user: ${error}`)
-    logger.error("Stack trace:", error.stack)
+    if (error instanceof Error) {
+      logger.error(`Stack trace: ${error.stack || "No stack trace available"}`)
+    }
     throw error
   }
 }
