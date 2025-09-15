@@ -28,7 +28,9 @@
       "Bash(npm install:*)",
       "Bash(where psql)",
       "Bash(docker run:*)",
-      "Bash(npm run create-admin:*)"
+      "Bash(npm run create-admin:*)",
+      "Bash(git config:*)",
+      "Bash(npx next:*)"
     ],
     "deny": [],
     "ask": []
