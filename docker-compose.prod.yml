@@ -94,7 +94,7 @@ services:
       - "3000:3000"
     environment:
       # Backend Connection
-      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://medusa-backend:9000
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://www.shennastudio.com:9000
       
       # Payment Processing
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-sk_test_your_stripe_secret_key}

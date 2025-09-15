@@ -31,7 +31,11 @@
       "Bash(npm run create-admin:*)",
       "Bash(git config:*)",
       "Bash(npx next:*)",
-      "Bash(npm audit:*)"
+      "Bash(npm audit:*)",
+      "mcp__stripe__search_stripe_documentation",
+      "WebFetch(domain:supabase.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(del test-db-connection.js test-alternative-connection.js test-supabase-connectivity.js decode-password.js)"
     ],
     "deny": [],
     "ask": []
