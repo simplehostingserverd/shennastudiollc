@@ -1,5 +1,5 @@
 # 1. Build Stage
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Install system dependencies for build
 RUN apk add --no-cache libc6-compat
@@ -25,7 +25,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
 # 2. Production Runtime Stage
-FROM node:18-alpine AS runner
+FROM node:20-alpine AS runner
 
 # Install runtime dependencies
 RUN apk add --no-cache curl
