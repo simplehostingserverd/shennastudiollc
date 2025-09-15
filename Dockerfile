@@ -35,10 +35,16 @@ WORKDIR /app
 # Create non-root user for security
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 
+# Copy package.json and node_modules for npm start
+COPY --from=builder --chown=nextjs:nodejs /app/package*.json ./
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+
 # Copy built application from builder
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+# Create Next.js cache directory
+RUN mkdir -p .next && chown -R nextjs:nodejs .next
 
 # Set ownership
 RUN chown -R nextjs:nodejs /app
@@ -51,6 +57,6 @@ ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 
 HEALTHCHECK --interval=30s --timeout=15s --start-period=90s --retries=5 \
-  CMD curl -f http://localhost:3000/api/health || curl -f http://localhost:3000 || exit 1
+  CMD curl -f http://localhost:3000 || exit 1
 
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
