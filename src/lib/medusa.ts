@@ -178,6 +178,15 @@ export type Cart = {
   updated_at: string;
 }
 
+export type Collection = {
+  id: string;
+  title: string;
+  handle: string;
+  metadata?: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export type Region = {
   id: string;
   name: string;

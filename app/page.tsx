@@ -1,15 +1,15 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import ProductGrid from "@/app/components/ProductGrid"
+import CategoryGrid from "@/app/components/CategoryGrid"
 import SearchBar from "@/app/components/SearchBar"
 import Button from "@/app/components/ui/Button"
-import { Product } from "@/src/lib/medusa"
+import { Collection } from "@/src/lib/medusa"
 
 interface MedusaClient {
   store?: {
-    product?: {
-      list?: (params: { limit?: number }) => Promise<{ products?: Product[] }>
+    collection?: {
+      list?: (params?: { limit?: number }) => Promise<{ collections?: Collection[] }>
     }
   }
 }
@@ -17,7 +17,7 @@ import Link from "next/link"
 import Image from "next/image"
 
 export default function HomePage() {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
+  const [collections, setCollections] = useState<Collection[]>([])
   const [, setLoading] = useState(true)
   const [medusa, setMedusa] = useState<MedusaClient | null>(null)
 
@@ -34,28 +34,28 @@ export default function HomePage() {
     initMedusa()
   }, [])
 
-  const fetchFeaturedProducts = useCallback(async () => {
+  const fetchCollections = useCallback(async () => {
     if (!medusa) return
-    
+
     try {
       setLoading(true)
       // Check if medusa client is properly initialized
-      if (!medusa?.store?.product?.list) {
-        console.warn("Medusa product API not available")
+      if (!medusa?.store?.collection?.list) {
+        console.warn("Medusa collection API not available")
         return
       }
-      
-      const response = await medusa.store.product.list({ 
-        limit: 8
+
+      const response = await medusa.store.collection.list({
+        limit: 6
       })
-      
-      if (response?.products) {
-        setFeaturedProducts(response.products as Product[])
+
+      if (response?.collections) {
+        setCollections(response.collections as Collection[])
       }
     } catch (error) {
-      console.error("Error fetching products:", error)
+      console.error("Error fetching collections:", error)
       // Set empty array on error to prevent UI issues
-      setFeaturedProducts([])
+      setCollections([])
     } finally {
       setLoading(false)
     }
@@ -63,9 +63,9 @@ export default function HomePage() {
 
   useEffect(() => {
     if (medusa) {
-      fetchFeaturedProducts()
+      fetchCollections()
     }
-  }, [medusa, fetchFeaturedProducts])
+  }, [medusa, fetchCollections])
 
   return (
     <div className="min-h-screen">
@@ -92,22 +92,13 @@ export default function HomePage() {
             </h1>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="#featured">
-              <Button 
-                variant="maroon" 
-                size="lg" 
+            <Link href="#categories">
+              <Button
+                variant="maroon"
+                size="lg"
                 className="text-lg px-8 py-4"
               >
-                Explore Products
-              </Button>
-            </Link>
-            <Link href="/about">
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-ocean-600"
-              >
-                Our Mission
+                Shop by Category
               </Button>
             </Link>
           </div>
@@ -138,20 +129,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section id="featured" className="py-20 bg-ocean-50">
+      {/* Categories */}
+      <section id="categories" className="py-20 bg-ocean-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-display font-bold text-ocean-900 mb-4">
-              Featured Products
+              Shop by Category
             </h2>
             <p className="text-lg text-ocean-600 max-w-2xl mx-auto">
-              Handpicked treasures from the depths of our collection, each one celebrating 
-              the beauty and wonder of ocean life.
+              Discover our carefully curated collections, each designed to bring
+              the beauty and wonder of the ocean into your life.
             </p>
           </div>
 
-          <ProductGrid products={featuredProducts} />
+          <CategoryGrid collections={collections} />
 
           <div className="text-center mt-12">
             <Link href="/products">
@@ -201,6 +192,28 @@ export default function HomePage() {
             <Button variant="primary" className="px-8">
               Subscribe
             </Button>
+          </div>
+
+          {/* Moved buttons to bottom */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
+            <Link href="/products">
+              <Button
+                variant="maroon"
+                size="lg"
+                className="text-lg px-8 py-4"
+              >
+                Explore Products
+              </Button>
+            </Link>
+            <Link href="/about">
+              <Button
+                variant="outline"
+                size="lg"
+                className="text-lg px-8 py-4 border-ocean-600 text-ocean-600 hover:bg-ocean-600 hover:text-white"
+              >
+                Our Mission
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

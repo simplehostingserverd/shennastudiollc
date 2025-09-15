@@ -30,7 +30,8 @@
       "Bash(docker run:*)",
       "Bash(npm run create-admin:*)",
       "Bash(git config:*)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(npm audit:*)"
     ],
     "deny": [],
     "ask": []
