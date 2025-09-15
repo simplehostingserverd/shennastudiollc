@@ -47,7 +47,7 @@ export default async function createAdminUser({ container }: ExecArgs) {
     }
 
     // Create the admin user
-    const [adminUser] = await userService.createUsers({
+    const adminUser = await userService.createUsers({
       email: adminEmail,
       first_name: "Admin",
       last_name: "User",
@@ -57,7 +57,7 @@ export default async function createAdminUser({ container }: ExecArgs) {
     await authService.createAuthIdentities({
       provider_identities: [{
         provider: "manual",
-        entity_id: adminUser.id,
+        entity_id: adminUser[0].id,
         provider_metadata: {
           email: adminEmail,
           password: adminPassword

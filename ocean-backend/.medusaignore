@@ -5,4 +5,8 @@ src/scripts/create-working-admin.ts
 src/scripts/create-publishable-key.ts
 src/scripts/reset-admin.ts
 
+# Exclude all scripts from build except create-admin.ts
+src/scripts/*.ts
+!src/scripts/create-admin.ts
+
 # These files will be excluded from the build process
