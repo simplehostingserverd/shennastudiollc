@@ -13,4 +13,4 @@ const nextConfig = {
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : '',
 };
 
-export default nextConfig;
+module.exports = nextConfig;

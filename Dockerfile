@@ -4,6 +4,9 @@ FROM node:20-alpine AS builder
 # Install system dependencies for build
 RUN apk add --no-cache libc6-compat
 
+# Install pnpm to handle SWC dependencies
+RUN npm install -g pnpm
+
 WORKDIR /app
 
 # Copy package files
@@ -15,6 +18,8 @@ RUN npm install --legacy-peer-deps
 # Copy source code
 COPY . .
 
+# Set environment to disable telemetry during build
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build Next.js application
 RUN npm run build
