@@ -34,7 +34,6 @@
     "@mikro-orm/postgresql": "6.4.3",
     "@vymalo/medusa-printful": "^1.0.10",
     "awilix": "^8.0.1",
-    "medusa-fulfillment-webshipper": "^1.4.3",
     "pg": "^8.13.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
@@ -42,7 +41,7 @@
   "devDependencies": {
     "@medusajs/test-utils": "2.10.1",
     "@mikro-orm/cli": "6.4.3",
-    "@swc/core": "1.13.5",
+    "@swc/core": "1.5.7",
     "@swc/jest": "^0.2.36",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.3.0",

@@ -19,7 +19,16 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(tasklist)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(claude mcp:*)",
+      "WebSearch",
+      "Bash(node:*)",
+      "Bash(npm --version)",
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(where psql)",
+      "Bash(docker run:*)",
+      "Bash(npm run create-admin:*)"
     ],
     "deny": [],
     "ask": []
