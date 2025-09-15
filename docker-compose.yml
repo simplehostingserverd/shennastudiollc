@@ -74,8 +74,8 @@ services:
 
   frontend:
     build:
-      context: ./frontend     # adjust path
-      dockerfile: Dockerfile   # adjust if different
+      context: .
+      dockerfile: Dockerfile
     container_name: shennas-frontend
     restart: unless-stopped
     ports:
