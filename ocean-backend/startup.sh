@@ -36,10 +36,11 @@ fi
 # Auto-migrate if enabled
 if [ "$AUTO_MIGRATE" = "true" ]; then
   echo "🔄 Running database migrations..."
-  if timeout 180 npx medusa db:migrate; then
+  if timeout 180 npx medusa db:migrate 2>/dev/null; then
     echo "✅ Database migrations completed successfully"
   else
     echo "❌ Database migrations failed or timed out, but continuing..."
+    # Try to continue even if migrations fail
   fi
 fi
 

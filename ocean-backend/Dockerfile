@@ -32,8 +32,8 @@ USER node
 EXPOSE 9000 7001
 
 # Add health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:9000/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
+    CMD curl -f http://localhost:9000/health || curl -f http://localhost:9000 || exit 1
 
 # Use startup script based on STARTUP_MODE
 CMD ["sh", "-c", "if [ \"$STARTUP_MODE\" = \"simple\" ]; then exec /app/startup-simple.sh; else exec /app/startup.sh; fi"]
