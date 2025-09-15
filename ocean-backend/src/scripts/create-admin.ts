@@ -6,9 +6,9 @@ export default async function createAdminUser({ container }: ExecArgs) {
   const userService = container.resolve(Modules.USER)
   const authService = container.resolve(Modules.AUTH)
 
-  // Admin credentials
-  const adminEmail = "admin@shennastudio.com"
-  const adminPassword = "AdminPassword123!"
+  // Admin credentials from environment variables
+  const adminEmail = process.env.ADMIN_EMAIL || "admin@shennastudio.com"
+  const adminPassword = process.env.ADMIN_PASSWORD || "AdminPassword123!"
 
   try {
     // Check if admin user already exists
