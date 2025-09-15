@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:18-alpine
 
 # Install system dependencies
 RUN apk add --no-cache curl netcat-openbsd bash
