@@ -14,17 +14,15 @@ WORKDIR /app
 
 # Copy package files for both frontend and backend
 COPY package*.json ./
-COPY ocean-backend/package*.json ./ocean-backend/
 
-# Install dependencies for both frontend and backend
-RUN npm install --legacy-peer-deps && \
-    cd ocean-backend && \
-    npm install --legacy-peer-deps && \
-    cd .. && \
-    npm cache clean --force
+# Install frontend dependencies first
+RUN npm install --legacy-peer-deps && npm cache clean --force
 
 # Copy all source code
 COPY . .
+
+# Install backend dependencies
+RUN cd ocean-backend && npm install --legacy-peer-deps && npm cache clean --force
 
 # Build frontend (Next.js)
 ENV NEXT_TELEMETRY_DISABLED=1
