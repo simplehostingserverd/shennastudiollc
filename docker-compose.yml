@@ -18,21 +18,22 @@ services:
       timeout: 5s
       retries: 5
 
-  medusa-backend:
+  app:
     build:
-      context: ./ocean-backend
+      context: .
       dockerfile: Dockerfile
-    container_name: shennas-medusa-backend
+    container_name: shennas-studio-app
     restart: unless-stopped
     ports:
-      - "9000:9000"    # API
-      - "7001:7001"    # Admin UI (if that’s configured)
+      - "3000:3000"    # Frontend
+      - "9000:9000"    # Backend API
+      - "7001:7001"    # Admin UI
     environment:
       - NODE_ENV=production
 
       # Database
-      - DATABASE_URL=${DATABASE_URL}               # must supply from external Supabase
-      - DATABASE_SSL=${DATABASE_SSL:-true}         # possibly "true"
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_SSL=${DATABASE_SSL:-true}
       - DATABASE_SSL_REJECT_UNAUTHORIZED=${DATABASE_SSL_REJECT_UNAUTHORIZED:-true}
 
       # Redis
@@ -42,64 +43,53 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - COOKIE_SECRET=${COOKIE_SECRET}
 
-      # CORS
-      - STORE_CORS=${STORE_CORS:-*}
-      - ADMIN_CORS=${ADMIN_CORS:-*}
-      - AUTH_CORS=${AUTH_CORS:-*}
+      # CORS - Allow all for development, restrict in production
+      - STORE_CORS=${STORE_CORS:-http://localhost:3000,https://shennastudio.com,https://www.shennastudio.com}
+      - ADMIN_CORS=${ADMIN_CORS:-http://localhost:3000,http://localhost:7001,https://admin.shennastudio.com}
+      - AUTH_CORS=${AUTH_CORS:-http://localhost:3000,https://shennastudio.com,https://www.shennastudio.com}
 
       # Admin setup
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennastudio.com}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-AdminPassword123!}
 
-      # Auto init
+      # Auto initialization
       - AUTO_MIGRATE=${AUTO_MIGRATE:-true}
       - AUTO_SEED=${AUTO_SEED:-false}
       - AUTO_CREATE_ADMIN=${AUTO_CREATE_ADMIN:-true}
 
-      # Medusa config flags (if used in your version)
+      # Medusa configuration
       - MEDUSA_ADMIN_ONBOARDING_TYPE=default
       - MEDUSA_ADMIN_ONBOARDING_NEXTJS=true
-    depends_on:
-      redis:
-        condition: service_healthy
-    volumes:
-      - medusa_uploads:/app/uploads
-      - medusa_static:/app/static
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
-      interval: 30s
-      timeout: 15s
-      retries: 5
-      start_period: 120s
 
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: shennas-frontend
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://medusa-backend:9000}
+      # Frontend environment variables
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://localhost:9000}
       - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
       - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}
       - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}
       - NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
       - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
       - NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY}
+
+      # Stripe
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+
+      # Server configuration
       - HOSTNAME=0.0.0.0
       - PORT=3000
+      - NEXT_TELEMETRY_DISABLED=1
+
     depends_on:
-      medusa-backend:
+      redis:
         condition: service_healthy
+    volumes:
+      - medusa_uploads:/app/ocean-backend/uploads
+      - medusa_static:/app/ocean-backend/static
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000", "||", "curl", "-f", "http://localhost:9000/health"]
       interval: 30s
       timeout: 15s
       retries: 5
-      start_period: 90s
+      start_period: 120s
 
 volumes:
   redis_data:

@@ -35,7 +35,17 @@
       "mcp__stripe__search_stripe_documentation",
       "WebFetch(domain:supabase.com)",
       "WebFetch(domain:github.com)",
-      "Bash(del test-db-connection.js test-alternative-connection.js test-supabase-connectivity.js decode-password.js)"
+      "Bash(del test-db-connection.js test-alternative-connection.js test-supabase-connectivity.js decode-password.js)",
+      "Bash(npx medusa:*)",
+      "Bash(npm run:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm ls:*)",
+      "Bash(timeout 30 npm run dev)",
+      "Bash(timeout 15 npm run dev)",
+      "Bash(chmod:*)",
+      "Bash(timeout 30 npm install)",
+      "Bash(del /s /q node_modules)",
+      "Bash(del package-lock.json)"
     ],
     "deny": [],
     "ask": []

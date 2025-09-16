@@ -1,62 +1,51 @@
-# 1. Build Stage
-FROM node:20-alpine AS builder
+# Production Dockerfile for Shenna's Studio
+# Uses unified approach with start-dev.js for both frontend and backend
 
-# Install system dependencies for build
-RUN apk add --no-cache libc6-compat
+FROM node:20-alpine AS base
 
-# Install pnpm to handle SWC dependencies
-RUN npm install -g pnpm
+# Install system dependencies
+RUN apk add --no-cache \
+    libc6-compat \
+    curl \
+    bash \
+    netcat-openbsd
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files for both frontend and backend
 COPY package*.json ./
+COPY ocean-backend/package*.json ./ocean-backend/
 
-# Install dependencies
-RUN npm install --legacy-peer-deps
+# Install dependencies for both frontend and backend
+RUN npm install --legacy-peer-deps && \
+    cd ocean-backend && \
+    npm install --legacy-peer-deps && \
+    cd .. && \
+    npm cache clean --force
 
-# Copy source code
+# Copy all source code
 COPY . .
 
-# Set environment to disable telemetry during build
+# Build frontend (Next.js)
 ENV NEXT_TELEMETRY_DISABLED=1
-
-# Build Next.js application
 RUN npm run build
 
-# 2. Production Runtime Stage
-FROM node:20-alpine AS runner
+# Build backend (Medusa)
+RUN cd ocean-backend && npm run build
 
-# Install runtime dependencies
-RUN apk add --no-cache curl
+# Create uploads and static directories
+RUN mkdir -p /app/ocean-backend/uploads /app/ocean-backend/static && \
+    chown -R node:node /app
 
-WORKDIR /app
+# Switch to non-root user
+USER node
 
-# Create non-root user for security
-RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
+# Expose ports
+EXPOSE 3000 9000 7001
 
-# Copy package.json and node_modules for npm start
-COPY --from=builder --chown=nextjs:nodejs /app/package*.json ./
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+# Health check for the combined service
+HEALTHCHECK --interval=30s --timeout=15s --start-period=120s --retries=5 \
+    CMD curl -f http://localhost:3000 || curl -f http://localhost:9000/health || exit 1
 
-# Copy built application from builder
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-
-# Create Next.js cache directory
-RUN mkdir -p .next && chown -R nextjs:nodejs .next
-
-# Set ownership
-RUN chown -R nextjs:nodejs /app
-
-USER nextjs
-
-EXPOSE 3000
-ENV NODE_ENV=production
-ENV HOSTNAME=0.0.0.0
-ENV PORT=3000
-
-HEALTHCHECK --interval=30s --timeout=15s --start-period=90s --retries=5 \
-  CMD curl -f http://localhost:3000 || exit 1
-
-CMD ["npm", "start"]
+# Use start-dev.js to run both services
+CMD ["node", "start-dev.js"]
