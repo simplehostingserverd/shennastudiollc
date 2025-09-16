@@ -51,15 +51,15 @@ module.exports = defineConfig({
     databaseLogging: process.env.DATABASE_LOGGING === 'true' || false,
   },
 
-  // Admin dashboard config - DISABLED for now to fix deployment
+  // Admin dashboard config - ENABLED for production
   admin: {
     backendUrl: process.env.MEDUSA_BACKEND_URL || 'http://localhost:9000',
     // path if needed to customize
     path: process.env.ADMIN_PATH || '/app',
     // If building admin separately, outDir etc
     outDir: process.env.ADMIN_BUILD_DIR || './build',
-    // Disable admin dashboard to prevent build errors
-    disable: true,
+    // Enable admin dashboard for production
+    disable: false,
   },
 
   // Modules & Plugins (empty by default, add if needed)
