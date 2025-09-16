@@ -2,8 +2,8 @@
 node_modules
 */node_modules
 
-# Backend directory (exclude from frontend builds)
-ocean-backend/
+# Backend directory - now included for unified builds
+# ocean-backend/
 
 # Development files
 .git

@@ -46,7 +46,11 @@
       "Bash(timeout 30 npm install)",
       "Bash(del /s /q node_modules)",
       "Bash(del package-lock.json)",
-      "Bash(npm i:*)"
+      "Bash(npm i:*)",
+      "Bash(npm view:*)",
+      "Bash(docker:*)",
+      "Bash(powershell:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []
