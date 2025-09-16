@@ -34,6 +34,9 @@ RUN npm run build
 COPY start-prod.sh /app/
 RUN chmod +x /app/start-prod.sh
 
+# Make backend startup script executable too
+RUN chmod +x /app/ocean-backend/startup.sh
+
 # Create uploads and static directories
 RUN mkdir -p /app/ocean-backend/uploads /app/ocean-backend/static && \
     chown -R node:node /app
