@@ -6,8 +6,11 @@ export NODE_ENV=production
 export HOSTNAME=0.0.0.0
 export PORT=3000
 
-# Start backend in background
-echo "🚀 Starting Medusa backend..."
+# Start backend in background with proper environment
+echo "🚀 Starting Medusa backend with environment variables..."
+echo "  Redis URL: ${REDIS_URL:0:20}..."
+echo "  JWT Secret: ${JWT_SECRET:0:10}..."
+echo "  Database URL: ${DATABASE_URL:0:30}..."
 cd /app/ocean-backend && exec /app/ocean-backend/startup.sh &
 BACKEND_PID=$!
 

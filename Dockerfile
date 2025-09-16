@@ -28,8 +28,7 @@ RUN cd ocean-backend && npm install --legacy-peer-deps && npm cache clean --forc
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# Build backend (Medusa)
-RUN cd ocean-backend && npm run build
+# Skip backend build at Docker build time (will build at runtime with env vars)
 
 # Copy and make production startup script executable
 COPY start-prod.sh /app/

@@ -1,6 +1,11 @@
 const { loadEnv, defineConfig } = require('@medusajs/framework/utils')
 
-loadEnv(process.env.NODE_ENV || 'production', process.cwd())
+// Load environment variables with fallbacks for build time
+try {
+  loadEnv(process.env.NODE_ENV || 'production', process.cwd())
+} catch (error) {
+  console.warn('Could not load .env file during build, using environment variables directly')
+}
 
 module.exports = defineConfig({
   projectConfig: {
@@ -19,7 +24,7 @@ module.exports = defineConfig({
     },
 
     // Redis for sessions, caches etc.
-    redisUrl: process.env.REDIS_URL,
+    redisUrl: process.env.REDIS_URL || undefined,
     // Additional Redis options for authentication
     redisOptions: {
       lazyConnect: true,
@@ -35,8 +40,8 @@ module.exports = defineConfig({
       authCors: process.env.AUTH_CORS || process.env.ADMIN_CORS || '*',
 
       // JWT & Cookie secrets must be strong in production
-      jwtSecret: process.env.JWT_SECRET,
-      cookieSecret: process.env.COOKIE_SECRET,
+      jwtSecret: process.env.JWT_SECRET || 'supersecret-build-time-fallback',
+      cookieSecret: process.env.COOKIE_SECRET || 'supersecret-build-time-fallback',
 
       // Production-ready cookie settings
       cookieOptions: {
