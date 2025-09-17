@@ -116,10 +116,122 @@ const createMedusaClient = async (): Promise<MedusaClient> => {
       store: {
         product: {
           list: async () => {
-            console.log('Mock client: returning empty product list')
-            return { products: [] }
+            console.log('Mock client: returning sample ocean-themed products')
+            return {
+              products: [
+                {
+                  id: 'prod_1',
+                  title: 'Ocean Wave Ceramic Mug',
+                  description: 'Beautiful ceramic mug with hand-painted ocean waves. Perfect for your morning coffee while supporting marine conservation.',
+                  handle: 'ocean-wave-ceramic-mug',
+                  status: 'published',
+                  images: [{ url: '/images/ocean-wave-mug.jpg', alt: 'Ocean Wave Ceramic Mug' }],
+                  variants: [{
+                    id: 'var_1',
+                    title: 'Default',
+                    prices: [{ id: 'price_1', amount: 2499, currency_code: 'usd' }]
+                  }],
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString()
+                },
+                {
+                  id: 'prod_2',
+                  title: 'Sea Turtle Protection Bracelet',
+                  description: 'Handcrafted bracelet made from recycled ocean plastic. Each purchase helps protect sea turtle nesting beaches.',
+                  handle: 'sea-turtle-protection-bracelet',
+                  status: 'published',
+                  images: [{ url: '/images/sea-turtle-bracelet.jpg', alt: 'Sea Turtle Protection Bracelet' }],
+                  variants: [{
+                    id: 'var_2',
+                    title: 'Default',
+                    prices: [{ id: 'price_2', amount: 1899, currency_code: 'usd' }]
+                  }],
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString()
+                },
+                {
+                  id: 'prod_3',
+                  title: 'Coral Reef Art Print',
+                  description: 'Stunning art print featuring vibrant coral reef ecosystem. Printed on sustainable paper with eco-friendly inks.',
+                  handle: 'coral-reef-art-print',
+                  status: 'published',
+                  images: [{ url: '/images/coral-reef-print.jpg', alt: 'Coral Reef Art Print' }],
+                  variants: [{
+                    id: 'var_3',
+                    title: 'Default',
+                    prices: [{ id: 'price_3', amount: 3999, currency_code: 'usd' }]
+                  }],
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString()
+                },
+                {
+                  id: 'prod_4',
+                  title: 'Marine Life Calendar 2024',
+                  description: 'Beautiful calendar featuring stunning marine photography. 10% of proceeds donated to ocean conservation efforts.',
+                  handle: 'marine-life-calendar-2024',
+                  status: 'published',
+                  images: [{ url: '/images/marine-calendar.jpg', alt: 'Marine Life Calendar 2024' }],
+                  variants: [{
+                    id: 'var_4',
+                    title: 'Default',
+                    prices: [{ id: 'price_4', amount: 1599, currency_code: 'usd' }]
+                  }],
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString()
+                },
+                {
+                  id: 'prod_5',
+                  title: 'Ocean Conservation Tote Bag',
+                  description: 'Eco-friendly tote bag made from organic cotton. Features inspiring ocean conservation message and beautiful whale design.',
+                  handle: 'ocean-conservation-tote-bag',
+                  status: 'published',
+                  images: [{ url: '/images/ocean-tote-bag.jpg', alt: 'Ocean Conservation Tote Bag' }],
+                  variants: [{
+                    id: 'var_5',
+                    title: 'Default',
+                    prices: [{ id: 'price_5', amount: 1299, currency_code: 'usd' }]
+                  }],
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString()
+                },
+                {
+                  id: 'prod_6',
+                  title: 'Dolphin Sanctuary Poster',
+                  description: 'Educational poster about dolphin conservation with beautiful underwater photography. Perfect for classrooms or home.',
+                  handle: 'dolphin-sanctuary-poster',
+                  status: 'published',
+                  images: [{ url: '/images/dolphin-poster.jpg', alt: 'Dolphin Sanctuary Poster' }],
+                  variants: [{
+                    id: 'var_6',
+                    title: 'Default',
+                    prices: [{ id: 'price_6', amount: 899, currency_code: 'usd' }]
+                  }],
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString()
+                }
+              ]
+            }
           },
-          retrieve: async () => null
+          retrieve: async (id: string) => {
+            const products = [
+              {
+                id: 'prod_1',
+                title: 'Ocean Wave Ceramic Mug',
+                description: 'Beautiful ceramic mug with hand-painted ocean waves. Perfect for your morning coffee while supporting marine conservation.',
+                handle: 'ocean-wave-ceramic-mug',
+                status: 'published',
+                images: [{ url: '/images/ocean-wave-mug.jpg', alt: 'Ocean Wave Ceramic Mug' }],
+                variants: [{
+                  id: 'var_1',
+                  title: 'Default',
+                  prices: [{ id: 'price_1', amount: 2499, currency_code: 'usd' }]
+                }],
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              }
+            ]
+            return products.find(p => p.id === id) || null
+          }
         },
         collection: {
           list: async () => {
