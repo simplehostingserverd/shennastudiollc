@@ -55,10 +55,14 @@ RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 # Copy built backend from backend-builder
 COPY --from=backend-builder --chown=nextjs:nodejs /app/backend /app/backend
 
-# Copy built frontend from frontend-builder
+# Copy built frontend from frontend-builder (for Next.js standalone mode)
 COPY --from=frontend-builder --chown=nextjs:nodejs /app/frontend/.next/standalone /app/frontend/
 COPY --from=frontend-builder --chown=nextjs:nodejs /app/frontend/.next/static /app/frontend/.next/static
 COPY --from=frontend-builder --chown=nextjs:nodejs /app/frontend/public /app/frontend/public
+
+# Fix Next.js standalone static asset serving
+# The standalone build expects static files in specific locations
+RUN cp -r /app/frontend/public/* /app/frontend/ 2>/dev/null || true
 
 # Copy startup scripts for backend
 COPY --from=backend-builder /app/backend/startup.sh /app/backend/startup-simple.sh /app/backend/

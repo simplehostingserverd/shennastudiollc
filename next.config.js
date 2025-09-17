@@ -2,15 +2,23 @@
 const nextConfig = {
   output: 'standalone',
   images: {
-    domains: ['localhost', 'res.cloudinary.com', 'shennastudio.com', 'www.shennastudio.com'],
+    domains: ['localhost', 'res.cloudinary.com', 'shennastudio.com', 'www.shennastudio.com', 'api.shennastudio.com'],
     unoptimized: true, // For static assets in production
   },
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
   serverExternalPackages: ['@medusajs/js-sdk'],
-  // Ensure static assets are properly handled
-  assetPrefix: process.env.NODE_ENV === 'production' ? '' : '',
+  // Configure static export behavior
+  trailingSlash: false,
+  // Disable asset optimization that can cause issues in containers
+  generateEtags: false,
+  // Ensure static files are properly handled in production
+  experimental: {
+    outputFileTracingIncludes: {
+      '/': ['./public/**/*'],
+    },
+  },
 };
 
 export default nextConfig;
