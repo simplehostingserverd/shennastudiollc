@@ -19,6 +19,7 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
       "ocean-backend/.medusa/**",
+      "ocean-backend/medusa-config.js",
     ],
   },
 ];

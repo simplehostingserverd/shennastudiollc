@@ -10,7 +10,7 @@ export default async function fixPassword({ container }: ExecArgs) {
   try {
     logger.info("🔧 Creating properly formatted admin credentials...")
 
-    const { Client } = await import('pg') as any
+    const { Client } = await import('pg') as { Client: new (config: unknown) => { connect(): Promise<void>; query(sql: string, params?: unknown[]): Promise<unknown>; end(): Promise<void> } }
     const client = new Client({
       connectionString: process.env.DATABASE_URL,
       ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false

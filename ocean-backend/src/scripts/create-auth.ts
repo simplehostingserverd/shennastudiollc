@@ -20,7 +20,7 @@ export default async function createAuthForUser({ container }: ExecArgs) {
     logger.info(`📧 Found user: ${user.email} (ID: ${user.id})`)
 
     // Get database connection
-    const connection = container.resolve("db_connection") as any
+    const connection = container.resolve("db_connection") as unknown
 
     // Generate IDs
     const authIdPrefix = "authid_"
@@ -28,7 +28,7 @@ export default async function createAuthForUser({ container }: ExecArgs) {
     const providerIdentityId = generateId()
 
     // Create auth_identity record
-    await (connection as any).query(`
+    await (connection as { query: (sql: string, params: unknown[]) => Promise<unknown> }).query(`
       INSERT INTO auth_identity (id, app_metadata, created_at, updated_at)
       VALUES ($1, $2, NOW(), NOW())
     `, [authIdentityId, JSON.stringify({ user_id: user.id })])
@@ -43,7 +43,7 @@ export default async function createAuthForUser({ container }: ExecArgs) {
     const base64Hash = Buffer.from(passwordHash, 'hex').toString('base64')
 
     // Create provider_identity record
-    await (connection as any).query(`
+    await (connection as { query: (sql: string, params: unknown[]) => Promise<unknown> }).query(`
       INSERT INTO provider_identity (id, entity_id, provider, auth_identity_id, provider_metadata, created_at, updated_at)
       VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
     `, [

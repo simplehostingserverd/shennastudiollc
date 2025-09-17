@@ -11,7 +11,7 @@ export default async function createWorkingAdmin({ container }: ExecArgs) {
     logger.info("🔄 Creating working admin with direct database approach...")
 
     // Use Node.js pg client directly
-    const { Client } = await import('pg') as any
+    const { Client } = await import('pg') as { Client: new (config: unknown) => { connect(): Promise<void>; query(sql: string, params?: unknown[]): Promise<{ rows: { id: string }[] }>; end(): Promise<void> } }
     const client = new Client({
       connectionString: process.env.DATABASE_URL,
       ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false

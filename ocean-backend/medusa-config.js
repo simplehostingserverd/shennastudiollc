@@ -3,7 +3,7 @@ const { loadEnv, defineConfig } = require('@medusajs/framework/utils')
 // Load environment variables with fallbacks for build time
 try {
   loadEnv(process.env.NODE_ENV || 'production', process.cwd())
-} catch (error) {
+} catch {
   console.warn('Could not load .env file during build, using environment variables directly')
 }
 

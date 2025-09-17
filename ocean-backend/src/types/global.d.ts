@@ -1,8 +1,8 @@
 declare module 'pg' {
   export class Client {
-    constructor(config?: any)
+    constructor(config?: unknown)
     connect(): Promise<void>
     end(): Promise<void>
-    query(text: string, params?: any[]): Promise<any>
+    query(text: string, params?: unknown[]): Promise<{ rows: { id: string }[] }>
   }
 }

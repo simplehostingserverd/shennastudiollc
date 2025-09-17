@@ -35,7 +35,7 @@ export default async function createAdminUser({ container }: ExecArgs) {
           }]
         })
         logger.info("🔄 Updated admin password")
-      } catch (authError) {
+      } catch {
         // If identity exists, update it
         logger.info("🔄 Auth identity already exists")
       }
