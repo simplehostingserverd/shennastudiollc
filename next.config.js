@@ -13,11 +13,9 @@ const nextConfig = {
   trailingSlash: false,
   // Disable asset optimization that can cause issues in containers
   generateEtags: false,
-  // Ensure static files are properly handled in production
-  experimental: {
-    outputFileTracingIncludes: {
-      '/': ['./public/**/*'],
-    },
+  // Ensure static files are properly handled in production (moved out of experimental)
+  outputFileTracingIncludes: {
+    '/': ['./public/**/*', './app/globals.css'],
   },
 };
 
