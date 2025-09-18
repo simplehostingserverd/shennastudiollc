@@ -22,25 +22,31 @@ export default async function createAdminUser({ container }: ExecArgs) {
       // Update the password for existing user
       const adminUser = existingUsers[0]
 
-      // Create or update auth identity
-      try {
-        await authService.createAuthIdentities({
-          provider_identities: [
-            {
-              provider: 'manual',
-              entity_id: adminUser.id,
-              provider_metadata: {
-                email: adminEmail,
-                password: adminPassword,
-              },
+      // Delete existing user and recreate to ensure proper auth setup
+      logger.info('🗑️ Deleting existing admin user to recreate...')
+      await userService.deleteUsers(adminUser.id)
+
+      // Create the admin user fresh
+      const newAdminUser = await userService.createUsers({
+        email: adminEmail,
+        first_name: 'Admin',
+        last_name: 'User',
+      })
+
+      // Create auth identity with password using emailpass provider
+      await authService.createAuthIdentities({
+        provider_identities: [
+          {
+            provider: 'emailpass',
+            entity_id: Array.isArray(newAdminUser) ? newAdminUser[0].id : newAdminUser.id,
+            provider_metadata: {
+              email: adminEmail,
+              password: adminPassword,
             },
-          ],
-        })
-        logger.info('🔄 Updated admin password')
-      } catch {
-        // If identity exists, update it
-        logger.info('🔄 Auth identity already exists')
-      }
+          },
+        ],
+      })
+      logger.info('🔄 Admin user recreated with fresh auth')
 
       logger.info(`📧 Email: ${adminEmail}`)
       logger.info(`🔐 Password: ${adminPassword}`)
@@ -59,7 +65,7 @@ export default async function createAdminUser({ container }: ExecArgs) {
     await authService.createAuthIdentities({
       provider_identities: [
         {
-          provider: 'manual',
+          provider: 'emailpass',
           entity_id: Array.isArray(adminUser) ? adminUser[0].id : adminUser.id,
           provider_metadata: {
             email: adminEmail,
