@@ -17,10 +17,15 @@ BACKEND_PID=$!
 # Wait a moment for backend to initialize
 sleep 5
 
+# Copy static assets to standalone build
+echo "📦 Copying static assets..."
+cp -r /app/.next/static /app/.next/standalone/.next/
+cp -r /app/public /app/.next/standalone/
+
 # Start frontend
 echo "🎨 Starting Next.js frontend..."
-cd /app
-exec node .next/standalone/server.js &
+cd /app/.next/standalone
+exec node server.js &
 FRONTEND_PID=$!
 
 # Function to handle shutdown
