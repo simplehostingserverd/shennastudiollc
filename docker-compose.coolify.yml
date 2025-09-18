@@ -12,8 +12,7 @@ services:
     restart: unless-stopped
     ports:
       - '3000:3000' # Frontend
-      - '9000:9000' # Backend API
-      - '7001:7001' # Admin Panel
+      - '9000:9000' # Backend API (Admin Panel at /app)
     environment:
       # Database (use external database URLs in Coolify)
       - DATABASE_URL=${DATABASE_URL}
@@ -24,10 +23,10 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - COOKIE_SECRET=${COOKIE_SECRET}
 
-      # CORS Configuration (update with your actual domains)
-      - STORE_CORS=${STORE_CORS}
-      - ADMIN_CORS=${ADMIN_CORS}
-      - AUTH_CORS=${AUTH_CORS}
+      # CORS Configuration for shennastudio.com
+      - STORE_CORS=${STORE_CORS:-https://shennastudio.com,https://www.shennastudio.com}
+      - ADMIN_CORS=${ADMIN_CORS:-https://shennastudio.com,https://www.shennastudio.com}
+      - AUTH_CORS=${AUTH_CORS:-https://shennastudio.com,https://www.shennastudio.com}
 
       # Admin Setup
       - ADMIN_EMAIL=${ADMIN_EMAIL}
@@ -42,8 +41,8 @@ services:
       - MEDUSA_ADMIN_ONBOARDING_TYPE=default
       - MEDUSA_ADMIN_ONBOARDING_NEXTJS=true
 
-      # Frontend Environment Variables
-      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000
+      # Frontend Environment Variables (use your actual domain)
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-https://shennastudio.com}
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
 
@@ -58,6 +57,9 @@ services:
       - NEXT_TELEMETRY_DISABLED=1
       - PORT=3000
       - HOSTNAME=0.0.0.0
+
+      # Production optimizations
+      - NODE_OPTIONS=--max-old-space-size=1024
     volumes:
       # Persist uploads and static files
       - app_uploads:/app/backend/uploads

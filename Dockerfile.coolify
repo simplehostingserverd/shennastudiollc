@@ -1,5 +1,5 @@
-# Multi-service Dockerfile for Coolify deployment
-# This builds and runs both frontend (Next.js) and backend (Medusa) in a single container
+# Coolify Dockerfile for combined frontend + backend deployment
+# Mimics the behavior of "npm run dev:full:turbo" for production
 
 FROM node:20-alpine AS base
 
@@ -7,145 +7,147 @@ FROM node:20-alpine AS base
 RUN apk add --no-cache \
     libc6-compat \
     curl \
-    netcat-openbsd \
     bash
 
 WORKDIR /app
 
-# Stage 1: Build Backend
-FROM base AS backend-builder
-WORKDIR /app/backend
-
-# Copy backend package files
-COPY ocean-backend/package*.json ./
-RUN npm install --include=dev --legacy-peer-deps
-
-# Copy backend source code
-COPY ocean-backend/ ./
-
-# Build backend (if needed)
-RUN npm run build 2>/dev/null || echo "No backend build step needed"
-
-# Stage 2: Build Frontend  
-FROM base AS frontend-builder
-WORKDIR /app/frontend
-
-# Copy frontend package files
-COPY package*.json ./
-RUN npm install --legacy-peer-deps
-
-# Copy frontend source code
-COPY . .
-# Exclude backend directory to avoid conflicts
-RUN rm -rf ocean-backend
-
-# Build Next.js application
-# Set the backend URL for the build process
-ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000
-ENV NEXT_PUBLIC_MEDUSA_BACKEND_URL=$NEXT_PUBLIC_MEDUSA_BACKEND_URL
-RUN npm run build
-
-# Stage 3: Production Runtime
-FROM base AS runner
-
-# Create application directories
+# Install dependencies for both projects
+FROM base AS deps
 WORKDIR /app
-RUN mkdir -p /app/frontend /app/backend
 
-# Create non-root user for security
-RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
+# Copy package files
+COPY package*.json ./
+COPY ocean-backend/package*.json ./ocean-backend/
 
-# Copy built backend from backend-builder
-COPY --from=backend-builder --chown=nextjs:nodejs /app/backend /app/backend
+# Install dependencies for building
+RUN npm ci && npm cache clean --force
+RUN cd ocean-backend && npm ci && npm cache clean --force
 
-# Copy built frontend from frontend-builder (for Next.js standalone mode)
-COPY --from=frontend-builder --chown=nextjs:nodejs /app/frontend/.next/standalone /app/frontend/
-COPY --from=frontend-builder --chown=nextjs:nodejs /app/frontend/.next/static /app/frontend/.next/static
-COPY --from=frontend-builder --chown=nextjs:nodejs /app/frontend/public /app/frontend/public
+# Build stage
+FROM base AS builder
+WORKDIR /app
 
-# Fix Next.js standalone static asset serving
-# The standalone build expects static files in specific locations
-RUN cp -r /app/frontend/public/* /app/frontend/ 2>/dev/null || true
+# Copy dependencies
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/ocean-backend/node_modules ./ocean-backend/node_modules
 
-# Copy startup scripts for backend
-COPY --from=backend-builder /app/backend/startup.sh /app/backend/startup-simple.sh /app/backend/
-RUN chmod +x /app/backend/startup.sh /app/backend/startup-simple.sh
+# Copy source code
+COPY . .
 
-# Create startup script that runs both services
-RUN cat > /app/start-all.sh << 'EOF'
+# Set production environment for build
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Build both applications with production optimizations
+RUN npm run build
+RUN cd ocean-backend && npm run build
+
+# Production image
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+
+# Security and performance optimizations
+ENV NODE_OPTIONS="--max-old-space-size=1024"
+
+# Create user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy built applications
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+# Copy backend
+COPY --from=builder --chown=nextjs:nodejs /app/ocean-backend ./ocean-backend
+
+# Create startup script (mimics concurrently behavior)
+RUN cat > /app/start-combined.sh << 'EOF'
 #!/bin/bash
 set -e
 
-echo "Starting Shenna's Studio services..."
+echo "🌊 Starting Shenna's Studio (Frontend + Backend)"
 
-# Start backend first
-echo "Starting Medusa backend..."
-cd /app/backend
-if [ "$STARTUP_MODE" = "simple" ]; then
-    ./startup-simple.sh &
-else
-    ./startup.sh &
+# Function to handle cleanup
+cleanup() {
+    echo "🛑 Shutting down services..."
+    kill $(jobs -p) 2>/dev/null || true
+    exit 0
+}
+trap cleanup SIGTERM SIGINT
+
+# Auto-initialization for production
+echo "🔧 Setting up production environment..."
+cd /app/ocean-backend
+
+# Auto-migrate database if enabled
+if [ "$AUTO_MIGRATE" = "true" ]; then
+    echo "📦 Running database migrations..."
+    npx medusa db:migrate --force || echo "Migration failed or not needed"
 fi
+
+# Auto-create admin if enabled
+if [ "$AUTO_CREATE_ADMIN" = "true" ]; then
+    echo "👤 Creating admin user..."
+    npm run create-admin || echo "Admin creation failed or already exists"
+fi
+
+# Auto-seed if enabled
+if [ "$AUTO_SEED" = "true" ]; then
+    echo "🌱 Seeding database..."
+    npm run seed || echo "Seeding failed or not needed"
+fi
+
+# Start backend
+echo "🚀 Starting Medusa backend on port 9000..."
+npm start &
 BACKEND_PID=$!
 
 # Wait for backend to be ready
-echo "Waiting for backend to be ready..."
+echo "⏳ Waiting for backend to be ready..."
 for i in {1..60}; do
     if curl -f http://localhost:9000/health >/dev/null 2>&1; then
-        echo "Backend is ready!"
+        echo "✅ Backend is ready!"
         break
     fi
     if [ $i -eq 60 ]; then
-        echo "Backend failed to start in time"
+        echo "❌ Backend failed to start"
         exit 1
     fi
     sleep 2
 done
 
 # Start frontend
-echo "Starting Next.js frontend..."
-cd /app/frontend
+echo "🚀 Starting Next.js frontend on port 3000..."
+cd /app
 node server.js &
 FRONTEND_PID=$!
 
-# Function to handle shutdown
-cleanup() {
-    echo "Shutting down services..."
-    kill $BACKEND_PID $FRONTEND_PID 2>/dev/null || true
-    wait $BACKEND_PID $FRONTEND_PID 2>/dev/null || true
-    exit 0
-}
+echo "✅ Both services are running!"
+echo "📱 Frontend: http://localhost:3000"
+echo "🛠️  Backend API: http://localhost:9000"
+echo "👤 Admin Panel: http://localhost:9000/app"
 
-# Set up signal handlers
-trap cleanup SIGTERM SIGINT
-
-# Keep both processes running
+# Keep processes running
 wait $BACKEND_PID $FRONTEND_PID
 EOF
 
-RUN chmod +x /app/start-all.sh
+RUN chmod +x /app/start-combined.sh
+RUN chown -R nextjs:nodejs /app
 
-# Create uploads and static directories
-RUN mkdir -p /app/backend/uploads /app/backend/static && \
-    chown -R nextjs:nodejs /app
-
-# Set ownership
 USER nextjs
 
 # Expose ports
-EXPOSE 3000 9000 7001
+EXPOSE 3000 9000
 
-# Environment variables
-ENV NODE_ENV=production
-ENV HOSTNAME=0.0.0.0
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:3000/api/health && curl -f http://localhost:9000/health || exit 1
 
-# Environment variable for frontend to find backend
-ENV NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000
- 
-# Health check for both services
-HEALTHCHECK --interval=30s --timeout=15s --start-period=120s --retries=5 \
-    CMD curl -f http://localhost:9000/health && curl -f http://localhost:3000/api/health || exit 1
- 
-# Use our custom startup script
-CMD ["/app/start-all.sh"]
-EOF
+# Start both services
+CMD ["/app/start-combined.sh"]
