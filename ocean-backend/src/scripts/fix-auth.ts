@@ -39,7 +39,7 @@ export default async function fixAuth({ container }: ExecArgs) {
 
     // Create proper auth identity
     logger.info('🔐 Creating auth identity...')
-    const authIdentity = await authService.createAuthIdentities({
+    await authService.createAuthIdentities({
       provider_identities: [
         {
           provider: 'emailpass',

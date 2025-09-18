@@ -20,7 +20,7 @@ export default async function debugAuth({ container }: ExecArgs) {
     const identities = await authService.listAuthIdentities()
     logger.info(`Found ${identities.length} auth identities:`)
     identities.forEach(identity => {
-      logger.info(`- Identity ID: ${identity.id}, Auth Provider: ${(identity as any).provider_id || 'unknown'}`)
+      logger.info(`- Identity ID: ${identity.id}, Auth Provider: ${(identity as { provider_id?: string }).provider_id || 'unknown'}`)
     })
 
     // Check specifically for admin user
@@ -33,10 +33,10 @@ export default async function debugAuth({ container }: ExecArgs) {
       logger.info(`✅ Admin user found: ${adminUser.email} (ID: ${adminUser.id})`)
 
       // Check auth identities for this user
-      const adminIdentities = identities.filter(i => (i as any).user_id === adminUser.id)
+      const adminIdentities = identities.filter(i => (i as { user_id?: string }).user_id === adminUser.id)
       logger.info(`Found ${adminIdentities.length} auth identities for admin user:`)
       adminIdentities.forEach(identity => {
-        logger.info(`- Provider: ${(identity as any).provider_id || 'unknown'}`)
+        logger.info(`- Provider: ${(identity as { provider_id?: string }).provider_id || 'unknown'}`)
         logger.info(`- Identity ID: ${identity.id}`)
       })
     } else {
