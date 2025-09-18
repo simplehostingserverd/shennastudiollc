@@ -1,5 +1,5 @@
 # Coolify Configuration for Shenna's Studio
 # Ocean-themed e-commerce platform with Next.js frontend and Medusa backend
 
-build_pack: dockerfile
-dockerfile: Dockerfile
+build_pack: docker-compose
+dockerfile: docker-compose.coolify.yml

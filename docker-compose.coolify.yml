@@ -1,0 +1,62 @@
+name: shenna-studio-coolify
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shenna-studio-app
+    restart: unless-stopped
+    ports:
+      - '3000:3000' # Frontend
+      - '9000:9000' # Backend API
+      - '7001:7001' # Admin Panel
+    environment:
+      # Database (configure in Coolify)
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      
+      # Security (configure in Coolify secrets)
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+      
+      # CORS (update with your domain)
+      - STORE_CORS=${STORE_CORS:-https://shennastudio.com,https://www.shennastudio.com}
+      - ADMIN_CORS=${ADMIN_CORS:-https://shennastudio.com,https://www.shennastudio.com}
+      - AUTH_CORS=${AUTH_CORS:-https://shennastudio.com,https://www.shennastudio.com}
+      
+      # Frontend
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-https://shennastudio.com}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+      
+      # Admin setup
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      
+      # Auto-initialization
+      - AUTO_MIGRATE=true
+      - AUTO_CREATE_ADMIN=true
+      - AUTO_SEED=false
+      
+      # Production settings
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - NODE_OPTIONS=--max-old-space-size=1024
+    volumes:
+      # Persist uploads and static files
+      - app_uploads:/app/ocean-backend/uploads
+      - app_static:/app/ocean-backend/static
+    healthcheck:
+      test: |
+        curl -f http://localhost:3000 || curl -f http://localhost:9000/health || exit 1
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 180s
+
+volumes:
+  app_uploads:
+    driver: local
+  app_static:
+    driver: local
