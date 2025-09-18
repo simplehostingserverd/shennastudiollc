@@ -40,6 +40,9 @@ COPY . .
 RUN rm -rf ocean-backend
 
 # Build Next.js application
+# Set the backend URL for the build process
+ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000
+ENV NEXT_PUBLIC_MEDUSA_BACKEND_URL=$NEXT_PUBLIC_MEDUSA_BACKEND_URL
 RUN npm run build
 
 # Stage 3: Production Runtime
@@ -136,10 +139,13 @@ EXPOSE 3000 9000 7001
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
 
+# Environment variable for frontend to find backend
+ENV NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000
+ 
 # Health check for both services
 HEALTHCHECK --interval=30s --timeout=15s --start-period=120s --retries=5 \
-    CMD curl -f http://localhost:3000/api/health || curl -f http://localhost:3000 || exit 1
-
+    CMD curl -f http://localhost:9000/health && curl -f http://localhost:3000/api/health || exit 1
+ 
 # Use our custom startup script
 CMD ["/app/start-all.sh"]
 EOF

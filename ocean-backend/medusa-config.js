@@ -36,7 +36,7 @@ module.exports = defineConfig({
     // HTTP / security settings
     http: {
       // CORS origins for your store and admin
-      storeCors: process.env.STORE_CORS || '*',
+      storeCors: process.env.STORE_CORS || 'https://www.shennastudio.com',
       adminCors: process.env.ADMIN_CORS || '*',
       authCors: process.env.AUTH_CORS || process.env.ADMIN_CORS || '*',
 

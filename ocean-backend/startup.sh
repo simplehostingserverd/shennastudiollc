@@ -44,14 +44,10 @@ if [ "$AUTO_MIGRATE" = "true" ]; then
   fi
 fi
 
-# Auto-create admin if enabled
+# Auto-create admin if enabled (skip for now due to compilation issues)
 if [ "$AUTO_CREATE_ADMIN" = "true" ]; then
-  echo "👤 Creating admin user..."
-  if timeout 60 npm run create-admin; then
-    echo "✅ Admin user setup completed"
-  else
-    echo "⚠️  Admin user creation failed, timed out, or user already exists"
-  fi
+  echo "👤 Skipping admin user creation (will create manually later)..."
+  echo "⚠️  Admin user creation skipped due to compilation issues"
 fi
 
 # Auto-seed if enabled (skip on errors to allow server to start)
