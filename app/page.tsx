@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import { useState, useEffect, useCallback } from "react"
-import SearchBar from "@/app/components/SearchBar"
-import Button from "@/app/components/ui/Button"
-import { Product } from "@/src/lib/medusa"
-import Link from "next/link"
-import Image from "next/image"
+import { useState, useEffect, useCallback } from 'react'
+import SearchBar from '@/app/components/SearchBar'
+import Button from '@/app/components/ui/Button'
+import { Product } from '@/src/lib/medusa'
+import Link from 'next/link'
+import Image from 'next/image'
 
 interface MedusaClient {
   store?: {
@@ -23,11 +23,11 @@ export default function HomePage() {
   useEffect(() => {
     const initMedusa = async () => {
       try {
-        const createMedusaClient = await import("@/src/lib/medusa")
+        const createMedusaClient = await import('@/src/lib/medusa')
         const client = await createMedusaClient.default()
         setMedusa(client as unknown as MedusaClient)
       } catch (error) {
-        console.error("Failed to initialize Medusa client:", error)
+        console.error('Failed to initialize Medusa client:', error)
       }
     }
     initMedusa()
@@ -40,19 +40,19 @@ export default function HomePage() {
       setLoading(true)
       // Check if medusa client is properly initialized
       if (!medusa?.store?.product?.list) {
-        console.warn("Medusa product API not available")
+        console.warn('Medusa product API not available')
         return
       }
 
       const response = await medusa.store.product.list({
-        limit: 50
+        limit: 50,
       })
 
       if (response?.products) {
         setProducts(response.products as Product[])
       }
     } catch (error) {
-      console.error("Error fetching products:", error)
+      console.error('Error fetching products:', error)
       // Set empty array on error to prevent UI issues
       setProducts([])
     } finally {
@@ -76,7 +76,7 @@ export default function HomePage() {
           loop
           muted
           playsInline
-          webkit-playsinline="true"
+          webkit-playsinline
           controls={false}
           preload="metadata"
           poster="/ShennasLogo.png"
@@ -109,11 +109,17 @@ export default function HomePage() {
               />
             </div>
             <h1 className="text-6xl md:text-8xl font-display font-bold text-white mb-6 leading-tight tracking-wide">
-              Shenna&apos;s <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-blue-300">Studio</span>
+              Shenna&apos;s{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-blue-300">
+                Studio
+              </span>
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed max-w-3xl mx-auto font-light">
-              Discover exquisite ocean-inspired treasures that celebrate marine life while supporting ocean conservation.
-              <span className="block mt-2 text-lg text-teal-200">Every purchase helps protect our precious oceans 🌊</span>
+              Discover exquisite ocean-inspired treasures that celebrate marine
+              life while supporting ocean conservation.
+              <span className="block mt-2 text-lg text-teal-200">
+                Every purchase helps protect our precious oceans 🌊
+              </span>
             </p>
           </div>
 
@@ -141,8 +147,18 @@ export default function HomePage() {
 
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/60 animate-bounce">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            />
           </svg>
         </div>
       </section>
@@ -152,10 +168,15 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-display font-bold text-ocean-900 mb-6">
-              Find Your Perfect <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">Ocean Treasure</span>
+              Find Your Perfect{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">
+                Ocean Treasure
+              </span>
             </h2>
             <p className="text-xl text-ocean-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-              Search through our carefully curated collection of ocean-inspired products, each piece thoughtfully designed to bring the beauty of marine life into your world.
+              Search through our carefully curated collection of ocean-inspired
+              products, each piece thoughtfully designed to bring the beauty of
+              marine life into your world.
             </p>
           </div>
           <div className="max-w-2xl mx-auto">
@@ -169,22 +190,31 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-display font-bold text-ocean-900 mb-6">
-              Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">Ocean Collection</span>
+              Our{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">
+                Ocean Collection
+              </span>
             </h2>
             <p className="text-xl text-ocean-600 max-w-3xl mx-auto leading-relaxed">
-              Each piece in our collection is carefully crafted to celebrate the beauty of marine life while supporting ocean conservation efforts.
+              Each piece in our collection is carefully crafted to celebrate the
+              beauty of marine life while supporting ocean conservation efforts.
             </p>
           </div>
 
           {loading ? (
             <div className="text-center py-20">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-ocean-600"></div>
-              <p className="mt-4 text-ocean-600 text-lg">Loading our beautiful collection...</p>
+              <p className="mt-4 text-ocean-600 text-lg">
+                Loading our beautiful collection...
+              </p>
             </div>
           ) : products.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {products.slice(0, 12).map((product, index) => (
-                <div key={product.id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-ocean-200">
+                <div
+                  key={product.id}
+                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-ocean-200"
+                >
                   <div className="relative overflow-hidden">
                     {product.images && product.images.length > 0 ? (
                       <Image
@@ -212,22 +242,27 @@ export default function HomePage() {
                         {product.description}
                       </p>
                     )}
-                    {product.variants && product.variants.length > 0 && product.variants[0].prices && (
-                      <div className="flex items-center justify-between">
-                        <span className="text-xl font-bold text-ocean-900">
-                          ${(product.variants[0].prices[0]?.amount / 100 || 0).toFixed(2)}
-                        </span>
-                        <Link href={`/products/${product.handle}`}>
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            className="bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-200"
-                          >
-                            View Details
-                          </Button>
-                        </Link>
-                      </div>
-                    )}
+                    {product.variants &&
+                      product.variants.length > 0 &&
+                      product.variants[0].prices && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-xl font-bold text-ocean-900">
+                            $
+                            {(
+                              product.variants[0].prices[0]?.amount / 100 || 0
+                            ).toFixed(2)}
+                          </span>
+                          <Link href={`/products/${product.handle}`}>
+                            <Button
+                              variant="primary"
+                              size="sm"
+                              className="bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-200"
+                            >
+                              View Details
+                            </Button>
+                          </Link>
+                        </div>
+                      )}
                   </div>
                 </div>
               ))}
@@ -235,9 +270,12 @@ export default function HomePage() {
           ) : (
             <div className="text-center py-20">
               <div className="text-6xl mb-6">🌊</div>
-              <h3 className="text-2xl font-bold text-ocean-900 mb-4">Coming Soon</h3>
+              <h3 className="text-2xl font-bold text-ocean-900 mb-4">
+                Coming Soon
+              </h3>
               <p className="text-ocean-600 text-lg">
-                Our beautiful ocean collection is being prepared. Check back soon!
+                Our beautiful ocean collection is being prepared. Check back
+                soon!
               </p>
             </div>
           )}
@@ -271,7 +309,10 @@ export default function HomePage() {
           <div className="mb-12">
             <div className="text-8xl mb-8 animate-pulse">🌊</div>
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-8">
-              Supporting <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-blue-300">Ocean Conservation</span>
+              Supporting{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-blue-300">
+                Ocean Conservation
+              </span>
             </h2>
           </div>
 
@@ -279,23 +320,30 @@ export default function HomePage() {
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
               <div className="text-4xl mb-4">💙</div>
               <h3 className="text-xl font-bold mb-3">10% Donated</h3>
-              <p className="text-blue-100">Every purchase directly funds marine conservation efforts</p>
+              <p className="text-blue-100">
+                Every purchase directly funds marine conservation efforts
+              </p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
               <div className="text-4xl mb-4">🐢</div>
               <h3 className="text-xl font-bold mb-3">Wildlife Protection</h3>
-              <p className="text-blue-100">Supporting sea turtle sanctuaries and marine life rescue</p>
+              <p className="text-blue-100">
+                Supporting sea turtle sanctuaries and marine life rescue
+              </p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
               <div className="text-4xl mb-4">🌍</div>
               <h3 className="text-xl font-bold mb-3">Global Impact</h3>
-              <p className="text-blue-100">Partnering with worldwide ocean preservation organizations</p>
+              <p className="text-blue-100">
+                Partnering with worldwide ocean preservation organizations
+              </p>
             </div>
           </div>
 
           <p className="text-xl text-blue-100 mb-10 leading-relaxed max-w-4xl mx-auto">
-            Every purchase helps protect our oceans. We donate 10% of all proceeds to marine conservation
-            organizations working tirelessly to preserve ocean ecosystems for future generations.
+            Every purchase helps protect our oceans. We donate 10% of all
+            proceeds to marine conservation organizations working tirelessly to
+            preserve ocean ecosystems for future generations.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
@@ -327,11 +375,15 @@ export default function HomePage() {
           <div className="bg-white rounded-3xl shadow-2xl p-12 border border-ocean-100">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-display font-bold text-ocean-900 mb-6">
-                Stay Connected with the <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">Ocean</span>
+                Stay Connected with the{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">
+                  Ocean
+                </span>
               </h2>
               <p className="text-xl text-ocean-600 leading-relaxed max-w-3xl mx-auto">
-                Join our community and get updates on new arrivals, conservation efforts, and exclusive offers.
-                Be the first to know about our ocean-saving initiatives.
+                Join our community and get updates on new arrivals, conservation
+                efforts, and exclusive offers. Be the first to know about our
+                ocean-saving initiatives.
               </p>
             </div>
 
@@ -358,17 +410,27 @@ export default function HomePage() {
               <div className="p-6">
                 <div className="text-3xl mb-3">📧</div>
                 <h3 className="font-bold text-ocean-900 mb-2">New Arrivals</h3>
-                <p className="text-ocean-600 text-sm">Be first to see our latest ocean treasures</p>
+                <p className="text-ocean-600 text-sm">
+                  Be first to see our latest ocean treasures
+                </p>
               </div>
               <div className="p-6">
                 <div className="text-3xl mb-3">🌊</div>
-                <h3 className="font-bold text-ocean-900 mb-2">Conservation Updates</h3>
-                <p className="text-ocean-600 text-sm">Learn about our impact on ocean preservation</p>
+                <h3 className="font-bold text-ocean-900 mb-2">
+                  Conservation Updates
+                </h3>
+                <p className="text-ocean-600 text-sm">
+                  Learn about our impact on ocean preservation
+                </p>
               </div>
               <div className="p-6">
                 <div className="text-3xl mb-3">🎁</div>
-                <h3 className="font-bold text-ocean-900 mb-2">Exclusive Offers</h3>
-                <p className="text-ocean-600 text-sm">Special discounts for our community members</p>
+                <h3 className="font-bold text-ocean-900 mb-2">
+                  Exclusive Offers
+                </h3>
+                <p className="text-ocean-600 text-sm">
+                  Special discounts for our community members
+                </p>
               </div>
             </div>
           </div>

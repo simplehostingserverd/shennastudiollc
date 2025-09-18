@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server"
-import Stripe from "stripe"
+import { NextRequest, NextResponse } from 'next/server'
+import Stripe from 'stripe'
 
 interface CartItem {
   title: string
@@ -12,10 +12,10 @@ interface CartItem {
 // Initialize Stripe only when needed to avoid build-time errors
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error("STRIPE_SECRET_KEY is not configured")
+    throw new Error('STRIPE_SECRET_KEY is not configured')
   }
   return new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2025-08-27.basil",
+    apiVersion: '2025-08-27.basil',
   })
 }
 
@@ -25,10 +25,7 @@ export async function POST(request: NextRequest) {
     const { items, cartId } = body
 
     if (!items || items.length === 0) {
-      return NextResponse.json(
-        { error: "No items in cart" },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'No items in cart' }, { status: 400 })
     }
 
     // Get Stripe instance
@@ -37,7 +34,7 @@ export async function POST(request: NextRequest) {
     // Create line items for Stripe
     const lineItems = items.map((item: CartItem) => ({
       price_data: {
-        currency: "usd",
+        currency: 'usd',
         product_data: {
           name: item.title,
           description: item.description,
@@ -50,25 +47,25 @@ export async function POST(request: NextRequest) {
 
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+      payment_method_types: ['card'],
       line_items: lineItems,
-      mode: "payment",
+      mode: 'payment',
       success_url: `https://shennastudio.com/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `https://shennastudio.com/cart`,
       metadata: {
-        cart_id: cartId || "",
+        cart_id: cartId || '',
       },
       shipping_address_collection: {
-        allowed_countries: ["US", "CA"],
+        allowed_countries: ['US', 'CA'],
       },
-      billing_address_collection: "required",
+      billing_address_collection: 'required',
     })
 
     return NextResponse.json({ url: session.url })
   } catch (error) {
-    console.error("Stripe checkout error:", error)
+    console.error('Stripe checkout error:', error)
     return NextResponse.json(
-      { error: "Failed to create checkout session" },
+      { error: 'Failed to create checkout session' },
       { status: 500 }
     )
   }

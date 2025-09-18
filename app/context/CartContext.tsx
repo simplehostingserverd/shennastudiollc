@@ -1,19 +1,49 @@
-"use client"
+'use client'
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react"
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from 'react'
 
 interface MedusaClient {
   store?: {
     cart?: {
-      retrieve?: (id: string) => Promise<{ cart?: { items?: CartItem[], id?: string } }>
-      create?: (data?: Record<string, unknown>) => Promise<{ cart?: { items?: CartItem[], id?: string } }>
-      createLineItem?: (cartId: string, data: Record<string, unknown>) => Promise<{ cart?: { items?: CartItem[], id?: string } }>
-      updateLineItem?: (cartId: string, lineId: string, data: Record<string, unknown>) => Promise<{ cart?: { items?: CartItem[], id?: string } }>
-      deleteLineItem?: (cartId: string, lineId: string) => Promise<{ cart?: { items?: CartItem[], id?: string } }>
+      retrieve?: (
+        id: string
+      ) => Promise<{ cart?: { items?: CartItem[]; id?: string } }>
+      create?: (
+        data?: Record<string, unknown>
+      ) => Promise<{ cart?: { items?: CartItem[]; id?: string } }>
+      createLineItem?: (
+        cartId: string,
+        data: Record<string, unknown>
+      ) => Promise<{ cart?: { items?: CartItem[]; id?: string } }>
+      updateLineItem?: (
+        cartId: string,
+        lineId: string,
+        data: Record<string, unknown>
+      ) => Promise<{ cart?: { items?: CartItem[]; id?: string } }>
+      deleteLineItem?: (
+        cartId: string,
+        lineId: string
+      ) => Promise<{ cart?: { items?: CartItem[]; id?: string } }>
       lineItems?: {
-        create?: (cartId: string, data: Record<string, unknown>) => Promise<{ cart?: { items?: CartItem[], id?: string } }>
-        update?: (cartId: string, lineId: string, data: Record<string, unknown>) => Promise<{ cart?: { items?: CartItem[], id?: string } }>
-        delete?: (cartId: string, lineId: string) => Promise<{ cart?: { items?: CartItem[], id?: string } }>
+        create?: (
+          cartId: string,
+          data: Record<string, unknown>
+        ) => Promise<{ cart?: { items?: CartItem[]; id?: string } }>
+        update?: (
+          cartId: string,
+          lineId: string,
+          data: Record<string, unknown>
+        ) => Promise<{ cart?: { items?: CartItem[]; id?: string } }>
+        delete?: (
+          cartId: string,
+          lineId: string
+        ) => Promise<{ cart?: { items?: CartItem[]; id?: string } }>
       }
     }
     region?: {
@@ -68,11 +98,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Dynamically import medusa client only on client side
     const initMedusa = async () => {
       try {
-        const createMedusaClient = await import("@/src/lib/medusa")
+        const createMedusaClient = await import('@/src/lib/medusa')
         const client = await createMedusaClient.default()
         setMedusa(client as unknown as MedusaClient)
       } catch (error) {
-        console.error("Failed to initialize Medusa client:", error)
+        console.error('Failed to initialize Medusa client:', error)
       }
     }
     initMedusa()
@@ -84,8 +114,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       try {
         setIsLoading(true)
         // Check if medusa client is available
-        if (!medusa || !medusa.store || !medusa.store.cart || !medusa.store.cart.retrieve) {
-          console.warn("Medusa client not properly initialized")
+        if (
+          !medusa ||
+          !medusa.store ||
+          !medusa.store.cart ||
+          !medusa.store.cart.retrieve
+        ) {
+          console.warn('Medusa client not properly initialized')
           return
         }
         const response = await medusa.store.cart.retrieve(id)
@@ -93,9 +128,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
           setItems((response.cart.items || []) as CartItem[])
         }
       } catch (error) {
-        console.error("Error loading cart:", error)
+        console.error('Error loading cart:', error)
         if (typeof window !== 'undefined') {
-          localStorage.removeItem("cart_id")
+          localStorage.removeItem('cart_id')
         }
         setCartId(null)
       } finally {
@@ -105,7 +140,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     // Only access localStorage on the client side and after medusa is loaded
     if (isClient && medusa && typeof window !== 'undefined') {
-      const savedCartId = localStorage.getItem("cart_id")
+      const savedCartId = localStorage.getItem('cart_id')
       if (savedCartId) {
         setCartId(savedCartId)
         loadCart(savedCartId)
@@ -113,41 +148,47 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [isClient, medusa])
 
-
   const createCart = async () => {
     try {
-      if (!medusa || !medusa.store || !medusa.store.cart || !medusa.store.region) {
-        console.warn("Medusa client not properly initialized")
+      if (
+        !medusa ||
+        !medusa.store ||
+        !medusa.store.cart ||
+        !medusa.store.region
+      ) {
+        console.warn('Medusa client not properly initialized')
         return null
       }
-      
+
       // First get regions to use for cart creation
       const regionsResponse = await medusa.store.region.list?.()
       if (!regionsResponse?.regions?.length) {
-        console.error("No regions available for cart creation")
+        console.error('No regions available for cart creation')
         return null
       }
-      
+
       // Use the first available region
       const region = regionsResponse.regions[0]
-      const response = await medusa.store.cart.create?.({ region_id: region.id })
+      const response = await medusa.store.cart.create?.({
+        region_id: region.id,
+      })
       if (response?.cart) {
         setCartId(response.cart.id)
         if (typeof window !== 'undefined') {
-          localStorage.setItem("cart_id", response.cart.id)
+          localStorage.setItem('cart_id', response.cart.id)
         }
         setItems((response.cart.items || []) as CartItem[])
         return response.cart // Return the newly created cart
       }
     } catch (error) {
-      console.error("Error creating cart:", error)
+      console.error('Error creating cart:', error)
     }
     return null
   }
 
   const addItem = async (variantId: string, quantity: number = 1) => {
     if (!isClient) return
-    
+
     try {
       setIsLoading(true)
       let currentCartId = cartId
@@ -161,11 +202,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
 
       if (!currentCartId) {
-        throw new Error("Failed to create cart")
+        throw new Error('Failed to create cart')
       }
 
       if (!medusa || !medusa.store || !medusa.store.cart) {
-        throw new Error("Medusa client not properly initialized")
+        throw new Error('Medusa client not properly initialized')
       }
 
       const response = await medusa.store.cart.createLineItem(currentCartId, {
@@ -177,7 +218,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setItems((response.cart.items || []) as CartItem[])
       }
     } catch (error) {
-      console.error("Error adding item to cart:", error)
+      console.error('Error adding item to cart:', error)
     } finally {
       setIsLoading(false)
     }
@@ -189,7 +230,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true)
       if (!medusa || !medusa.store || !medusa.store.cart) {
-        throw new Error("Medusa client not properly initialized")
+        throw new Error('Medusa client not properly initialized')
       }
       const response = await medusa.store.cart.updateLineItem(cartId, itemId, {
         quantity,
@@ -199,7 +240,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setItems((response.cart.items || []) as CartItem[])
       }
     } catch (error) {
-      console.error("Error updating cart item:", error)
+      console.error('Error updating cart item:', error)
     } finally {
       setIsLoading(false)
     }
@@ -211,7 +252,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true)
       if (!medusa || !medusa.store || !medusa.store.cart) {
-        throw new Error("Medusa client not properly initialized")
+        throw new Error('Medusa client not properly initialized')
       }
       const response = await medusa.store.cart.deleteLineItem(cartId, itemId)
 
@@ -219,7 +260,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setItems((response.cart.items || []) as CartItem[])
       }
     } catch (error) {
-      console.error("Error removing cart item:", error)
+      console.error('Error removing cart item:', error)
     } finally {
       setIsLoading(false)
     }
@@ -231,7 +272,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true)
       if (!medusa || !medusa.store || !medusa.store.cart) {
-        throw new Error("Medusa client not properly initialized")
+        throw new Error('Medusa client not properly initialized')
       }
       // Remove all items individually
       for (const item of items) {
@@ -239,30 +280,35 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       setItems([])
     } catch (error) {
-      console.error("Error clearing cart:", error)
+      console.error('Error clearing cart:', error)
     } finally {
       setIsLoading(false)
     }
   }
 
   // Calculate totals from items
-  const subtotal = items.reduce((acc, item) => acc + (item.unit_price * item.quantity), 0)
+  const subtotal = items.reduce(
+    (acc, item) => acc + item.unit_price * item.quantity,
+    0
+  )
   const total = subtotal // For now, just subtotal. In real app, this would include taxes, shipping, etc.
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0)
 
   return (
-    <CartContext.Provider value={{ 
-      items, 
-      cartId, 
-      isLoading, 
-      addItem, 
-      updateItem, 
-      removeItem, 
-      clearCart, 
-      total, 
-      subtotal,
-      itemCount 
-    }}>
+    <CartContext.Provider
+      value={{
+        items,
+        cartId,
+        isLoading,
+        addItem,
+        updateItem,
+        removeItem,
+        clearCart,
+        total,
+        subtotal,
+        itemCount,
+      }}
+    >
       {children}
     </CartContext.Provider>
   )
@@ -270,6 +316,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
 export const useCart = () => {
   const context = useContext(CartContext)
-  if (!context) throw new Error("useCart must be used within a CartProvider")
+  if (!context) throw new Error('useCart must be used within a CartProvider')
   return context
 }

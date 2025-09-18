@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import Link from "next/link"
-import { Collection } from "@/src/lib/medusa"
+import Link from 'next/link'
+import { Collection } from '@/src/lib/medusa'
 
 interface CategoryGridProps {
   collections: Collection[]

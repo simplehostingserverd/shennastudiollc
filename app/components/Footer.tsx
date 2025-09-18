@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import Link from "next/link"
-import Image from "next/image"
+import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Footer() {
   return (
@@ -23,8 +23,9 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-ocean-200 mb-6 max-w-md">
-              A family business crafting beautiful ocean-themed treasures that celebrate marine life 
-              and support ocean conservation efforts. 10% of all proceeds donated to marine conservation.
+              A family business crafting beautiful ocean-themed treasures that
+              celebrate marine life and support ocean conservation efforts. 10%
+              of all proceeds donated to marine conservation.
             </p>
           </div>
 
@@ -33,22 +34,34 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-ocean-300 hover:text-white transition-colors">
+                <Link
+                  href="/"
+                  className="text-ocean-300 hover:text-white transition-colors"
+                >
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="text-ocean-300 hover:text-white transition-colors">
+                <Link
+                  href="/products"
+                  className="text-ocean-300 hover:text-white transition-colors"
+                >
                   Products
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-ocean-300 hover:text-white transition-colors">
+                <Link
+                  href="/about"
+                  className="text-ocean-300 hover:text-white transition-colors"
+                >
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-ocean-300 hover:text-white transition-colors">
+                <Link
+                  href="/contact"
+                  className="text-ocean-300 hover:text-white transition-colors"
+                >
                   Contact
                 </Link>
               </li>
@@ -60,17 +73,26 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Customer Support</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/shipping" className="text-ocean-300 hover:text-white transition-colors">
+                <Link
+                  href="/shipping"
+                  className="text-ocean-300 hover:text-white transition-colors"
+                >
                   Shipping Info
                 </Link>
               </li>
               <li>
-                <Link href="/returns" className="text-ocean-300 hover:text-white transition-colors">
+                <Link
+                  href="/returns"
+                  className="text-ocean-300 hover:text-white transition-colors"
+                >
                   Returns & Exchanges
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="text-ocean-300 hover:text-white transition-colors">
+                <Link
+                  href="/faq"
+                  className="text-ocean-300 hover:text-white transition-colors"
+                >
                   FAQ
                 </Link>
               </li>

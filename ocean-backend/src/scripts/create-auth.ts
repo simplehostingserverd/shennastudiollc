@@ -1,13 +1,13 @@
-import { ExecArgs } from "@medusajs/framework/types"
-import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { ExecArgs } from '@medusajs/framework/types'
+import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
 
 export default async function createAuthForUser({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
   const userService = container.resolve(Modules.USER)
 
   // Use the reset admin we created
-  const adminEmail = "reset@shennastudio.com"
-  const adminPassword = "Reset123!"
+  const adminEmail = 'reset@shennastudio.com'
+  const adminPassword = 'Reset123!'
 
   try {
     // Find the user
@@ -15,23 +15,30 @@ export default async function createAuthForUser({ container }: ExecArgs) {
     if (users.length === 0) {
       throw new Error(`User not found: ${adminEmail}`)
     }
-    
+
     const user = users[0]
     logger.info(`📧 Found user: ${user.email} (ID: ${user.id})`)
 
     // Get database connection
-    const connection = container.resolve("db_connection") as unknown
+    const connection = container.resolve('db_connection') as unknown
 
     // Generate IDs
-    const authIdPrefix = "authid_"
+    const authIdPrefix = 'authid_'
     const authIdentityId = authIdPrefix + generateId()
     const providerIdentityId = generateId()
 
     // Create auth_identity record
-    await (connection as { query: (sql: string, params: unknown[]) => Promise<unknown> }).query(`
+    await (
+      connection as {
+        query: (sql: string, params: unknown[]) => Promise<unknown>
+      }
+    ).query(
+      `
       INSERT INTO auth_identity (id, app_metadata, created_at, updated_at)
       VALUES ($1, $2, NOW(), NOW())
-    `, [authIdentityId, JSON.stringify({ user_id: user.id })])
+    `,
+      [authIdentityId, JSON.stringify({ user_id: user.id })]
+    )
 
     logger.info(`✅ Created auth_identity: ${authIdentityId}`)
 
@@ -43,24 +50,30 @@ export default async function createAuthForUser({ container }: ExecArgs) {
     const base64Hash = Buffer.from(passwordHash, 'hex').toString('base64')
 
     // Create provider_identity record
-    await (connection as { query: (sql: string, params: unknown[]) => Promise<unknown> }).query(`
+    await (
+      connection as {
+        query: (sql: string, params: unknown[]) => Promise<unknown>
+      }
+    ).query(
+      `
       INSERT INTO provider_identity (id, entity_id, provider, auth_identity_id, provider_metadata, created_at, updated_at)
       VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
-    `, [
-      providerIdentityId,
-      adminEmail,
-      'emailpass',
-      authIdentityId,
-      JSON.stringify({ password: base64Hash })
-    ])
+    `,
+      [
+        providerIdentityId,
+        adminEmail,
+        'emailpass',
+        authIdentityId,
+        JSON.stringify({ password: base64Hash }),
+      ]
+    )
 
     logger.info(`✅ Created provider_identity: ${providerIdentityId}`)
 
-    logger.info("🎉 AUTHENTICATION SETUP COMPLETE!")
+    logger.info('🎉 AUTHENTICATION SETUP COMPLETE!')
     logger.info(`📧 Email: ${adminEmail}`)
     logger.info(`🔐 Password: ${adminPassword}`)
     logger.info(`🌐 Login at: http://localhost:9001/app`)
-
   } catch (error) {
     logger.error(`❌ Error creating auth: ${error}`)
     throw error

@@ -6,13 +6,14 @@ This guide covers deploying the Shenna's Studio e-commerce platform on Coolify u
 
 - Coolify server setup with Docker
 - PostgreSQL database (managed by Coolify)
-- Redis instance (managed by Coolify) 
+- Redis instance (managed by Coolify)
 - Domain names configured
 - SSL certificates set up
 
 ## Required Environment Variables
 
 ### Database Configuration
+
 ```bash
 # PostgreSQL Database (Coolify managed)
 POSTGRES_HOST=your-postgres-host
@@ -25,6 +26,7 @@ REDIS_PASSWORD=your-secure-redis-password
 ```
 
 ### Security & Authentication
+
 ```bash
 # JWT and Cookie secrets (minimum 32 characters each)
 JWT_SECRET=your-super-secure-jwt-secret-minimum-32-characters-change-in-production
@@ -36,6 +38,7 @@ ADMIN_PASSWORD=YourSecureAdminPassword123!
 ```
 
 ### Payment Processing (Stripe)
+
 ```bash
 # Production Stripe keys
 STRIPE_SECRET_KEY=sk_live_your_stripe_secret_key
@@ -45,12 +48,14 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_your_stripe_publishable_key
 ### Optional Services
 
 #### Algolia Search
+
 ```bash
 ALGOLIA_APPLICATION_ID=your_algolia_app_id
 ALGOLIA_SEARCH_API_KEY=your_algolia_search_key
 ```
 
 #### Cloudinary Images
+
 ```bash
 CLOUDINARY_CLOUD_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_cloudinary_key
@@ -92,12 +97,15 @@ In Coolify, add all required environment variables listed above:
 ### 4. Post-Deployment Verification
 
 #### Health Checks
+
 - Backend API: `https://api.shennastudio.com/health`
 - Frontend: `https://shennastudio.com`
 - Admin Panel: `https://admin.shennastudio.com`
 
 #### Database Setup
+
 The application automatically handles:
+
 - Database migrations (`AUTO_MIGRATE=true`)
 - Sample data seeding (`AUTO_SEED=true`)
 - Admin user creation (`AUTO_CREATE_ADMIN=true`)
@@ -105,6 +113,7 @@ The application automatically handles:
 ### 5. SSL/TLS Configuration
 
 Coolify handles SSL certificates automatically. Ensure:
+
 - Domain DNS points to Coolify server
 - SSL certificates are valid
 - HTTPS redirects are enabled
@@ -114,16 +123,19 @@ Coolify handles SSL certificates automatically. Ensure:
 ### Common Issues
 
 #### Database Connection Errors
+
 - Verify `DATABASE_URL` format
 - Check PostgreSQL host and credentials
 - Ensure database exists
 
 #### Redis Connection Issues
+
 - Verify `REDIS_URL` format
 - Check Redis host and password
 - Test Redis connectivity
 
 #### CORS Errors
+
 - Verify domain names in CORS settings
 - Check frontend-backend URL configuration
 - Ensure HTTPS is properly configured
@@ -140,6 +152,7 @@ docker logs shenna-frontend-prod
 ### Database Backup
 
 Set up automated backups in Coolify:
+
 - PostgreSQL daily backups
 - Retain backups for 30 days
 - Test restore procedures regularly
@@ -164,11 +177,13 @@ Set up automated backups in Coolify:
 ## Scaling
 
 ### Horizontal Scaling
+
 - Configure load balancer in Coolify
 - Use multiple backend instances
 - Scale based on CPU/memory usage
 
 ### Database Optimization
+
 - Monitor query performance
 - Set up read replicas if needed
 - Configure connection pooling
@@ -177,7 +192,7 @@ Set up automated backups in Coolify:
 
 - [ ] All environment variables configured
 - [ ] SSL certificates installed
-- [ ] Database backups enabled  
+- [ ] Database backups enabled
 - [ ] Monitoring and alerts set up
 - [ ] DNS records configured
 - [ ] CORS settings verified
@@ -191,6 +206,7 @@ Set up automated backups in Coolify:
 ## Support
 
 For deployment issues:
+
 - Check Coolify logs and documentation
 - Verify environment variable configuration
 - Test database connectivity
@@ -199,12 +215,14 @@ For deployment issues:
 ## Environment Variables Summary
 
 **Required (11 variables):**
+
 - POSTGRES_HOST, POSTGRES_DB, POSTGRES_PASSWORD
-- REDIS_HOST, REDIS_PASSWORD  
+- REDIS_HOST, REDIS_PASSWORD
 - JWT_SECRET, COOKIE_SECRET
 - ADMIN_EMAIL, ADMIN_PASSWORD
 - STRIPE_SECRET_KEY, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 
 **Optional (6 variables):**
+
 - ALGOLIA_APPLICATION_ID, ALGOLIA_SEARCH_API_KEY
 - CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET

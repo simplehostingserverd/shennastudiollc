@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap');
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 :root {
   --background: #ffffff;
@@ -9,7 +9,7 @@
   --ocean-primary: #93c5fd;
   --ocean-secondary: #60a5fa;
   --coral-primary: #fbbf24;
-  --seafoam-primary: #101A8C;
+  --seafoam-primary: #101a8c;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -52,7 +52,8 @@ body {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -101,7 +102,12 @@ html {
   scroll-behavior: smooth;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Playfair Display', serif;
   font-weight: 700;
   line-height: 1.2;
@@ -116,7 +122,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .seafoam-gradient {
-  background: linear-gradient(135deg, #101A8C 0%, #0D1670 50%, #091154 100%);
+  background: linear-gradient(135deg, #101a8c 0%, #0d1670 50%, #091154 100%);
 }
 
 .glass-effect {
@@ -131,8 +137,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes wave {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-5px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 .float-animation {
@@ -140,9 +151,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-10px) rotate(1deg); }
-  66% { transform: translateY(5px) rotate(-1deg); }
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(5px) rotate(-1deg);
+  }
 }
 
 a {
@@ -230,8 +248,13 @@ video::-webkit-media-controls-enclosure {
 }
 
 @keyframes ocean-wave {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .product-detail-background {

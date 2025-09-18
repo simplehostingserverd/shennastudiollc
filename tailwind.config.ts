@@ -64,19 +64,24 @@ const config: Config = {
         },
       },
       backgroundImage: {
-        'ocean-gradient': 'linear-gradient(135deg, #6cdae7 0%, #3cc5d4 50%, #2ba5b3 100%)',
-        'coral-gradient': 'linear-gradient(135deg, #f59542 0%, #f2761e 50%, #e35d14 100%)',
-        'maroon-gradient': 'linear-gradient(135deg, #e87474 0%, #dc4545 50%, #c92a2a 100%)',
-        'seafoam-gradient': 'linear-gradient(135deg, #101A8C 0%, #0D1670 50%, #091154 100%)',
-        'ocean-waves': "url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%236cdae7\" fill-opacity=\"0.15\"%3E%3Cpath d=\"m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')",
+        'ocean-gradient':
+          'linear-gradient(135deg, #6cdae7 0%, #3cc5d4 50%, #2ba5b3 100%)',
+        'coral-gradient':
+          'linear-gradient(135deg, #f59542 0%, #f2761e 50%, #e35d14 100%)',
+        'maroon-gradient':
+          'linear-gradient(135deg, #e87474 0%, #dc4545 50%, #c92a2a 100%)',
+        'seafoam-gradient':
+          'linear-gradient(135deg, #101A8C 0%, #0D1670 50%, #091154 100%)',
+        'ocean-waves':
+          'url(\'data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%236cdae7" fill-opacity="0.15"%3E%3Cpath d="m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\')',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         display: ['Playfair Display', 'serif'],
       },
       animation: {
-        'float': 'float 6s ease-in-out infinite',
-        'wave': 'wave 2s ease-in-out infinite',
+        float: 'float 6s ease-in-out infinite',
+        wave: 'wave 2s ease-in-out infinite',
       },
       keyframes: {
         float: {

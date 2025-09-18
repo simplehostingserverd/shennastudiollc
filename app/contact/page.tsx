@@ -1,6 +1,6 @@
-"use client"
+'use client'
 
-import Button from "@/app/components/ui/Button"
+import Button from '@/app/components/ui/Button'
 
 export default function ContactPage() {
   return (
@@ -12,8 +12,8 @@ export default function ContactPage() {
             Get In Touch
           </h1>
           <p className="text-lg text-ocean-600 max-w-2xl mx-auto">
-            We&apos;d love to hear from you! Whether you have questions about our products, 
-            need help with an order, or just want to say hello.
+            We&apos;d love to hear from you! Whether you have questions about
+            our products, need help with an order, or just want to say hello.
           </p>
         </div>
 
@@ -23,10 +23,13 @@ export default function ContactPage() {
             <h2 className="text-2xl font-display font-bold text-ocean-900 mb-6">
               Send Us a Message
             </h2>
-            
+
             <form className="space-y-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-ocean-700 mb-2">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-ocean-700 mb-2"
+                >
                   Your Name
                 </label>
                 <input
@@ -39,7 +42,10 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-ocean-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-ocean-700 mb-2"
+                >
                   Email Address
                 </label>
                 <input
@@ -52,7 +58,10 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-ocean-700 mb-2">
+                <label
+                  htmlFor="subject"
+                  className="block text-sm font-medium text-ocean-700 mb-2"
+                >
                   Subject
                 </label>
                 <input
@@ -65,7 +74,10 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-ocean-700 mb-2">
+                <label
+                  htmlFor="message"
+                  className="block text-sm font-medium text-ocean-700 mb-2"
+                >
                   Message
                 </label>
                 <textarea
@@ -77,7 +89,12 @@ export default function ContactPage() {
                 />
               </div>
 
-              <Button type="submit" variant="primary" size="lg" className="w-full">
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                className="w-full"
+              >
                 Send Message
               </Button>
             </form>
@@ -107,7 +124,7 @@ export default function ContactPage() {
               <h3 className="text-xl font-display font-bold text-ocean-900 mb-6">
                 Other Ways to Reach Us
               </h3>
-              
+
               <div className="space-y-4">
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-coral-100 rounded-full flex items-center justify-center mr-3">
@@ -115,7 +132,9 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-sm text-ocean-500">Email</p>
-                    <p className="text-ocean-700 font-medium">hello@shennasstudio.com</p>
+                    <p className="text-ocean-700 font-medium">
+                      hello@shennasstudio.com
+                    </p>
                   </div>
                 </div>
 
@@ -146,7 +165,7 @@ export default function ContactPage() {
               <h3 className="text-xl font-display font-bold text-ocean-900 mb-6">
                 Studio Hours
               </h3>
-              
+
               <div className="space-y-3 text-ocean-600">
                 <div className="flex justify-between">
                   <span>Monday - Friday</span>
@@ -161,11 +180,11 @@ export default function ContactPage() {
                   <span className="font-medium">By Appointment</span>
                 </div>
               </div>
-              
+
               <div className="mt-4 p-3 bg-ocean-50 rounded-lg">
                 <p className="text-sm text-ocean-600">
-                  💡 <strong>Tip:</strong> Call ahead for studio visits to ensure we&apos;re available 
-                  to give you our full attention!
+                  💡 <strong>Tip:</strong> Call ahead for studio visits to
+                  ensure we&apos;re available to give you our full attention!
                 </p>
               </div>
             </div>
@@ -177,15 +196,15 @@ export default function ContactPage() {
           <h2 className="text-2xl font-display font-bold text-ocean-900 mb-8 text-center">
             Frequently Asked Questions
           </h2>
-          
+
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-lg font-semibold text-ocean-900 mb-2">
                 Do you ship internationally?
               </h3>
               <p className="text-ocean-600">
-                Currently, we ship within the United States. We&apos;re working on international 
-                shipping options and hope to expand soon!
+                Currently, we ship within the United States. We&apos;re working
+                on international shipping options and hope to expand soon!
               </p>
             </div>
 
@@ -194,8 +213,9 @@ export default function ContactPage() {
                 How do you support ocean conservation?
               </h3>
               <p className="text-ocean-600">
-                We donate 10% of all proceeds to marine conservation organizations 
-                that work to protect our precious ocean ecosystems.
+                We donate 10% of all proceeds to marine conservation
+                organizations that work to protect our precious ocean
+                ecosystems.
               </p>
             </div>
 
@@ -204,8 +224,9 @@ export default function ContactPage() {
                 Can I visit your studio?
               </h3>
               <p className="text-ocean-600">
-                Absolutely! We love welcoming visitors to our studio. Please call ahead 
-                to schedule a visit so we can ensure someone is available to assist you.
+                Absolutely! We love welcoming visitors to our studio. Please
+                call ahead to schedule a visit so we can ensure someone is
+                available to assist you.
               </p>
             </div>
 
@@ -214,8 +235,9 @@ export default function ContactPage() {
                 Do you offer custom designs?
               </h3>
               <p className="text-ocean-600">
-                Yes! We love creating custom pieces. Contact us to discuss your ideas 
-                and we&apos;ll work together to create something uniquely yours.
+                Yes! We love creating custom pieces. Contact us to discuss your
+                ideas and we&apos;ll work together to create something uniquely
+                yours.
               </p>
             </div>
           </div>

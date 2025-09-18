@@ -1,20 +1,70 @@
-"use client"
+'use client'
 
-import { useState, useEffect, useCallback } from "react"
-import ProductGrid from "@/app/components/ProductGrid"
-import { Product, MedusaClient } from "@/src/lib/medusa"
+import { useState, useEffect, useCallback } from 'react'
+import ProductGrid from '@/app/components/ProductGrid'
+import { Product, MedusaClient } from '@/src/lib/medusa'
 
 const collections = [
-  { id: 'all', name: 'All Products', description: 'Browse our complete collection', handle: null },
-  { id: 'salesandclearance', name: 'Sales and Clearance', description: 'Amazing deals on ocean treasures', handle: '/salesandclearance' },
-  { id: 'clothing', name: 'Clothing', description: 'Comfortable ocean-themed apparel', handle: '/clothing' },
-  { id: 'specialoccasions', name: 'Special Occasions', description: 'Perfect gifts for memorable moments', handle: '/specialoccasions' },
-  { id: 'jewelry', name: 'Jewelry', description: 'Ocean-inspired jewelry and accessories', handle: '/jewelry' },
-  { id: 'homedecor', name: 'Home Decor', description: 'Beautiful ocean-themed home accessories', handle: '/homedecor' },
-  { id: 'pets', name: 'Pets', description: 'Ocean-themed items for your furry friends', handle: '/pets' },
-  { id: 'furniture', name: 'Furniture', description: 'Ocean-inspired furniture pieces', handle: '/furniture' },
-  { id: 'booksandgifts', name: 'Books and Gifts', description: 'Educational books and special gifts', handle: '/booksandgifts' },
-  { id: 'holidayideas', name: 'Holiday Ideas', description: 'Seasonal and holiday-themed treasures', handle: '/holidayideas' }
+  {
+    id: 'all',
+    name: 'All Products',
+    description: 'Browse our complete collection',
+    handle: null,
+  },
+  {
+    id: 'salesandclearance',
+    name: 'Sales and Clearance',
+    description: 'Amazing deals on ocean treasures',
+    handle: '/salesandclearance',
+  },
+  {
+    id: 'clothing',
+    name: 'Clothing',
+    description: 'Comfortable ocean-themed apparel',
+    handle: '/clothing',
+  },
+  {
+    id: 'specialoccasions',
+    name: 'Special Occasions',
+    description: 'Perfect gifts for memorable moments',
+    handle: '/specialoccasions',
+  },
+  {
+    id: 'jewelry',
+    name: 'Jewelry',
+    description: 'Ocean-inspired jewelry and accessories',
+    handle: '/jewelry',
+  },
+  {
+    id: 'homedecor',
+    name: 'Home Decor',
+    description: 'Beautiful ocean-themed home accessories',
+    handle: '/homedecor',
+  },
+  {
+    id: 'pets',
+    name: 'Pets',
+    description: 'Ocean-themed items for your furry friends',
+    handle: '/pets',
+  },
+  {
+    id: 'furniture',
+    name: 'Furniture',
+    description: 'Ocean-inspired furniture pieces',
+    handle: '/furniture',
+  },
+  {
+    id: 'booksandgifts',
+    name: 'Books and Gifts',
+    description: 'Educational books and special gifts',
+    handle: '/booksandgifts',
+  },
+  {
+    id: 'holidayideas',
+    name: 'Holiday Ideas',
+    description: 'Seasonal and holiday-themed treasures',
+    handle: '/holidayideas',
+  },
 ]
 
 export default function ProductsPage() {
@@ -25,115 +75,177 @@ export default function ProductsPage() {
   const [medusa, setMedusa] = useState<MedusaClient | null>(null)
   const [selectedCollection, setSelectedCollection] = useState('all')
 
-  const fetchProducts = useCallback(async (collectionHandle?: string) => {
-    if (!medusa) return
+  const fetchProducts = useCallback(
+    async (collectionHandle?: string) => {
+      if (!medusa) return
 
-    try {
-      setLoading(true)
-      setError(null)
-      
-      // Check if medusa client is properly initialized
-      if (!medusa.store?.product?.list) {
-        setError("Product service not available. Please check if the backend is running.")
-        return
-      }
-      
-      // Build query parameters
-      const queryParams: Record<string, unknown> = { limit: 50 }
-      
-      // If a specific collection is selected, add collection filter
-      if (collectionHandle && collectionHandle !== 'all') {
-        // Try to fetch products by collection handle
-        try {
-          const collectionResponse = await medusa.store.collection.list({ handle: collectionHandle.replace('/', '') })
-          if (collectionResponse?.collections?.length > 0) {
-            queryParams.collection_id = (collectionResponse.collections[0] as unknown as { id: string }).id
+      try {
+        setLoading(true)
+        setError(null)
+
+        // Check if medusa client is properly initialized
+        if (!medusa.store?.product?.list) {
+          setError(
+            'Product service not available. Please check if the backend is running.'
+          )
+          return
+        }
+
+        // Build query parameters
+        const queryParams: Record<string, unknown> = { limit: 50 }
+
+        // If a specific collection is selected, add collection filter
+        if (collectionHandle && collectionHandle !== 'all') {
+          // Try to fetch products by collection handle
+          try {
+            const collectionResponse = await medusa.store.collection.list({
+              handle: collectionHandle.replace('/', ''),
+            })
+            if (collectionResponse?.collections?.length > 0) {
+              queryParams.collection_id = (
+                collectionResponse.collections[0] as unknown as { id: string }
+              ).id
+            }
+          } catch (collectionError) {
+            console.warn(
+              'Collection not found, showing all products:',
+              collectionError
+            )
           }
-        } catch (collectionError) {
-          console.warn('Collection not found, showing all products:', collectionError)
         }
-      }
-      
-      const response = await medusa.store.product.list(queryParams)
-      if (response?.products) {
-        const productList = response.products as unknown as Product[]
-        if (!collectionHandle || collectionHandle === 'all') {
-          setProducts(productList)
-          setFilteredProducts(productList)
-        } else {
-          setFilteredProducts(productList)
+
+        const response = await medusa.store.product.list(queryParams)
+        if (response?.products) {
+          const productList = response.products as unknown as Product[]
+          if (!collectionHandle || collectionHandle === 'all') {
+            setProducts(productList)
+            setFilteredProducts(productList)
+          } else {
+            setFilteredProducts(productList)
+          }
         }
+      } catch (error) {
+        console.error('Error fetching products:', error)
+        setError(
+          'Failed to load products. Please check if the backend is running and try again.'
+        )
+      } finally {
+        setLoading(false)
       }
-    } catch (error) {
-      console.error("Error fetching products:", error)
-      setError("Failed to load products. Please check if the backend is running and try again.")
-    } finally {
-      setLoading(false)
-    }
-  }, [medusa])
+    },
+    [medusa]
+  )
 
   // Updated to handle collection filtering via API calls
-  const handleCollectionFilter = useCallback(async (collectionId: string) => {
-    setSelectedCollection(collectionId)
-    
-    if (collectionId === 'all') {
-      // Show all products
-      await fetchProducts()
-    } else {
-      // Find the collection handle
-      const collection = collections.find(c => c.id === collectionId)
-      if (collection?.handle) {
-        await fetchProducts(collection.handle)
-      } else {
-        // Fallback to keyword-based filtering for compatibility
-        setFilteredProducts(products.filter(product => {
-          const searchText = (product.title + ' ' + (product.description || '')).toLowerCase()
-          
-          switch (collectionId) {
-            case 'salesandclearance':
-              return searchText.includes('sale') || searchText.includes('clearance') || searchText.includes('discount')
-            case 'jewelry':
-              return searchText.includes('jewelry') || searchText.includes('necklace') || searchText.includes('bracelet') || searchText.includes('earring')
-            case 'clothing':
-              return searchText.includes('shirt') || searchText.includes('clothing') || searchText.includes('apparel')
-            case 'homedecor':
-              return searchText.includes('home') || searchText.includes('decor') || searchText.includes('decoration')
-            case 'pets':
-              return searchText.includes('pet') || searchText.includes('dog') || searchText.includes('cat')
-            case 'furniture':
-              return searchText.includes('furniture') || searchText.includes('chair') || searchText.includes('table')
-            case 'booksandgifts':
-              return searchText.includes('book') || searchText.includes('gift') || searchText.includes('educational')
-            case 'specialoccasions':
-              return searchText.includes('occasion') || searchText.includes('special') || searchText.includes('celebration')
-            case 'holidayideas':
-              return searchText.includes('holiday') || searchText.includes('christmas') || searchText.includes('seasonal')
-            default:
-              return true
-          }
-        }))
-      }
-    }
-  }, [fetchProducts, products])
+  const handleCollectionFilter = useCallback(
+    async (collectionId: string) => {
+      setSelectedCollection(collectionId)
 
-  const handleCollectionChange = useCallback((collectionId: string) => {
-    handleCollectionFilter(collectionId)
-  }, [handleCollectionFilter])
+      if (collectionId === 'all') {
+        // Show all products
+        await fetchProducts()
+      } else {
+        // Find the collection handle
+        const collection = collections.find((c) => c.id === collectionId)
+        if (collection?.handle) {
+          await fetchProducts(collection.handle)
+        } else {
+          // Fallback to keyword-based filtering for compatibility
+          setFilteredProducts(
+            products.filter((product) => {
+              const searchText = (
+                product.title +
+                ' ' +
+                (product.description || '')
+              ).toLowerCase()
+
+              switch (collectionId) {
+                case 'salesandclearance':
+                  return (
+                    searchText.includes('sale') ||
+                    searchText.includes('clearance') ||
+                    searchText.includes('discount')
+                  )
+                case 'jewelry':
+                  return (
+                    searchText.includes('jewelry') ||
+                    searchText.includes('necklace') ||
+                    searchText.includes('bracelet') ||
+                    searchText.includes('earring')
+                  )
+                case 'clothing':
+                  return (
+                    searchText.includes('shirt') ||
+                    searchText.includes('clothing') ||
+                    searchText.includes('apparel')
+                  )
+                case 'homedecor':
+                  return (
+                    searchText.includes('home') ||
+                    searchText.includes('decor') ||
+                    searchText.includes('decoration')
+                  )
+                case 'pets':
+                  return (
+                    searchText.includes('pet') ||
+                    searchText.includes('dog') ||
+                    searchText.includes('cat')
+                  )
+                case 'furniture':
+                  return (
+                    searchText.includes('furniture') ||
+                    searchText.includes('chair') ||
+                    searchText.includes('table')
+                  )
+                case 'booksandgifts':
+                  return (
+                    searchText.includes('book') ||
+                    searchText.includes('gift') ||
+                    searchText.includes('educational')
+                  )
+                case 'specialoccasions':
+                  return (
+                    searchText.includes('occasion') ||
+                    searchText.includes('special') ||
+                    searchText.includes('celebration')
+                  )
+                case 'holidayideas':
+                  return (
+                    searchText.includes('holiday') ||
+                    searchText.includes('christmas') ||
+                    searchText.includes('seasonal')
+                  )
+                default:
+                  return true
+              }
+            })
+          )
+        }
+      }
+    },
+    [fetchProducts, products]
+  )
+
+  const handleCollectionChange = useCallback(
+    (collectionId: string) => {
+      handleCollectionFilter(collectionId)
+    },
+    [handleCollectionFilter]
+  )
 
   useEffect(() => {
     const initMedusa = async () => {
       try {
-        const createMedusaClient = await import("@/src/lib/medusa")
+        const createMedusaClient = await import('@/src/lib/medusa')
         const client = await createMedusaClient.default()
         setMedusa(client)
       } catch (error) {
-        console.error("Failed to initialize Medusa client:", error)
-        setError("Failed to initialize. Please refresh the page.")
+        console.error('Failed to initialize Medusa client:', error)
+        setError('Failed to initialize. Please refresh the page.')
       }
     }
     initMedusa()
   }, [])
-
 
   // Initial load of all products
   useEffect(() => {
@@ -141,7 +253,6 @@ export default function ProductsPage() {
       fetchProducts()
     }
   }, [medusa, fetchProducts, selectedCollection])
-
 
   if (loading) {
     return (
@@ -155,7 +266,7 @@ export default function ProductsPage() {
               Loading our beautiful ocean-themed collection...
             </p>
           </div>
-          
+
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 12 }, (_, i) => (
               <div key={i} className="animate-pulse">
@@ -201,13 +312,15 @@ export default function ProductsPage() {
             Our Products
           </h1>
           <p className="text-lg text-blue-700 max-w-2xl mx-auto mb-8">
-            Discover our complete collection of ocean-themed treasures,
-            each one carefully crafted to celebrate the beauty of marine life.
+            Discover our complete collection of ocean-themed treasures, each one
+            carefully crafted to celebrate the beauty of marine life.
           </p>
-          
+
           {/* Collections Sub-Menu */}
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-xl font-semibold text-blue-900 mb-6">Collections</h2>
+            <h2 className="text-xl font-semibold text-blue-900 mb-6">
+              Collections
+            </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 max-w-5xl mx-auto">
               {collections.map((collection) => (
                 <button
@@ -223,11 +336,14 @@ export default function ProductsPage() {
                 </button>
               ))}
             </div>
-            
+
             {/* Collection Description */}
             <div className="mt-6">
               <p className="text-blue-600 italic text-center">
-                {collections.find(c => c.id === selectedCollection)?.description}
+                {
+                  collections.find((c) => c.id === selectedCollection)
+                    ?.description
+                }
               </p>
             </div>
           </div>
@@ -239,10 +355,15 @@ export default function ProductsPage() {
               <ProductGrid products={filteredProducts} />
               <div className="text-center mt-12">
                 <p className="text-blue-700">
-                  Showing {filteredProducts.length} of {products.length} products
+                  Showing {filteredProducts.length} of {products.length}{' '}
+                  products
                   {selectedCollection !== 'all' && (
                     <span className="ml-2 text-blue-900 font-medium">
-                      in {collections.find(c => c.id === selectedCollection)?.name}
+                      in{' '}
+                      {
+                        collections.find((c) => c.id === selectedCollection)
+                          ?.name
+                      }
                     </span>
                   )}
                 </p>
@@ -255,7 +376,8 @@ export default function ProductsPage() {
                 No products found in this collection
               </h2>
               <p className="text-blue-700 mb-6">
-                Try browsing a different collection or check back soon for new arrivals!
+                Try browsing a different collection or check back soon for new
+                arrivals!
               </p>
               <button
                 onClick={() => handleCollectionChange('all')}

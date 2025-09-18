@@ -5,6 +5,7 @@ This comprehensive guide covers deploying your Shenna Studio e-commerce platform
 ## 🏗️ Architecture Overview
 
 Your application consists of:
+
 - **Frontend**: Next.js 15.5.3 application (standalone mode)
 - **Backend**: Medusa.js 2.10.1 e-commerce API
 - **Database**: PostgreSQL (already configured with Supabase)
@@ -14,17 +15,18 @@ Your application consists of:
 
 ### Recommended Domain Structure
 
-| Service | Domain Example | Purpose |
-|---------|----------------|---------|
-| **Frontend** | `shennastudio.com` | Main storefront |
-| **Backend API** | `api.shennastudio.com` | Medusa API endpoints |
+| Service         | Domain Example           | Purpose                |
+| --------------- | ------------------------ | ---------------------- |
+| **Frontend**    | `shennastudio.com`       | Main storefront        |
+| **Backend API** | `api.shennastudio.com`   | Medusa API endpoints   |
 | **Admin Panel** | `admin.shennastudio.com` | Medusa admin dashboard |
 
 ### Alternative Single Domain Structure
-| Service | Domain Example | Purpose |
-|---------|----------------|---------|
-| **Frontend** | `shennastudio.com` | Main storefront |
-| **Backend API** | `shennastudio.com/api` | API with path routing |
+
+| Service         | Domain Example           | Purpose                 |
+| --------------- | ------------------------ | ----------------------- |
+| **Frontend**    | `shennastudio.com`       | Main storefront         |
+| **Backend API** | `shennastudio.com/api`   | API with path routing   |
 | **Admin Panel** | `shennastudio.com/admin` | Admin with path routing |
 
 ## 📋 Prerequisites
@@ -64,6 +66,7 @@ Your application consists of:
 3. **Environment Variables** (Backend)
 
 #### Required Variables:
+
 ```bash
 # Database Configuration
 DATABASE_URL=postgresql://postgres:OCD1hg3mTa1170ND@db.ncmpqawcsdlnnhpsgjvz.supabase.co:5432/postgres
@@ -77,7 +80,7 @@ REDIS_URL=redis://shenna-redis:6379
 JWT_SECRET=GENERATE_STRONG_32_CHAR_SECRET_HERE_FOR_PRODUCTION
 COOKIE_SECRET=GENERATE_DIFFERENT_32_CHAR_SECRET_HERE_FOR_PRODUCTION
 
-# Port Configuration  
+# Port Configuration
 PORT=9000
 ADMIN_PORT=7001
 
@@ -95,7 +98,7 @@ ADMIN_PASSWORD=GENERATE_STRONG_ADMIN_PASSWORD_HERE
 
 # Auto-initialization (for first deployment)
 AUTO_MIGRATE=true
-AUTO_SEED=true  
+AUTO_SEED=true
 AUTO_CREATE_ADMIN=true
 
 # Printful Drop Shipping (Get from https://www.printful.com/dashboard/integrations)
@@ -125,7 +128,7 @@ MEDUSA_ADMIN_URL=https://admin.shennastudio.com
 ### Step 3: Deploy Next.js Frontend
 
 1. **Create New Application**
-   - **Name**: `shenna-frontend`  
+   - **Name**: `shenna-frontend`
    - **Repository**: `https://github.com/simplehostingserverd/shennastudiollc`
    - **Branch**: `main`
    - **Build Pack**: `dockerfile`
@@ -175,6 +178,7 @@ NODE_ENV=production
 ### 1. Generate Strong Secrets
 
 Use a password generator to create:
+
 ```bash
 # Generate 32+ character secrets
 JWT_SECRET=k8n3j5h2f9d7s4a1p6v9m8x2c5w7t4r9
@@ -185,6 +189,7 @@ ADMIN_PASSWORD=AdminSecure2024!@#$
 ### 2. SSL/TLS Configuration
 
 Coolify automatically handles SSL certificates via Let's Encrypt. Ensure:
+
 - All domains are properly pointed to your Coolify server
 - DNS records are configured correctly
 - HTTP to HTTPS redirects are enabled
@@ -192,10 +197,11 @@ Coolify automatically handles SSL certificates via Let's Encrypt. Ensure:
 ### 3. CORS Configuration
 
 Update CORS settings to match your actual domains:
+
 ```bash
 # Backend CORS
 STORE_CORS=https://shennastudio.com,https://www.shennastudio.com
-ADMIN_CORS=https://admin.shennastudio.com  
+ADMIN_CORS=https://admin.shennastudio.com
 AUTH_CORS=https://shennastudio.com,https://www.shennastudio.com,https://admin.shennastudio.com
 ```
 
@@ -216,7 +222,7 @@ Configure these DNS records with your domain provider:
 shennastudio.com          A     YOUR_COOLIFY_SERVER_IP
 www.shennastudio.com      A     YOUR_COOLIFY_SERVER_IP
 
-# API subdomain  
+# API subdomain
 api.shennastudio.com      A     YOUR_COOLIFY_SERVER_IP
 
 # Admin subdomain
@@ -261,7 +267,7 @@ curl https://admin.shennastudio.com/health
    - Manage inventory
    - Configure variants and options
 
-2. **Collections Management**  
+2. **Collections Management**
    - Create product collections
    - Organize products by category
 
@@ -292,49 +298,56 @@ curl https://admin.shennastudio.com/health
 ### Common Issues:
 
 #### 1. Backend Won't Start
+
 - **Check**: Database connection string
 - **Verify**: Redis URL is correct
 - **Ensure**: All required environment variables are set
 - **Review**: Application logs in Coolify
 
 #### 2. Frontend Can't Connect to Backend
+
 - **Check**: `NEXT_PUBLIC_MEDUSA_BACKEND_URL` points to correct domain
 - **Verify**: Backend CORS includes frontend domain
 - **Test**: Backend health endpoint directly
 
 #### 3. Admin Panel Login Issues
+
 - **Verify**: Admin user was created during initialization
 - **Check**: `AUTO_CREATE_ADMIN=true` was set during first deployment
 - **Reset**: Admin password through backend logs
 
 #### 4. CORS Errors
+
 - **Update**: CORS environment variables with actual domains
 - **Include**: All domains and subdomains in CORS lists
 - **Restart**: Backend service after CORS changes
 
 #### 5. Database Connection Issues
+
 - **Verify**: DATABASE_URL is correct
 - **Check**: SSL settings match your database provider
 - **Test**: Database connectivity from backend container
 
 #### 6. Module Configuration Errors
+
 - **Error**: `Cannot read properties of undefined (reading 'service')`
 - **Cause**: Invalid module configuration in medusa-config file
 - **Fix**: Temporarily set `modules: []` to get backend running
 - **Solution**: Add modules one by one with proper configuration
 - **Example Fix**:
+
   ```javascript
   // Instead of broken module config, start with empty:
   modules: []
-  
+
   // Then add modules properly:
   modules: [
     {
-      resolve: "@medusajs/some-module",
+      resolve: '@medusajs/some-module',
       options: {
         // proper options here
-      }
-    }
+      },
+    },
   ]
   ```
 
@@ -344,7 +357,7 @@ curl https://admin.shennastudio.com/health
 # Check backend logs
 docker logs <backend-container-id>
 
-# Check frontend logs  
+# Check frontend logs
 docker logs <frontend-container-id>
 
 # Test database connection

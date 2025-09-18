@@ -1,22 +1,22 @@
-"use client"
+'use client'
 
-import { useEffect, useState, Suspense } from "react"
-import { useSearchParams } from "next/navigation"
-import Button from "@/app/components/ui/Button"
-import Link from "next/link"
-import { CheckCircleIcon } from "@heroicons/react/24/solid"
+import { useEffect, useState, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
+import Button from '@/app/components/ui/Button'
+import Link from 'next/link'
+import { CheckCircleIcon } from '@heroicons/react/24/solid'
 
 function CheckoutSuccessContent() {
   const searchParams = useSearchParams()
-  const sessionId = searchParams.get("session_id")
-  const [orderNumber] = useState(() => 
-    `SO-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+  const sessionId = searchParams.get('session_id')
+  const [orderNumber] = useState(
+    () => `SO-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
   )
 
   useEffect(() => {
     // Clear cart after successful checkout
     if (sessionId) {
-      localStorage.removeItem("cart_id")
+      localStorage.removeItem('cart_id')
       // You can also call your cart context's clearCart method here
     }
   }, [sessionId])
@@ -40,11 +40,17 @@ function CheckoutSuccessContent() {
               Order Details
             </h2>
             <div className="text-ocean-700 space-y-1">
-              <p><strong>Order Number:</strong> {orderNumber}</p>
+              <p>
+                <strong>Order Number:</strong> {orderNumber}
+              </p>
               {sessionId && (
-                <p><strong>Session ID:</strong> {sessionId}</p>
+                <p>
+                  <strong>Session ID:</strong> {sessionId}
+                </p>
               )}
-              <p><strong>Date:</strong> {new Date().toLocaleDateString()}</p>
+              <p>
+                <strong>Date:</strong> {new Date().toLocaleDateString()}
+              </p>
             </div>
           </div>
 
@@ -52,15 +58,14 @@ function CheckoutSuccessContent() {
             <p>
               🌊 Your order is being prepared with care at Shenna&apos;s Studio
             </p>
+            <p>📧 A confirmation email has been sent to your email address</p>
             <p>
-              📧 A confirmation email has been sent to your email address
-            </p>
-            <p>
-              🚚 We&apos;ll notify you when your ocean treasures are on their way
+              🚚 We&apos;ll notify you when your ocean treasures are on their
+              way
             </p>
             <p className="text-sm text-coral-600 mt-6">
-              💝 Thank you for supporting ocean conservation - 10% of your purchase 
-              goes directly to marine protection efforts!
+              💝 Thank you for supporting ocean conservation - 10% of your
+              purchase goes directly to marine protection efforts!
             </p>
           </div>
 
@@ -84,11 +89,13 @@ function CheckoutSuccessContent() {
 
 export default function CheckoutSuccessPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-ocean-50 py-20 flex items-center justify-center">
-        <div className="animate-spin h-12 w-12 border-4 border-ocean-500 border-t-transparent rounded-full"></div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-ocean-50 py-20 flex items-center justify-center">
+          <div className="animate-spin h-12 w-12 border-4 border-ocean-500 border-t-transparent rounded-full"></div>
+        </div>
+      }
+    >
       <CheckoutSuccessContent />
     </Suspense>
   )

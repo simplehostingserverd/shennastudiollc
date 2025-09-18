@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { algoliaClient } from "@/src/lib/algolia"
-import ProductGrid from "./ProductGrid"
-import { Product, ProductOptionValue } from "@/src/lib/medusa"
+import { useState } from 'react'
+import { algoliaClient } from '@/src/lib/algolia'
+import ProductGrid from './ProductGrid'
+import { Product, ProductOptionValue } from '@/src/lib/medusa'
 
 interface AlgoliaHit {
   objectID: string
@@ -23,7 +23,7 @@ interface AlgoliaHit {
 }
 
 export default function SearchBar() {
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState('')
   const [results, setResults] = useState<Product[]>([])
   const [isSearching, setIsSearching] = useState(false)
 
@@ -35,60 +35,77 @@ export default function SearchBar() {
       try {
         setIsSearching(true)
         const searchResults = await algoliaClient.search({
-          requests: [{
-            indexName: 'products',
-            query: q,
-            hitsPerPage: 20
-          }]
+          requests: [
+            {
+              indexName: 'products',
+              query: q,
+              hitsPerPage: 20,
+            },
+          ],
         })
-        
+
         // Check if it's a regular search result or a facet search result
         const firstResult = searchResults.results[0]
         const hits = 'hits' in firstResult ? firstResult.hits : []
-        
+
         // Transform Algolia results to Product format
         const transformedResults: Product[] = hits.map((hit) => {
           const algoliaHit = hit as unknown as AlgoliaHit
-          return ({
-          id: algoliaHit.objectID,
-          title: algoliaHit.title,
-          description: algoliaHit.description,
-          handle: algoliaHit.handle,
-          status: algoliaHit.status,
-          images: [{ url: algoliaHit.image || '/placeholder-product.jpg', alt: algoliaHit.title }],
-          options: [],
-          variants: algoliaHit.variants?.map((v) => ({
-            id: v.id,
-            title: v.title,
-            sku: '',
-            inventory_quantity: 100,
-            prices: [{
-              id: `price_${v.id}`,
-              amount: v.price * 100, // Convert back to cents
-              currency_code: v.currency.toLowerCase()
-            }],
-            options: Object.entries(v.options || {}).reduce((acc, [key, value]) => ({
-              ...acc,
-              [key]: {
-                id: `${key}_${value}`,
-                value: value,
-                metadata: null,
-                option_id: key,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-                deleted_at: null
-              }
-            }), {} as Record<string, ProductOptionValue>)
-          })) || [],
-          weight: 0,
-          created_at: new Date(algoliaHit.created_at || Date.now()).toISOString(),
-          updated_at: new Date(algoliaHit.created_at || Date.now()).toISOString()
-          })
+          return {
+            id: algoliaHit.objectID,
+            title: algoliaHit.title,
+            description: algoliaHit.description,
+            handle: algoliaHit.handle,
+            status: algoliaHit.status,
+            images: [
+              {
+                url: algoliaHit.image || '/placeholder-product.jpg',
+                alt: algoliaHit.title,
+              },
+            ],
+            options: [],
+            variants:
+              algoliaHit.variants?.map((v) => ({
+                id: v.id,
+                title: v.title,
+                sku: '',
+                inventory_quantity: 100,
+                prices: [
+                  {
+                    id: `price_${v.id}`,
+                    amount: v.price * 100, // Convert back to cents
+                    currency_code: v.currency.toLowerCase(),
+                  },
+                ],
+                options: Object.entries(v.options || {}).reduce(
+                  (acc, [key, value]) => ({
+                    ...acc,
+                    [key]: {
+                      id: `${key}_${value}`,
+                      value: value,
+                      metadata: null,
+                      option_id: key,
+                      created_at: new Date().toISOString(),
+                      updated_at: new Date().toISOString(),
+                      deleted_at: null,
+                    },
+                  }),
+                  {} as Record<string, ProductOptionValue>
+                ),
+              })) || [],
+            weight: 0,
+            created_at: new Date(
+              algoliaHit.created_at || Date.now()
+            ).toISOString(),
+            updated_at: new Date(
+              algoliaHit.created_at || Date.now()
+            ).toISOString(),
+          }
         })
-        
+
         setResults(transformedResults)
       } catch (error) {
-        console.warn("Search not available:", error)
+        console.warn('Search not available:', error)
         setResults([])
       } finally {
         setIsSearching(false)
@@ -128,7 +145,9 @@ export default function SearchBar() {
       {query.length > 1 && results.length === 0 && !isSearching && (
         <div className="mt-6 text-center py-8">
           <div className="text-4xl mb-2">🏝️</div>
-          <p className="text-ocean-600">No treasures found for &quot;{query}&quot;. Try different keywords!</p>
+          <p className="text-ocean-600">
+            No treasures found for &quot;{query}&quot;. Try different keywords!
+          </p>
         </div>
       )}
     </div>

@@ -1,24 +1,27 @@
-"use client"
+'use client'
 
-import { useState, useEffect, useCallback } from "react"
-import { useParams } from "next/navigation"
-import { Product } from "@/src/lib/medusa"
-import createMedusaClient from "@/src/lib/medusa"
-import { useCart } from "@/app/context/CartContext"
-import Button from "@/app/components/ui/Button"
-import { ShoppingCartIcon, HeartIcon } from "@heroicons/react/24/outline"
-import { HeartIcon as HeartSolidIcon, StarIcon as StarSolidIcon } from "@heroicons/react/24/solid"
-import Link from "next/link"
-import Image from "next/image"
+import { useState, useEffect, useCallback } from 'react'
+import { useParams } from 'next/navigation'
+import { Product } from '@/src/lib/medusa'
+import createMedusaClient from '@/src/lib/medusa'
+import { useCart } from '@/app/context/CartContext'
+import Button from '@/app/components/ui/Button'
+import { ShoppingCartIcon, HeartIcon } from '@heroicons/react/24/outline'
+import {
+  HeartIcon as HeartSolidIcon,
+  StarIcon as StarSolidIcon,
+} from '@heroicons/react/24/solid'
+import Link from 'next/link'
+import Image from 'next/image'
 
 export default function ProductDetailPage() {
   const params = useParams()
   const handle = params.handle as string
   const { addItem, isLoading: cartLoading } = useCart()
-  
+
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
-  const [selectedVariant, setSelectedVariant] = useState<string>("")
+  const [selectedVariant, setSelectedVariant] = useState<string>('')
   const [quantity, setQuantity] = useState(1)
   const [isFavorite, setIsFavorite] = useState(false)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
@@ -37,7 +40,7 @@ export default function ProductDetailPage() {
         }
       }
     } catch (error) {
-      console.error("Error fetching product:", error)
+      console.error('Error fetching product:', error)
     } finally {
       setLoading(false)
     }
@@ -49,15 +52,15 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return
-    
+
     try {
       setIsAddingToCart(true)
       await addItem(selectedVariant, quantity)
       // Show success message or toast here
       alert(`Added ${quantity} item(s) to cart!`)
     } catch (error) {
-      console.error("Error adding to cart:", error)
-      alert("Failed to add item to cart. Please try again.")
+      console.error('Error adding to cart:', error)
+      alert('Failed to add item to cart. Please try again.')
     } finally {
       setIsAddingToCart(false)
     }
@@ -92,9 +95,12 @@ export default function ProductDetailPage() {
       <div className="min-h-screen product-detail-background py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <div className="text-6xl mb-6">🌊</div>
-          <h1 className="text-2xl font-bold text-ocean-900 mb-4">Product Not Found</h1>
+          <h1 className="text-2xl font-bold text-ocean-900 mb-4">
+            Product Not Found
+          </h1>
           <p className="text-ocean-600 mb-8">
-            The ocean treasure you&apos;re looking for seems to have drifted away.
+            The ocean treasure you&apos;re looking for seems to have drifted
+            away.
           </p>
           <Link href="/products">
             <Button variant="primary" size="lg">
@@ -106,7 +112,9 @@ export default function ProductDetailPage() {
     )
   }
 
-  const selectedVariantData = product.variants?.find(v => v.id === selectedVariant)
+  const selectedVariantData = product.variants?.find(
+    (v) => v.id === selectedVariant
+  )
   const price = selectedVariantData?.prices?.[0]?.amount || 0
   const formattedPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -119,9 +127,13 @@ export default function ProductDetailPage() {
         {/* Breadcrumb */}
         <nav className="mb-8">
           <div className="flex items-center space-x-2 text-sm text-blue-600">
-            <Link href="/" className="hover:text-blue-800">Home</Link>
+            <Link href="/" className="hover:text-blue-800">
+              Home
+            </Link>
             <span>→</span>
-            <Link href="/products" className="hover:text-blue-800">Products</Link>
+            <Link href="/products" className="hover:text-blue-800">
+              Products
+            </Link>
             <span>→</span>
             <span className="text-blue-900 font-medium">{product.title}</span>
           </div>
@@ -133,7 +145,7 @@ export default function ProductDetailPage() {
             <div className="bg-white rounded-2xl p-4 shadow-lg">
               <div className="relative h-96">
                 <Image
-                  src={product.images?.[0]?.url || "/placeholder-product.jpg"}
+                  src={product.images?.[0]?.url || '/placeholder-product.jpg'}
                   alt={product.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
@@ -178,16 +190,21 @@ export default function ProductDetailPage() {
                   )}
                 </button>
               </div>
-              
+
               <div className="flex items-center space-x-4 mb-4">
                 <div className="text-2xl font-bold text-blue-900">
                   {formattedPrice}
                 </div>
                 <div className="flex items-center space-x-1">
                   {Array.from({ length: 5 }, (_, i) => (
-                    <StarSolidIcon key={i} className="h-4 w-4 text-yellow-400" />
+                    <StarSolidIcon
+                      key={i}
+                      className="h-4 w-4 text-yellow-400"
+                    />
                   ))}
-                  <span className="text-sm text-blue-600 ml-1">(24 reviews)</span>
+                  <span className="text-sm text-blue-600 ml-1">
+                    (24 reviews)
+                  </span>
                 </div>
               </div>
             </div>
@@ -199,10 +216,15 @@ export default function ProductDetailPage() {
             {/* Variant Selection */}
             {product.variants && product.variants.length > 1 && (
               <div>
-                <h3 className="text-lg font-semibold text-blue-900 mb-3">Options</h3>
+                <h3 className="text-lg font-semibold text-blue-900 mb-3">
+                  Options
+                </h3>
                 <div className="space-y-2">
                   {product.variants.map((variant) => (
-                    <label key={variant.id} className="flex items-center space-x-3 cursor-pointer">
+                    <label
+                      key={variant.id}
+                      className="flex items-center space-x-3 cursor-pointer"
+                    >
                       <input
                         type="radio"
                         name="variant"
@@ -220,7 +242,9 @@ export default function ProductDetailPage() {
 
             {/* Quantity Selection */}
             <div>
-              <h3 className="text-lg font-semibold text-blue-900 mb-3">Quantity</h3>
+              <h3 className="text-lg font-semibold text-blue-900 mb-3">
+                Quantity
+              </h3>
               <div className="flex items-center space-x-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -228,7 +252,9 @@ export default function ProductDetailPage() {
                 >
                   -
                 </button>
-                <span className="w-12 text-center font-medium text-blue-900">{quantity}</span>
+                <span className="w-12 text-center font-medium text-blue-900">
+                  {quantity}
+                </span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
                   className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 flex items-center justify-center transition-colors"
@@ -251,7 +277,7 @@ export default function ProductDetailPage() {
                 <ShoppingCartIcon className="h-5 w-5 mr-2" />
                 Add to Cart
               </Button>
-              
+
               <div className="text-sm text-blue-600 space-y-1">
                 <p>🚚 Free shipping on orders over $50</p>
                 <p>🔒 Secure checkout with Stripe</p>
@@ -269,21 +295,27 @@ export default function ProductDetailPage() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="text-4xl mb-4">🌊</div>
-              <h3 className="font-semibold text-blue-900 mb-2">Ocean Conservation</h3>
+              <h3 className="font-semibold text-blue-900 mb-2">
+                Ocean Conservation
+              </h3>
               <p className="text-blue-600 text-sm">
                 Every purchase supports marine protection efforts
               </p>
             </div>
             <div className="text-center">
               <div className="text-4xl mb-4">👨‍👩‍👧‍👦</div>
-              <h3 className="font-semibold text-blue-900 mb-2">Family Crafted</h3>
+              <h3 className="font-semibold text-blue-900 mb-2">
+                Family Crafted
+              </h3>
               <p className="text-blue-600 text-sm">
                 Made with love by our family for yours
               </p>
             </div>
             <div className="text-center">
               <div className="text-4xl mb-4">✨</div>
-              <h3 className="font-semibold text-blue-900 mb-2">Premium Quality</h3>
+              <h3 className="font-semibold text-blue-900 mb-2">
+                Premium Quality
+              </h3>
               <p className="text-blue-600 text-sm">
                 Carefully selected materials and craftsmanship
               </p>

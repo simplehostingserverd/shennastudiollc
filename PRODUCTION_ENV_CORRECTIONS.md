@@ -37,4 +37,5 @@ ADMIN_CORS=https://admin.shennastudio.com,http://localhost:7001
 ```
 
 ## 🚨 **Most Critical Fix:**
+
 Set `STARTUP_MODE=simple` immediately to fix the hanging deployment issue.

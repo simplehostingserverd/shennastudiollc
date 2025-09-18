@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import Button from "@/app/components/ui/Button"
-import Link from "next/link"
+import Button from '@/app/components/ui/Button'
+import Link from 'next/link'
 
 export default function AboutPage() {
   return (
@@ -28,16 +28,34 @@ export default function AboutPage() {
             About Shenna&apos;s Studio
           </h1>
           <p className="text-xl md:text-2xl text-ocean-100 max-w-3xl mx-auto leading-relaxed">
-            A family business born from passion, crafted with love, and dedicated to bringing 
-            the beauty of the ocean into your everyday life.
+            A family business born from passion, crafted with love, and
+            dedicated to bringing the beauty of the ocean into your everyday
+            life.
           </p>
         </div>
 
         {/* Floating elements - hidden on mobile */}
-        <div className="absolute top-20 left-10 text-4xl animate-float opacity-60 hidden sm:block">🐢</div>
-        <div className="absolute top-40 right-16 text-3xl animate-float opacity-40 hidden sm:block" style={{ animationDelay: "1s" }}>🐠</div>
-        <div className="absolute bottom-32 left-20 text-3xl animate-float opacity-50 hidden md:block" style={{ animationDelay: "2s" }}>🦀</div>
-        <div className="absolute bottom-20 right-10 text-4xl animate-float opacity-30 hidden sm:block" style={{ animationDelay: "3s" }}>🌺</div>
+        <div className="absolute top-20 left-10 text-4xl animate-float opacity-60 hidden sm:block">
+          🐢
+        </div>
+        <div
+          className="absolute top-40 right-16 text-3xl animate-float opacity-40 hidden sm:block"
+          style={{ animationDelay: '1s' }}
+        >
+          🐠
+        </div>
+        <div
+          className="absolute bottom-32 left-20 text-3xl animate-float opacity-50 hidden md:block"
+          style={{ animationDelay: '2s' }}
+        >
+          🦀
+        </div>
+        <div
+          className="absolute bottom-20 right-10 text-4xl animate-float opacity-30 hidden sm:block"
+          style={{ animationDelay: '3s' }}
+        >
+          🌺
+        </div>
       </section>
 
       {/* Our Story Section */}
@@ -50,21 +68,25 @@ export default function AboutPage() {
               </h2>
               <div className="space-y-4 md:space-y-6 text-base md:text-lg text-ocean-700 leading-relaxed">
                 <p>
-                  What started as a simple idea has blossomed into a thriving family business 
-                  that brings the wonder and beauty of ocean life to homes across the world. 
-                  Shenna&apos;s Studio was born from a deep love for marine conservation and 
-                  artisan craftsmanship.
+                  What started as a simple idea has blossomed into a thriving
+                  family business that brings the wonder and beauty of ocean
+                  life to homes across the world. Shenna&apos;s Studio was born
+                  from a deep love for marine conservation and artisan
+                  craftsmanship.
                 </p>
                 <p>
-                  Our journey began when Shenna, inspired by countless hours spent by the 
-                  ocean, envisioned creating products that would not only celebrate the 
-                  beauty of marine life but also support ocean conservation efforts. 
-                  Every piece tells a story of the sea.
+                  Our journey began when Shenna, inspired by countless hours
+                  spent by the ocean, envisioned creating products that would
+                  not only celebrate the beauty of marine life but also support
+                  ocean conservation efforts. Every piece tells a story of the
+                  sea.
                 </p>
                 <p>
-                  Today, Shenna&apos;s Studio has grown into a full-fledged, beautiful family-owned 
-                  business that is prospering online, reaching ocean lovers around the globe 
-                  while maintaining our commitment to quality, authenticity, and environmental responsibility.
+                  Today, Shenna&apos;s Studio has grown into a full-fledged,
+                  beautiful family-owned business that is prospering online,
+                  reaching ocean lovers around the globe while maintaining our
+                  commitment to quality, authenticity, and environmental
+                  responsibility.
                 </p>
               </div>
             </div>
@@ -75,8 +97,8 @@ export default function AboutPage() {
                   Family First
                 </h3>
                 <p className="text-ocean-700 text-center">
-                  Every product is created with the same care and attention 
-                  we put into our own family treasures.
+                  Every product is created with the same care and attention we
+                  put into our own family treasures.
                 </p>
               </div>
             </div>
@@ -92,8 +114,8 @@ export default function AboutPage() {
               Meet Our Founders
             </h2>
             <p className="text-lg text-ocean-600 max-w-2xl mx-auto">
-              The passionate duo behind Shenna&apos;s Studio, combining creativity with 
-              technical expertise to create something beautiful.
+              The passionate duo behind Shenna&apos;s Studio, combining
+              creativity with technical expertise to create something beautiful.
             </p>
           </div>
 
@@ -106,11 +128,14 @@ export default function AboutPage() {
               <h3 className="text-2xl font-display font-bold text-ocean-900 mb-2">
                 Shenna
               </h3>
-              <p className="text-coral-600 font-medium mb-4">Creative Founder &amp; Visionary</p>
+              <p className="text-coral-600 font-medium mb-4">
+                Creative Founder &amp; Visionary
+              </p>
               <p className="text-ocean-600 leading-relaxed mb-6">
-                The creative heart behind Shenna&apos;s Studio. Shenna&apos;s passion for ocean 
-                conservation and artistic expression drives every design decision, 
-                ensuring each product captures the true essence of marine beauty.
+                The creative heart behind Shenna&apos;s Studio. Shenna&apos;s
+                passion for ocean conservation and artistic expression drives
+                every design decision, ensuring each product captures the true
+                essence of marine beauty.
               </p>
               <div className="flex justify-center space-x-4">
                 <div className="w-8 h-8 bg-ocean-100 rounded-full flex items-center justify-center">
@@ -133,11 +158,14 @@ export default function AboutPage() {
               <h3 className="text-2xl font-display font-bold text-ocean-900 mb-2">
                 Michael
               </h3>
-              <p className="text-ocean-600 font-medium mb-4">Technical Co-Founder &amp; Owner of SoftwarePros Inc</p>
+              <p className="text-ocean-600 font-medium mb-4">
+                Technical Co-Founder &amp; Owner of SoftwarePros Inc
+              </p>
               <p className="text-ocean-600 leading-relaxed mb-6">
-                A 20-year software architecture veteran who brings technical excellence 
-                to Shenna&apos;s Studio. As owner of SoftwarePros Inc, Michael&apos;s expertise ensures our online presence 
-                is as beautiful and reliable as our products.
+                A 20-year software architecture veteran who brings technical
+                excellence to Shenna&apos;s Studio. As owner of SoftwarePros
+                Inc, Michael&apos;s expertise ensures our online presence is as
+                beautiful and reliable as our products.
               </p>
               <div className="flex justify-center space-x-4 mb-6">
                 <div className="w-8 h-8 bg-ocean-100 rounded-full flex items-center justify-center">
@@ -151,24 +179,24 @@ export default function AboutPage() {
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                <Link 
-                  href="https://www.softwarepros.org/" 
+                <Link
+                  href="https://www.softwarepros.org/"
                   target="_blank"
                   className="text-ocean-600 hover:text-ocean-800 transition-colors font-medium"
                 >
                   SoftwarePros Inc
                 </Link>
                 <span className="text-ocean-300 hidden sm:inline">•</span>
-                <Link 
-                  href="https://www.linkedin.com/in/michael-t-538480375/" 
+                <Link
+                  href="https://www.linkedin.com/in/michael-t-538480375/"
                   target="_blank"
                   className="text-ocean-600 hover:text-ocean-800 transition-colors"
                 >
                   LinkedIn
                 </Link>
                 <span className="text-ocean-300 hidden sm:inline">•</span>
-                <Link 
-                  href="https://instagram.com/softwareprosdev" 
+                <Link
+                  href="https://instagram.com/softwareprosdev"
                   target="_blank"
                   className="text-ocean-600 hover:text-ocean-800 transition-colors"
                 >
@@ -188,7 +216,8 @@ export default function AboutPage() {
               Our Values
             </h2>
             <p className="text-lg text-ocean-600 max-w-2xl mx-auto">
-              The principles that guide everything we do at Shenna&apos;s Studio.
+              The principles that guide everything we do at Shenna&apos;s
+              Studio.
             </p>
           </div>
 
@@ -201,8 +230,8 @@ export default function AboutPage() {
                 Ocean Conservation
               </h3>
               <p className="text-ocean-600">
-                We donate 10% of all proceeds to marine conservation organizations, 
-                helping protect the oceans that inspire us.
+                We donate 10% of all proceeds to marine conservation
+                organizations, helping protect the oceans that inspire us.
               </p>
             </div>
 
@@ -214,7 +243,7 @@ export default function AboutPage() {
                 Family Values
               </h3>
               <p className="text-ocean-600">
-                As a family business, we treat every customer like family, 
+                As a family business, we treat every customer like family,
                 ensuring personal attention and care in every interaction.
               </p>
             </div>
@@ -227,8 +256,8 @@ export default function AboutPage() {
                 Quality Craftsmanship
               </h3>
               <p className="text-ocean-600">
-                Every product is carefully selected and crafted to meet our 
-                high standards of beauty, durability, and authenticity.
+                Every product is carefully selected and crafted to meet our high
+                standards of beauty, durability, and authenticity.
               </p>
             </div>
           </div>
@@ -242,7 +271,8 @@ export default function AboutPage() {
             Visit Our Studio
           </h2>
           <p className="text-xl text-ocean-100 mb-8 max-w-2xl mx-auto">
-            We&apos;d love to welcome you to our family! Come visit us in beautiful Brownsville, Texas.
+            We&apos;d love to welcome you to our family! Come visit us in
+            beautiful Brownsville, Texas.
           </p>
 
           <div className="bg-white bg-opacity-10 rounded-2xl p-8 mb-8 backdrop-blur-sm">
@@ -261,14 +291,17 @@ export default function AboutPage() {
               </Button>
             </Link>
             <Link href="/contact">
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-ocean-600">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-white text-white hover:bg-white hover:text-ocean-600"
+              >
                 Get In Touch
               </Button>
             </Link>
           </div>
         </div>
       </section>
-
     </div>
   )
 }

@@ -1,11 +1,14 @@
-"use client"
+'use client'
 
-import Link from "next/link"
-import { ShoppingCartIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
-import Button from "./ui/Button"
-import { useCart } from "@/app/context/CartContext"
-import { useState } from "react"
-import Image from "next/image"
+import Link from 'next/link'
+import {
+  ShoppingCartIcon,
+  MagnifyingGlassIcon,
+} from '@heroicons/react/24/outline'
+import Button from './ui/Button'
+import { useCart } from '@/app/context/CartContext'
+import { useState } from 'react'
+import Image from 'next/image'
 
 export default function Navbar() {
   const { itemCount } = useCart()
@@ -31,26 +34,26 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium"
             >
               Home
             </Link>
-            <Link 
-              href="/products" 
+            <Link
+              href="/products"
               className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium"
             >
               Products
             </Link>
-            <Link 
-              href="/about" 
+            <Link
+              href="/about"
               className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium"
             >
               About
             </Link>
-            <Link 
-              href="/contact" 
+            <Link
+              href="/contact"
               className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium"
             >
               Contact
@@ -78,7 +81,11 @@ export default function Navbar() {
 
             {/* CTA Button */}
             <Link href="/products">
-              <Button variant="primary" size="sm" className="hidden sm:inline-flex">
+              <Button
+                variant="primary"
+                size="sm"
+                className="hidden sm:inline-flex"
+              >
                 Shop Now
               </Button>
             </Link>
@@ -88,7 +95,12 @@ export default function Navbar() {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden p-2 text-ocean-600 hover:text-ocean-800 transition-colors"
             >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -104,29 +116,29 @@ export default function Navbar() {
         {isMenuOpen && (
           <div className="md:hidden border-t border-ocean-200/20 py-4">
             <div className="flex flex-col space-y-4">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Home
               </Link>
-              <Link 
-                href="/products" 
+              <Link
+                href="/products"
                 className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Products
               </Link>
-              <Link 
-                href="/about" 
+              <Link
+                href="/about"
                 className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
                 About
               </Link>
-              <Link 
-                href="/contact" 
+              <Link
+                href="/contact"
                 className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium py-2"
                 onClick={() => setIsMenuOpen(false)}
               >

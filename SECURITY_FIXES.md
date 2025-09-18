@@ -1,17 +1,21 @@
 # 🛡️ Security Vulnerability Fixes
 
 ## 📊 GitHub Security Alert Summary
+
 GitHub detected **12 vulnerabilities** in the repository:
+
 - 9 high severity
-- 2 moderate severity  
+- 2 moderate severity
 - 1 low severity
 
 ## 🔧 Fixes Applied
 
 ### 1. Package Overrides Added
+
 Added security overrides to force secure versions of vulnerable dependencies:
 
 **All Projects:**
+
 - `axios`: Updated to `^1.7.7` (fixes multiple CVEs)
 - `braces`: Updated to `^3.0.3` (fixes ReDoS vulnerability)
 - `ws`: Updated to `^8.18.0` (fixes WebSocket vulnerabilities)
@@ -22,12 +26,14 @@ Added security overrides to force secure versions of vulnerable dependencies:
 ### 2. Direct Dependency Updates
 
 **Frontend & Root:**
+
 - `@stripe/stripe-js`: `^7.9.0` → `^8.2.0`
 - `stripe`: `^18.5.0` → `^19.1.0`
 - `postcss`: `^8.5.6` → `^8.6.0`
 - `autoprefixer`: `^10.4.21` → `^10.4.20`
 
 **Backend:**
+
 - `pg`: `^8.13.0` → `^8.13.1`
 - `@types/node`: `^20.0.0` → `^22.10.2`
 - `typescript`: `^5.6.2` → `^5.7.2`
@@ -36,6 +42,7 @@ Added security overrides to force secure versions of vulnerable dependencies:
 ## 🔍 Vulnerabilities Addressed
 
 ### High Severity (9 issues):
+
 1. **CVE-2024-28849**: `axios` - Server-Side Request Forgery (SSRF)
 2. **CVE-2024-37890**: `ws` - WebSocket DoS vulnerability
 3. **CVE-2024-4067**: `micromatch` - ReDoS in glob patterns
@@ -47,21 +54,24 @@ Added security overrides to force secure versions of vulnerable dependencies:
 9. **CVE-2024-52809**: `vite` - Path traversal vulnerability
 
 ### Moderate Severity (2 issues):
+
 1. **CVE-2024-45721**: `@types/node` - Type definition vulnerabilities
 2. **CVE-2024-48949**: `autoprefixer` - CSS injection potential
 
 ### Low Severity (1 issue):
+
 1. **CVE-2024-43806**: `typescript` - Compiler security issue
 
 ## 🛠️ Implementation Strategy
 
 ### Package Overrides
+
 Used NPM's `overrides` feature to force secure versions of transitive dependencies without breaking compatibility:
 
 ```json
 "overrides": {
   "axios": "^1.7.7",
-  "braces": "^3.0.3", 
+  "braces": "^3.0.3",
   "ws": "^8.18.0",
   "path-to-regexp": "^8.2.0",
   "micromatch": "^4.0.8",
@@ -70,6 +80,7 @@ Used NPM's `overrides` feature to force secure versions of transitive dependenci
 ```
 
 ### Direct Updates
+
 Updated direct dependencies to latest secure versions while maintaining compatibility.
 
 ## ✅ Safety Measures
@@ -82,6 +93,7 @@ Updated direct dependencies to latest secure versions while maintaining compatib
 ## 🧪 Testing Recommendations
 
 After deployment, verify:
+
 1. All services start correctly
 2. Frontend loads without errors
 3. Backend API responds properly
@@ -107,13 +119,14 @@ After deployment, verify:
 ## 📋 Files Modified
 
 - `package.json` - Root dependencies and overrides
-- `ocean-backend/package.json` - Backend dependencies and overrides  
+- `ocean-backend/package.json` - Backend dependencies and overrides
 - `ocean-store/package.json` - Frontend dependencies and overrides
 - `SECURITY_FIXES.md` - This documentation (new)
 
 ## 🎯 Expected Results
 
 After pushing these changes:
+
 - GitHub security alerts should be resolved
 - All 12 vulnerabilities addressed
 - Application functionality maintained

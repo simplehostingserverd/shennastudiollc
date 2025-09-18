@@ -1,14 +1,18 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { useCart } from "@/app/context/CartContext"
-import Button from "./ui/Button"
-import { formatPrice } from "@/src/lib/utils"
-import { HeartIcon, ShoppingCartIcon, EyeIcon } from "@heroicons/react/24/outline"
-import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid"
-import Link from "next/link"
-import { Product, ProductOptionValue } from "@/src/lib/medusa"
-import Image from "next/image"
+import { useState } from 'react'
+import { useCart } from '@/app/context/CartContext'
+import Button from './ui/Button'
+import { formatPrice } from '@/src/lib/utils'
+import {
+  HeartIcon,
+  ShoppingCartIcon,
+  EyeIcon,
+} from '@heroicons/react/24/outline'
+import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid'
+import Link from 'next/link'
+import { Product, ProductOptionValue } from '@/src/lib/medusa'
+import Image from 'next/image'
 
 interface ProductCardProps {
   product: Product
@@ -19,10 +23,10 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [quantity, setQuantity] = useState(1)
   const [isLiked, setIsLiked] = useState(false)
   const [imageLoading, setImageLoading] = useState(true)
-  
+
   // Get the first available variant and its price
   const variant = product.variants?.[0]
-  const price = variant?.prices?.find(p => p.currency_code === 'usd')
+  const price = variant?.prices?.find((p) => p.currency_code === 'usd')
   const imageUrl = product.images?.[0]?.url || '/placeholder-product.jpg'
 
   const handleAddToCart = async () => {
@@ -54,7 +58,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             onLoad={() => setImageLoading(false)}
             onError={() => setImageLoading(false)}
           />
-          
+
           {/* Overlay Actions */}
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
             <div className="transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex space-x-2">
@@ -77,7 +81,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
           </div>
         </div>
-        
+
         {/* Badge */}
         {product.status === 'published' && (
           <div className="absolute top-3 left-3 bg-seafoam-gradient text-white px-2 py-1 rounded-full text-xs font-medium">
@@ -117,13 +121,14 @@ export default function ProductCard({ product }: ProductCardProps) {
             <div className="flex flex-wrap gap-1">
               {Object.entries(variant.options).map(
                 ([key, value]: [string, ProductOptionValue]) => (
-                <span
-                  key={key}
-                  className="inline-block bg-ocean-100 text-ocean-700 text-xs px-2 py-1 rounded-full"
-                >
-                  {value.value}
-                </span>
-              ))}
+                  <span
+                    key={key}
+                    className="inline-block bg-ocean-100 text-ocean-700 text-xs px-2 py-1 rounded-full"
+                  >
+                    {value.value}
+                  </span>
+                )
+              )}
             </div>
           </div>
         )}

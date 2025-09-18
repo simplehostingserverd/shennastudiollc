@@ -28,6 +28,7 @@ cp ocean-backend/.env.template ocean-backend/.env
 Edit `.env` and `ocean-backend/.env` with your production values:
 
 **Frontend (.env):**
+
 ```env
 NODE_ENV=production
 NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://your-domain.com:9000
@@ -37,6 +38,7 @@ NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=your_algolia_search_key
 ```
 
 **Backend (ocean-backend/.env):**
+
 ```env
 DATABASE_URL=postgresql://medusa_user:STRONG_PASSWORD_HERE@postgres:5432/ocean_store
 REDIS_URL=redis://redis:6379
@@ -76,25 +78,28 @@ docker-compose exec medusa-backend npm run seed
 
 ### 3. Access Points
 
-| Service | Local Development | Production |
-|---------|------------------|------------|
-| **Frontend** | http://localhost:3000 | https://your-domain.com |
+| Service          | Local Development     | Production                         |
+| ---------------- | --------------------- | ---------------------------------- |
+| **Frontend**     | http://localhost:3000 | https://your-domain.com            |
 | **Medusa Admin** | http://localhost:7001 | https://admin.your-domain.com:7001 |
-| **Medusa API** | http://localhost:9000 | https://api.your-domain.com:9000 |
-| **Database** | localhost:5433 | Internal only |
-| **Redis** | localhost:6379 | Internal only |
+| **Medusa API**   | http://localhost:9000 | https://api.your-domain.com:9000   |
+| **Database**     | localhost:5433        | Internal only                      |
+| **Redis**        | localhost:6379        | Internal only                      |
 
 ## 🔐 Admin Panel Access
 
 ### Default Credentials (CHANGE IMMEDIATELY!)
+
 - **Email:** admin@shennasstudio.com
 - **Password:** AdminPassword123!
 
 ### Admin Panel URLs
+
 - **Development:** http://localhost:7001
 - **Production:** https://admin.your-domain.com:7001
 
 ### First Login Steps:
+
 1. Navigate to the admin panel
 2. Login with default credentials
 3. **IMMEDIATELY** change password
@@ -109,7 +114,7 @@ docker-compose exec medusa-backend npm run seed
 server {
     listen 80;
     server_name your-domain.com www.your-domain.com;
-    
+
     location / {
         proxy_pass http://localhost:3000;
         proxy_set_header Host $host;
@@ -121,7 +126,7 @@ server {
 server {
     listen 7001 ssl;
     server_name admin.your-domain.com;
-    
+
     location / {
         proxy_pass http://localhost:7001;
         proxy_set_header Host $host;
@@ -133,7 +138,7 @@ server {
 server {
     listen 9000 ssl;
     server_name api.your-domain.com;
-    
+
     location / {
         proxy_pass http://localhost:9000;
         proxy_set_header Host $host;
@@ -156,11 +161,13 @@ server {
 ## 🔄 Maintenance Commands
 
 ### Backup Database
+
 ```bash
 docker-compose exec postgres pg_dump -U medusa_user ocean_store > backup_$(date +%Y%m%d_%H%M%S).sql
 ```
 
 ### View Logs
+
 ```bash
 # All services
 docker-compose logs -f
@@ -171,6 +178,7 @@ docker-compose logs -f medusa-backend
 ```
 
 ### Update Services
+
 ```bash
 # Pull latest images and rebuild
 docker-compose pull
@@ -197,6 +205,7 @@ docker-compose up -d --build
    - Review container logs for specific errors
 
 ### Health Checks
+
 ```bash
 # Check service health
 curl http://localhost:3000/health
@@ -224,6 +233,7 @@ curl http://localhost:7001
 ## 📞 Support
 
 If you encounter issues:
+
 1. Check the logs first
 2. Review environment variables
 3. Ensure all required services are running

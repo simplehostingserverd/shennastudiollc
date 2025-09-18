@@ -1,13 +1,10 @@
-import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
+import { MedusaRequest, MedusaResponse } from '@medusajs/framework/http'
 
-export async function GET(
-  req: MedusaRequest,
-  res: MedusaResponse
-) {
+export async function GET(req: MedusaRequest, res: MedusaResponse) {
   // Simple health check - just return 200 if the server is running
-  res.status(200).json({ 
-    status: "healthy", 
+  res.status(200).json({
+    status: 'healthy',
     timestamp: new Date().toISOString(),
-    service: "medusa-backend"
-  });
+    service: 'medusa-backend',
+  })
 }

@@ -2,7 +2,13 @@
 const nextConfig = {
   output: 'standalone',
   images: {
-    domains: ['localhost', 'res.cloudinary.com', 'shennastudio.com', 'www.shennastudio.com', 'api.shennastudio.com'],
+    domains: [
+      'localhost',
+      'res.cloudinary.com',
+      'shennastudio.com',
+      'www.shennastudio.com',
+      'api.shennastudio.com',
+    ],
     unoptimized: true, // For static assets in production
   },
   env: {
@@ -17,6 +23,6 @@ const nextConfig = {
   outputFileTracingIncludes: {
     '/': ['./public/**/*', './app/globals.css'],
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig

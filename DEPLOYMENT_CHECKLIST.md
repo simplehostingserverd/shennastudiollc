@@ -5,6 +5,7 @@ Use this checklist to ensure a successful deployment to your Coolify VPS.
 ## ✅ Pre-Deployment Checklist
 
 ### 1. Repository Setup
+
 - [ ] Code pushed to GitHub repository
 - [ ] Remove duplicate `ocean-backend` folder (✅ Done)
 - [ ] All Docker configurations updated and tested
@@ -12,12 +13,14 @@ Use this checklist to ensure a successful deployment to your Coolify VPS.
 - [ ] Environment variable template created (✅ Done)
 
 ### 2. Coolify Server Setup
+
 - [ ] Coolify VPS server is running and accessible
 - [ ] Domain names configured and pointing to server IP
 - [ ] SSL certificates will be handled automatically by Coolify
 - [ ] Docker and Docker Compose available on the server
 
 ### 3. Database Services in Coolify
+
 - [ ] PostgreSQL service created:
   - Name: `shenna-postgres` (or your preferred name)
   - Version: `15-alpine`
@@ -32,6 +35,7 @@ Use this checklist to ensure a successful deployment to your Coolify VPS.
 ## 🔧 Deployment Configuration
 
 ### 4. Docker Compose Files Available
+
 - [ ] `docker-compose.yml` - Local development with databases
 - [ ] `docker-compose.coolify.yml` - Coolify production (uses external databases)
 - [ ] Individual Dockerfiles working:
@@ -39,27 +43,33 @@ Use this checklist to ensure a successful deployment to your Coolify VPS.
   - [ ] `ocean-store/Dockerfile` - Next.js frontend with health checks
 
 ### 5. Environment Variables Configuration
+
 Copy from `.env.coolify.example` and set in Coolify:
 
 #### Required Database Variables
+
 - [ ] `DATABASE_URL` - PostgreSQL connection from Coolify service
 - [ ] `REDIS_URL` - Redis connection from Coolify service
 
 #### Required Security Variables (Generate strong random strings)
+
 - [ ] `JWT_SECRET` - Minimum 32 characters
 - [ ] `COOKIE_SECRET` - Minimum 32 characters
 - [ ] `ADMIN_PASSWORD` - Strong password for admin user
 
 #### Required CORS Variables (Update with your domains)
+
 - [ ] `STORE_CORS` - Frontend domains
-- [ ] `ADMIN_CORS` - Admin panel domains  
+- [ ] `ADMIN_CORS` - Admin panel domains
 - [ ] `AUTH_CORS` - Auth domains
 
 #### Required Payment Variables (Stripe)
+
 - [ ] `STRIPE_SECRET_KEY` - Production Stripe secret key
 - [ ] `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Production Stripe publishable key
 
 #### Optional but Recommended
+
 - [ ] `ADMIN_EMAIL` - Admin user email
 - [ ] `ALGOLIA_APPLICATION_ID` - Search functionality
 - [ ] `ALGOLIA_SEARCH_API_KEY` - Search API key
@@ -70,9 +80,11 @@ Copy from `.env.coolify.example` and set in Coolify:
 ## 🚀 Deployment Steps
 
 ### 6. Deploy to Coolify
+
 Choose one of these deployment methods:
 
 #### Option A: Docker Compose (Recommended)
+
 - [ ] Create new "Docker Compose" application in Coolify
 - [ ] Use `docker-compose.coolify.yml` from repository
 - [ ] Configure domains:
@@ -81,6 +93,7 @@ Choose one of these deployment methods:
   - [ ] API: `api.shennasstudio.com` (port 9000)
 
 #### Option B: Separate Applications
+
 - [ ] Backend application (Dockerfile: `ocean-backend/Dockerfile`)
   - [ ] Port 9000 → `api.shennasstudio.com`
   - [ ] Port 7001 → `admin.shennasstudio.com`
@@ -89,15 +102,17 @@ Choose one of these deployment methods:
   - [ ] Add: `NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.shennasstudio.com`
 
 ### 7. Verify Deployment
+
 - [ ] All services started successfully
 - [ ] Database migrations completed automatically
-- [ ] Admin user created automatically  
+- [ ] Admin user created automatically
 - [ ] Sample data seeded (if enabled)
 - [ ] Health check endpoints responding:
   - [ ] `https://shennasstudio.com/api/health`
   - [ ] `https://api.shennasstudio.com/health`
 
 ### 8. Post-Deployment Setup
+
 - [ ] Admin panel accessible: `https://admin.shennasstudio.com`
 - [ ] Login with configured admin credentials
 - [ ] Change default admin password (if using default)
@@ -108,6 +123,7 @@ Choose one of these deployment methods:
 ## 🔍 Testing Checklist
 
 ### 9. Functional Testing
+
 - [ ] Frontend loads: `https://shennasstudio.com`
 - [ ] Admin panel loads: `https://admin.shennasstudio.com`
 - [ ] API responds: `https://api.shennasstudio.com/health`
@@ -118,6 +134,7 @@ Choose one of these deployment methods:
 - [ ] Admin can manage products, orders, customers
 
 ### 10. Performance Testing
+
 - [ ] Site loads quickly (< 3 seconds)
 - [ ] Images optimize properly (if Cloudinary configured)
 - [ ] Search works (if Algolia configured)
@@ -129,26 +146,31 @@ Choose one of these deployment methods:
 ### Common Issues and Solutions
 
 **Container won't start:**
+
 - Check Coolify logs for specific error messages
 - Verify all required environment variables are set
 - Ensure database services are running and accessible
 
 **Database connection errors:**
+
 - Verify `DATABASE_URL` format is correct
 - Check PostgreSQL service is running
 - Test network connectivity between services
 
 **CORS errors:**
+
 - Update CORS environment variables with exact domains
 - Include both `http://` and `https://` if needed
 - Check domain spellings match exactly
 
 **Admin panel inaccessible:**
+
 - Verify `ADMIN_CORS` includes the admin domain
 - Check admin user was created successfully
 - Review backend logs for authentication errors
 
 **Payment processing issues:**
+
 - Verify Stripe keys are production keys
 - Configure Stripe webhook endpoint
 - Test with Stripe test mode first
@@ -160,13 +182,14 @@ Choose one of these deployment methods:
 - **Deployment Guide**: `COOLIFY_DEPLOYMENT.md`
 - **Backend Dockerfile**: `ocean-backend/Dockerfile`
 - **Frontend Dockerfile**: `ocean-store/Dockerfile`
-- **Health Endpoints**: 
+- **Health Endpoints**:
   - Frontend: `ocean-store/app/api/health/route.ts`
   - Backend: Built into Medusa
 
 ## ✅ Success Criteria
 
 Deployment is successful when:
+
 - [ ] All health check endpoints return 200 OK
 - [ ] Frontend displays product catalog
 - [ ] Admin panel is accessible and functional

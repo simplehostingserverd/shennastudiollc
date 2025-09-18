@@ -11,37 +11,37 @@ services:
     container_name: shenna-medusa-backend-prod
     restart: unless-stopped
     ports:
-      - "9000:9000"    # API
-      - "7001:7001"    # Admin Panel
+      - '9000:9000' # API
+      - '7001:7001' # Admin Panel
     environment:
       # Database - Use the provided DATABASE_URL and REDIS_URL directly
       - DATABASE_URL=${DATABASE_URL}
       - DATABASE_SSL=${DATABASE_SSL:-false}
       - DATABASE_SSL_REJECT_UNAUTHORIZED=${DATABASE_SSL_REJECT_UNAUTHORIZED:-true}
       - REDIS_URL=${REDIS_URL}
-      
+
       # Security - Use strong production secrets
       - NODE_ENV=production
       - JWT_SECRET=${JWT_SECRET}
       - COOKIE_SECRET=${COOKIE_SECRET}
-      
+
       # CORS Configuration for production
       - STORE_CORS=https://shennastudio.com,https://www.shennastudio.com
       - ADMIN_CORS=https://admin.shennastudio.com
       - AUTH_CORS=https://shennastudio.com,https://www.shennastudio.com
-      
+
       # Admin Setup
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennastudio.com}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      
+
       # Auto-initialization for production
       - AUTO_MIGRATE=true
       - AUTO_SEED=true
       - AUTO_CREATE_ADMIN=true
-      
+
       # Startup mode
       - STARTUP_MODE=${STARTUP_MODE:-full}
-      
+
       # Medusa Configuration
       - MEDUSA_ADMIN_ONBOARDING_TYPE=${MEDUSA_ADMIN_ONBOARDING_TYPE:-default}
       - MEDUSA_ADMIN_ONBOARDING_NEXTJS=${MEDUSA_ADMIN_ONBOARDING_NEXTJS:-true}
@@ -51,10 +51,10 @@ services:
     networks:
       - shenna-network-prod
     labels:
-      - "coolify.managed=true"
-      - "coolify.name=backend"
+      - 'coolify.managed=true'
+      - 'coolify.name=backend'
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/health']
       interval: 30s
       timeout: 15s
       retries: 5
@@ -68,24 +68,24 @@ services:
     container_name: shenna-frontend-prod
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       # Backend Connection - Set this in Coolify environment variables
       - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL}
-      
+
       # Payment Processing - Use production Stripe keys
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
-      
+
       # Search (Algolia Production)
       - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${ALGOLIA_APPLICATION_ID}
       - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${ALGOLIA_SEARCH_API_KEY}
-      
+
       # Image Optimization (Cloudinary Production)
       - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
       - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
       - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
-      
+
       # App Configuration
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
@@ -96,10 +96,10 @@ services:
     networks:
       - shenna-network-prod
     labels:
-      - "coolify.managed=true"
-      - "coolify.name=frontend"
+      - 'coolify.managed=true'
+      - 'coolify.name=frontend'
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000']
       interval: 30s
       timeout: 15s
       retries: 5
