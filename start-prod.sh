@@ -6,6 +6,11 @@ export NODE_ENV=production
 export HOSTNAME=0.0.0.0
 export PORT=3000
 
+# Build frontend with environment variables available
+echo "🔨 Building Next.js frontend with production environment variables..."
+echo "  Backend URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL}"
+npm run build
+
 # Start backend in background with proper environment
 echo "🚀 Starting Medusa backend with environment variables..."
 echo "  Redis URL: ${REDIS_URL:0:20}..."

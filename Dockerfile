@@ -24,9 +24,8 @@ COPY . .
 # Install backend dependencies
 RUN cd ocean-backend && npm install --legacy-peer-deps && npm cache clean --force
 
-# Build frontend (Next.js)
+# Skip frontend build at Docker build time - will build at runtime with env vars
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
 
 # Skip backend build at Docker build time (will build at runtime with env vars)
 
