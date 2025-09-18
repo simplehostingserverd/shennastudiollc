@@ -16,9 +16,11 @@ export default async function fixAuth({ container }: ExecArgs) {
     logger.info('🗑️ Deleting broken auth identities...')
     const allIdentities = await authService.listAuthIdentities()
     for (const identity of allIdentities) {
-      if (!identity.entity_id || !identity.provider) {
-        await authService.deleteAuthIdentities(identity.id)
-        logger.info(`Deleted broken identity: ${identity.id}`)
+      try {
+        await authService.deleteAuthIdentities([identity.id])
+        logger.info(`Deleted identity: ${identity.id}`)
+      } catch (error) {
+        logger.warn(`Failed to delete identity ${identity.id}: ${error}`)
       }
     }
 

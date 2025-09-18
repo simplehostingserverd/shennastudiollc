@@ -24,7 +24,7 @@ export default async function createAdminUser({ container }: ExecArgs) {
 
       // Delete existing user and recreate to ensure proper auth setup
       logger.info('🗑️ Deleting existing admin user to recreate...')
-      await userService.deleteUsers(adminUser.id)
+      await userService.deleteUsers([adminUser.id])
 
       // Create the admin user fresh
       const newAdminUser = await userService.createUsers({
