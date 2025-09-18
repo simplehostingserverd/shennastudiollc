@@ -1,6 +1,5 @@
-# Coolify Configuration
-# This file tells Coolify to use Docker Compose instead of Nixpacks
+# Coolify Configuration for Shenna's Studio
+# Ocean-themed e-commerce platform with Next.js frontend and Medusa backend
 
-version: "3.8"
-build_pack: docker-compose
-dockerfile: docker-compose.coolify-simple.yml
+build_pack: dockerfile
+dockerfile: Dockerfile
