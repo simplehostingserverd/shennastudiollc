@@ -11,7 +11,7 @@ fi
 # Wait for database to be ready with timeout
 echo "⏳ Waiting for database connection..."
 # Extract host and port from DATABASE_URL
-DB_HOST=$(echo $DATABASE_URL | sed -n "s/.*@\([^:]*\):.*/\1/p")
+DB_HOST=$(echo $DATABASE_URL | sed -n "s/.*@\([^:/]*\):.*/\1/p")
 DB_PORT=$(echo $DATABASE_URL | sed -n "s/.*:\([0-9]*\)\/.*/\1/p")
 DB_PORT=${DB_PORT:-5432}
 if [ -n "$DB_HOST" ]; then

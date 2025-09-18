@@ -37,7 +37,7 @@ export default async function debugAuth({ container }: ExecArgs) {
       logger.info(`Found ${adminIdentities.length} auth identities for admin user:`)
       adminIdentities.forEach(identity => {
         logger.info(`- Provider: ${(identity as any).provider_id || 'unknown'}`)
-        logger.info(`- Identity created: ${identity.created_at}`)
+        logger.info(`- Identity ID: ${identity.id}`)
       })
     } else {
       logger.warn('❌ No admin user found!')
