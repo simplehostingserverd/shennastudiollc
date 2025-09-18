@@ -55,7 +55,8 @@
       "Bash(rd:*)",
       "Bash(del medusa_dev.db)",
       "Bash(rm:*)",
-      "Bash(npx prettier:*)"
+      "Bash(npx prettier:*)",
+      "Bash(del test-db-connection.js test-alternative-connection.js test-supabase-connectivity.cjs decode-password.js)"
     ],
     "deny": [],
     "ask": []
