@@ -76,7 +76,6 @@ export default function HomePage() {
           loop
           muted
           playsInline
-          webkit-playsinline
           controls={false}
           preload="metadata"
           poster="/ShennasLogo.png"

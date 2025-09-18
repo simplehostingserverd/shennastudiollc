@@ -198,7 +198,6 @@ button:hover {
 
 /* Mobile Video Optimizations for iOS/iPhone */
 video {
-  -webkit-playsinline: true;
   -webkit-appearance: none;
   outline: none;
 }

@@ -26,6 +26,7 @@ export default function Navbar() {
               width={150}
               height={150}
               className="h-10 w-auto object-contain group-hover:scale-105 transition-transform"
+              style={{ width: 'auto', height: '2.5rem' }}
             />
             <span className="text-xl font-display font-bold text-white">
               Shenna&apos;s Studio

@@ -13,7 +13,6 @@ export default function AboutPage() {
           autoPlay
           loop
           playsInline
-          webkit-playsinline="true"
           controls={false}
           preload="metadata"
           poster="/ShennasLogo.png"
