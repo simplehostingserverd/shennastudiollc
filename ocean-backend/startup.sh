@@ -1,5 +1,6 @@
 #!/bin/sh
 echo "🌊 Starting Shenna Studio Backend..."
+echo "🔧 Startup Mode: ${STARTUP_MODE:-full}"
 
 # Set default Redis URL if not provided
 if [ -z "$REDIS_URL" ]; then
@@ -44,10 +45,15 @@ if [ "$AUTO_MIGRATE" = "true" ]; then
   fi
 fi
 
-# Auto-create admin if enabled (skip for now due to compilation issues)
+# Auto-create admin if enabled
 if [ "$AUTO_CREATE_ADMIN" = "true" ]; then
-  echo "👤 Skipping admin user creation (will create manually later)..."
-  echo "⚠️  Admin user creation skipped due to compilation issues"
+  echo "👤 Creating admin user..."
+  if timeout 60 npm run create-admin 2>/dev/null; then
+    echo "✅ Admin user created successfully"
+  else
+    echo "⚠️  Admin user creation failed or timed out, but continuing..."
+    echo "   You can create admin manually later with: npm run create-admin"
+  fi
 fi
 
 # Auto-seed if enabled (skip on errors to allow server to start)

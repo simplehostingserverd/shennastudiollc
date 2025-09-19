@@ -48,7 +48,7 @@ EXPOSE 3000 9000 7001
 
 # Health check for the combined service
 HEALTHCHECK --interval=30s --timeout=15s --start-period=180s --retries=5 \
-    CMD curl -f http://localhost:3000 > /dev/null 2>&1 || curl -f http://localhost:9000/health > /dev/null 2>&1 || exit 1
+    CMD curl -f http://localhost:3000 >/dev/null 2>&1 && curl -f http://localhost:9000/health >/dev/null 2>&1 || exit 1
 
 # Use production startup script
 CMD ["/app/start-prod.sh"]

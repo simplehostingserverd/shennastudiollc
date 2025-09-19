@@ -4,7 +4,8 @@ echo "🌊 Starting Shenna's Studio Production Environment"
 # Set production environment
 export NODE_ENV=production
 export HOSTNAME=0.0.0.0
-export PORT=3000
+# Use PORT from environment or default to 3000
+export PORT=${PORT:-3000}
 
 # Build frontend with environment variables available
 echo "🔨 Building Next.js frontend with production environment variables..."
