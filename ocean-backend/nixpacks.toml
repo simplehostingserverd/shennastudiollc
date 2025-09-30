@@ -7,11 +7,11 @@ cmds = ["npm ci --include=dev"]
 [phases.build]
 cmds = [
   "npm run build",
-  "npx medusa migrations run"
+  "npx medusa migrations run || echo 'Migrations will run at startup'"
 ]
 
 [start]
-cmd = "npm start"
+cmd = "npx medusa migrations run && medusa start"
 
 [[ports]]
 port = "9000"
