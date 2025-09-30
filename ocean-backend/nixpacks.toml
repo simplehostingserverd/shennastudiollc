@@ -1,2 +1,19 @@
-# Use Docker instead of Nixpacks
-providers = []
+[phases.setup]
+nixPkgs = ["nodejs_20", "npm"]
+
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npm start"
+
+[[ports]]
+port = "9000"
+protocol = "tcp"
+
+[variables]
+NODE_ENV = "production"
+NODE_OPTIONS = "--experimental-vm-modules"
