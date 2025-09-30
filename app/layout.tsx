@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { CartProvider } from '@/app/context/CartContext'
-import Navbar from '@/app/components/Navbar'
+import Navbar from '@/app/components/NavBar'
 import Footer from '@/app/components/Footer'
 import './globals.css'
 
