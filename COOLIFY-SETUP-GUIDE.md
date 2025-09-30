@@ -32,19 +32,22 @@ This is a monorepo with two separate deployments:
 
 ### Step 2: Configure Backend Domains
 
-Add the following domains in the **Domains** section:
+Add the following domain in the **Domains** section:
 
 ```
 https://api.shennastudio.com
-https://admin.shennastudio.com
 ```
+
+**Note**: The admin panel is served at `https://api.shennastudio.com/app` on the same domain as the API. You can optionally create a redirect in Cloudflare from `admin.shennastudio.com` to `api.shennastudio.com/app`.
 
 ### Step 3: Configure Backend Ports
 
 In the **Network** section, set:
 
 - **Ports Exposes**: `9000`
-- **Ports Mappings**: `9000:9000,7001:7001`
+- **Ports Mappings**: `9000:9000`
+
+**Note**: Both API and Admin run on port 9000. Admin is accessible at `/app` path.
 
 ### Step 4: Backend Environment Variables
 

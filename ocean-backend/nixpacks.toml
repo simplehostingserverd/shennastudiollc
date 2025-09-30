@@ -17,12 +17,7 @@ cmd = "npm start"
 port = "9000"
 protocol = "tcp"
 
-[[ports]]
-port = "7001"
-protocol = "tcp"
-
 [variables]
 NODE_ENV = "production"
 NODE_OPTIONS = "--experimental-vm-modules"
 PORT = "9000"
-ADMIN_PORT = "7001"
