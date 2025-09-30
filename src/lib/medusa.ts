@@ -118,6 +118,13 @@ const createMedusaClient = async (): Promise<MedusaClient> => {
           (process.env.NODE_ENV === 'production' ? 'https://api.shennastudio.com' : 'http://localhost:9000'),
         debug: process.env.NODE_ENV === 'development',
         publishableKey: process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
+        auth: {
+          type: 'session',
+        },
+        // Ensure credentials are included in requests
+        fetchOptions: {
+          credentials: 'include',
+        },
       })
       return medusaClient
     } else {
