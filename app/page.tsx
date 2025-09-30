@@ -88,15 +88,8 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-ocean-900/30 to-transparent"></div>
 
-        {/* Floating particles animation */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white/20 rounded-full animate-ping animation-delay-1000"></div>
-          <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-white/30 rounded-full animate-pulse animation-delay-2000"></div>
-          <div className="absolute bottom-1/3 left-1/2 w-3 h-3 bg-white/10 rounded-full animate-bounce animation-delay-3000"></div>
-        </div>
-
         <div className="relative z-10 text-center max-w-6xl mx-auto px-4">
-          <div className="mb-8 animate-fade-in-up">
+          <div className="mb-8">
             <div className="mb-6">
               <Image
                 src="/ShennasLogo.png"
@@ -122,7 +115,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-fade-in-up animation-delay-500">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Link href="#products">
               <Button
                 variant="primary"

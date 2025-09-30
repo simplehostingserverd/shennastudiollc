@@ -39,7 +39,7 @@ body {
   min-height: 100vh;
 }
 
-/* Elegant animations */
+/* Simple fade-in animation */
 @keyframes fade-in-up {
   from {
     opacity: 0;
@@ -51,42 +51,8 @@ body {
   }
 }
 
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
 .animate-fade-in-up {
   animation: fade-in-up 0.8s ease-out;
-}
-
-.animation-delay-500 {
-  animation-delay: 0.5s;
-  animation-fill-mode: both;
-}
-
-.animation-delay-1000 {
-  animation-delay: 1s;
-  animation-fill-mode: both;
-}
-
-.animation-delay-2000 {
-  animation-delay: 2s;
-  animation-fill-mode: both;
-}
-
-.animation-delay-3000 {
-  animation-delay: 3s;
-  animation-fill-mode: both;
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
 }
 
 /* Text utilities */
@@ -132,36 +98,6 @@ h6 {
   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
 }
 
-.wave-animation {
-  animation: wave 3s ease-in-out infinite;
-}
-
-@keyframes wave {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-.float-animation {
-  animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  33% {
-    transform: translateY(-10px) rotate(1deg);
-  }
-  66% {
-    transform: translateY(5px) rotate(-1deg);
-  }
-}
 
 a {
   color: inherit;
@@ -246,15 +182,6 @@ video::-webkit-media-controls-enclosure {
   pointer-events: none;
 }
 
-@keyframes ocean-wave {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
 
 .product-detail-background {
   background-image: url('/reeftrench.jpg');

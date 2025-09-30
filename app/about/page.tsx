@@ -22,7 +22,7 @@ export default function AboutPage() {
         </video>
         <div className="absolute inset-0 bg-ocean-500 opacity-20"></div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="text-6xl mb-6 animate-float">🌊</div>
+          <div className="text-6xl mb-6">🌊</div>
           <h1 className="text-4xl md:text-6xl font-display font-bold mb-6">
             About Shenna&apos;s Studio
           </h1>
@@ -31,29 +31,6 @@ export default function AboutPage() {
             dedicated to bringing the beauty of the ocean into your everyday
             life.
           </p>
-        </div>
-
-        {/* Floating elements - hidden on mobile */}
-        <div className="absolute top-20 left-10 text-4xl animate-float opacity-60 hidden sm:block">
-          🐢
-        </div>
-        <div
-          className="absolute top-40 right-16 text-3xl animate-float opacity-40 hidden sm:block"
-          style={{ animationDelay: '1s' }}
-        >
-          🐠
-        </div>
-        <div
-          className="absolute bottom-32 left-20 text-3xl animate-float opacity-50 hidden md:block"
-          style={{ animationDelay: '2s' }}
-        >
-          🦀
-        </div>
-        <div
-          className="absolute bottom-20 right-10 text-4xl animate-float opacity-30 hidden sm:block"
-          style={{ animationDelay: '3s' }}
-        >
-          🌺
         </div>
       </section>
 

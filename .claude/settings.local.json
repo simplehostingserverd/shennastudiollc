@@ -58,7 +58,9 @@
       "Bash(npx prettier:*)",
       "Bash(del test-db-connection.js test-alternative-connection.js test-supabase-connectivity.cjs decode-password.js)",
       "WebFetch(domain:www.shennastudio.com)",
-      "WebFetch(domain:api.shennastudio.com)"
+      "WebFetch(domain:api.shennastudio.com)",
+      "Bash(npx prisma generate:*)",
+      "Read(//c/Users/Shadow/Documents/Collections&Derogatory/**)"
     ],
     "deny": [],
     "ask": []

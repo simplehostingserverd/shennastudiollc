@@ -81,43 +81,130 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // Enhanced JSON-LD schemas for comprehensive SEO
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: "Shenna's Studio",
+    description:
+      'Premium ocean-inspired products supporting marine conservation',
+    url: 'https://shennastudio.com',
+    logo: 'https://shennastudio.com/ShennasLogo.png',
+    image: 'https://shennastudio.com/ShennasLogo.png',
+    telephone: '+1-956-XXX-XXXX',
+    email: 'contact@shennastudio.com',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: '2436 Pablo Kisel Boulevard',
+      addressLocality: 'Brownsville',
+      addressRegion: 'TX',
+      postalCode: '78526',
+      addressCountry: 'US',
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      email: 'contact@shennastudio.com',
+      availableLanguage: 'English',
+    },
+    sameAs: [
+      'https://www.facebook.com/shennastudio',
+      'https://www.instagram.com/shennastudio',
+    ],
+    foundingDate: '2024',
+    founder: [
+      {
+        '@type': 'Person',
+        name: 'Shenna',
+        jobTitle: 'Creative Founder',
+      },
+      {
+        '@type': 'Person',
+        name: 'Michael',
+        jobTitle: 'Technical Co-Founder',
+        affiliation: {
+          '@type': 'Organization',
+          name: 'SoftwarePros Inc',
+          url: 'https://www.softwarepros.org/',
+        },
+      },
+    ],
+  }
+
+  const localBusinessSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Store',
+    name: "Shenna's Studio",
+    description:
+      'Family-owned business offering ocean-inspired products with 10% of proceeds donated to marine conservation',
+    url: 'https://shennastudio.com',
+    logo: 'https://shennastudio.com/ShennasLogo.png',
+    image: 'https://shennastudio.com/ShennasLogo.png',
+    priceRange: '$$',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: '2436 Pablo Kisel Boulevard',
+      addressLocality: 'Brownsville',
+      addressRegion: 'TX',
+      postalCode: '78526',
+      addressCountry: 'US',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: '25.9017',
+      longitude: '-97.4975',
+    },
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ],
+      opens: '00:00',
+      closes: '23:59',
+    },
+    paymentAccepted: 'Credit Card, Debit Card, Visa, Mastercard, Stripe',
+  }
+
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: "Shenna's Studio",
+    url: 'https://shennastudio.com',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://shennastudio.com/products?q={search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
   return (
     <html lang="en">
       <head>
+        {/* Organization Schema */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Organization',
-              name: "Shenna's Studio",
-              description:
-                'Premium ocean-inspired products supporting marine conservation',
-              url: 'https://shennastudio.com',
-              logo: 'https://shennastudio.com/ShennasLogo.png',
-              contactPoint: {
-                '@type': 'ContactPoint',
-                contactType: 'customer service',
-                email: 'contact@shennastudio.com',
-              },
-              sameAs: [
-                'https://www.facebook.com/shennastudio',
-                'https://www.instagram.com/shennastudio',
-              ],
-              foundingDate: '2024',
-              founder: {
-                '@type': 'Person',
-                name: 'Shenna',
-              },
-              makesOffer: {
-                '@type': 'Offer',
-                itemOffered: {
-                  '@type': 'Product',
-                  category:
-                    'Ocean-inspired products, Marine life accessories, Nautical home decor',
-                },
-              },
-            }),
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+        {/* Local Business Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessSchema),
+          }}
+        />
+        {/* Website Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema),
           }}
         />
       </head>
