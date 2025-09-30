@@ -86,16 +86,17 @@ openssl rand -hex 32
 
 #### CORS Configuration (⚠️ CRITICAL - Must be exact)
 ```bash
-STORE_CORS=https://shennastudio.com,https://www.shennastudio.com
+STORE_CORS=https://www.shennastudio.com
 ADMIN_CORS=https://admin.shennastudio.com
-AUTH_CORS=https://shennastudio.com,https://www.shennastudio.com
+AUTH_CORS=https://www.shennastudio.com
 ```
 
 **IMPORTANT**:
-- No spaces between domains in the comma-separated list
+- Only allows requests from www.shennastudio.com (restrictive for security)
 - Must include `https://` protocol
-- Must match your exact frontend domains
+- Must match your exact frontend domain
 - Backend must be restarted after changing these values
+- Non-www requests will redirect via Cloudflare to www subdomain
 
 #### Auto-Initialization
 ```bash
@@ -340,13 +341,16 @@ In your Cloudflare DNS settings, add the following A records:
 **Symptoms**: Console shows "blocked by CORS policy: No 'Access-Control-Allow-Origin' header"
 
 **Solutions**:
-1. Verify backend `STORE_CORS` includes both frontend domains:
+1. Verify backend `STORE_CORS` is set to your primary domain:
    ```
-   STORE_CORS=https://shennastudio.com,https://www.shennastudio.com
+   STORE_CORS=https://www.shennastudio.com
    ```
-2. Check `AUTH_CORS` is also set correctly
-3. Ensure no spaces in the comma-separated list
-4. Verify `https://` is included (not `http://`)
+2. Check `AUTH_CORS` is also set correctly:
+   ```
+   AUTH_CORS=https://www.shennastudio.com
+   ```
+3. Verify `https://` is included (not `http://`)
+4. Ensure Cloudflare redirects non-www to www for consistency
 5. Restart backend deployment after changing CORS settings
 6. Check backend logs for startup errors
 7. Test backend directly: `curl https://api.shennastudio.com/health`
@@ -499,7 +503,7 @@ NODE_ENV=production
 PORT=3000
 NEXT_TELEMETRY_DISABLED=1
 
-# Backend
+# Backend (must match STORE_CORS on backend)
 NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.shennastudio.com
 NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_your_key_here
 
@@ -519,6 +523,8 @@ CLOUDINARY_API_SECRET=your_api_secret
 NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=your_app_id
 NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=your_search_key
 ```
+
+**Note**: Ensure Cloudflare redirects `shennastudio.com` to `www.shennastudio.com` so all traffic uses the www subdomain that CORS allows.
 
 ---
 

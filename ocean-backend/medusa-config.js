@@ -35,10 +35,10 @@ module.exports = defineConfig({
 
     // HTTP / security settings
     http: {
-      // CORS origins for your store and admin
-      storeCors: process.env.STORE_CORS || 'https://shennastudio.com,https://www.shennastudio.com',
-      adminCors: process.env.ADMIN_CORS || 'https://api.shennastudio.com',
-      authCors: process.env.AUTH_CORS || process.env.STORE_CORS || 'https://shennastudio.com,https://www.shennastudio.com',
+      // CORS origins for your store and admin (restrictive - only your domain)
+      storeCors: process.env.STORE_CORS || 'https://www.shennastudio.com',
+      adminCors: process.env.ADMIN_CORS || 'https://admin.shennastudio.com',
+      authCors: process.env.AUTH_CORS || process.env.STORE_CORS || 'https://www.shennastudio.com',
 
       // JWT & Cookie secrets must be strong in production
       jwtSecret: process.env.JWT_SECRET || 'supersecret-build-time-fallback',
