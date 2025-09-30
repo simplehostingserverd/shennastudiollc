@@ -66,12 +66,17 @@ DATABASE_SSL_REJECT_UNAUTHORIZED=false
 
 **Note**: Replace with your actual Supabase connection string. Use the **Transaction** pooling mode connection string.
 
-#### Redis Configuration
+#### Redis Configuration (⚠️ REQUIRED for Production)
 ```bash
 REDIS_URL=redis://default:[password]@[host]:6379/0
 ```
 
-**Note**: Replace with your actual Redis connection string.
+**CRITICAL**:
+- Redis is REQUIRED for production - without it, the backend will use in-memory storage
+- In-memory storage will leak memory and won't scale
+- Without Redis, sessions won't persist across restarts
+- Get a Redis instance from: Upstash, Railway, Redis Cloud, or self-hosted
+- **DO NOT deploy to production without Redis**
 
 #### Security Secrets
 ```bash
@@ -325,10 +330,27 @@ In your Cloudflare DNS settings, add the following A records:
 - Verify `DATABASE_URL` is correct
 - Check Supabase connection string uses Transaction pooling (port 6543)
 - Ensure `DATABASE_SSL=true` is set
+- Verify database credentials are correct
 
-#### "Redis connection failed"
-- Verify `REDIS_URL` is correct
-- Check Redis instance is running and accessible
+#### "Redis connection failed" or "redisUrl not found"
+**Critical Issue**: Backend is using fake in-memory Redis (NOT production-ready)
+
+**Solutions**:
+1. Set up a Redis instance (Upstash, Railway, Redis Cloud, etc.)
+2. Add `REDIS_URL` environment variable to backend
+3. Format: `redis://default:password@host:port/0`
+4. Restart backend after adding REDIS_URL
+5. Check logs to verify "redisUrl not found" warning disappears
+
+#### "Could not find index.html in the admin build directory"
+**Symptoms**: Backend fails to start with admin build error
+
+**Solutions**:
+1. Ensure build phase runs before start
+2. Check build logs for errors during `npm run build`
+3. Verify dev dependencies are installed (`npm ci --include=dev`)
+4. Make sure `medusa build` completes successfully
+5. Check that `/build` directory exists after build phase
 
 #### "Admin panel returns 404"
 - Verify `ADMIN_PORT=7001` is set
