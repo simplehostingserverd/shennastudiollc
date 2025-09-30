@@ -2,17 +2,21 @@
 nixPkgs = ["nodejs_20"]
 
 [phases.install]
-cmds = ["npm ci"]
+cmds = [
+  "npm ci",
+  "npm install -g pm2"
+]
 
 [phases.build]
 cmds = [
   "npm run build",
   "cp -r public .next/standalone/",
-  "cp -r .next/static .next/standalone/.next/"
+  "cp -r .next/static .next/standalone/.next/",
+  "mkdir -p logs"
 ]
 
 [start]
-cmd = "node .next/standalone/server.js"
+cmd = "pm2-runtime start ecosystem.config.js"
 
 [[ports]]
 port = "3000"

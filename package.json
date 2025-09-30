@@ -10,7 +10,8 @@
     "dev:full:turbo": "concurrently \"npm run dev:turbo\" \"cd ocean-backend && npm run dev\"",
     "build": "next build",
     "build:turbo": "next build --turbopack",
-    "start": "next start",
+    "start": "node .next/standalone/server.js",
+    "start:pm2": "pm2-runtime start ecosystem.config.js",
     "lint": "eslint",
     "db:seed": "ts-node prisma/seed.ts",
     "algolia:index": "ts-node scripts/indexAlgolia.ts"
