@@ -84,12 +84,18 @@ COOKIE_SECRET=c5ef1ed588a19514cf64fc1c02aea5ceb023c4f1a53dfec3ac7e0c1e3493510a
 openssl rand -hex 32
 ```
 
-#### CORS Configuration
+#### CORS Configuration (⚠️ CRITICAL - Must be exact)
 ```bash
 STORE_CORS=https://shennastudio.com,https://www.shennastudio.com
 ADMIN_CORS=https://admin.shennastudio.com
 AUTH_CORS=https://shennastudio.com,https://www.shennastudio.com
 ```
+
+**IMPORTANT**:
+- No spaces between domains in the comma-separated list
+- Must include `https://` protocol
+- Must match your exact frontend domains
+- Backend must be restarted after changing these values
 
 #### Auto-Initialization
 ```bash
@@ -330,10 +336,27 @@ In your Cloudflare DNS settings, add the following A records:
 
 ### Frontend Issues
 
-#### "Failed to fetch from backend"
+#### "Failed to fetch from backend" / CORS Error
+**Symptoms**: Console shows "blocked by CORS policy: No 'Access-Control-Allow-Origin' header"
+
+**Solutions**:
+1. Verify backend `STORE_CORS` includes both frontend domains:
+   ```
+   STORE_CORS=https://shennastudio.com,https://www.shennastudio.com
+   ```
+2. Check `AUTH_CORS` is also set correctly
+3. Ensure no spaces in the comma-separated list
+4. Verify `https://` is included (not `http://`)
+5. Restart backend deployment after changing CORS settings
+6. Check backend logs for startup errors
+7. Test backend directly: `curl https://api.shennastudio.com/health`
+8. Verify backend is actually running on port 9000
+
+#### "Frontend shows no products"
 - Verify `NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.shennastudio.com`
 - Check backend is running and accessible
 - Verify CORS settings in backend include frontend domains
+- Check if products exist in Medusa admin panel
 
 #### "Stripe payment not working"
 - Verify both Stripe keys are set correctly
