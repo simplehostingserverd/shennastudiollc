@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["nodejs_20"]
+nixPkgs = ["nodejs_20", "curl"]
 
 [phases.install]
 cmds = [
@@ -19,6 +19,13 @@ cmd = "npx medusa db:migrate && pm2-runtime start ecosystem.config.js"
 [[ports]]
 port = "9000"
 protocol = "tcp"
+
+[healthcheck]
+test = ["CMD", "curl", "-f", "http://localhost:9000/health"]
+interval = "30s"
+timeout = "10s"
+retries = 5
+start_period = "180s"
 
 [variables]
 NODE_ENV = "production"
