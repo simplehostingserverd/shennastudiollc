@@ -11,8 +11,7 @@ services:
     container_name: shenna-medusa-backend-prod
     restart: unless-stopped
     ports:
-      - '9000:9000' # API
-      - '7001:7001' # Admin Panel
+      - '9000:9000' # API and Admin Panel (admin at /app path)
     environment:
       # Database - Use the provided DATABASE_URL and REDIS_URL directly
       - DATABASE_URL=${DATABASE_URL}

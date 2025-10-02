@@ -47,15 +47,13 @@ fi
 
 # Start server directly without complex initialization
 echo "🚀 Starting Medusa server..."
-echo "Server will bind to 0.0.0.0:9000 and 0.0.0.0:7001"
+echo "Server will bind to 0.0.0.0:9000 (admin at /app path)"
 export HOST=0.0.0.0
 export PORT=9000
-export ADMIN_PORT=7001
 
 echo "📋 Final environment check before starting:"
 echo "HOST: $HOST"
 echo "PORT: $PORT"
-echo "ADMIN_PORT: $ADMIN_PORT"
 
 echo "🎬 Executing: npm start"
 exec npm start

@@ -10,7 +10,7 @@ Shenna's Studio is an ocean-themed e-commerce platform built with Next.js and Me
 
 This is a monorepo structure with the frontend in the root directory and backend in `/ocean-backend/`.
 
-- **Frontend**: Next.js 15.5.2 application in root directory with App Router, standalone output mode
+- **Frontend**: Next.js 15.5.3 application in root directory with App Router, standalone output mode
 - **Backend**: Medusa 2.10.1 e-commerce backend in `/ocean-backend/`
 - **Database**: PostgreSQL 15 (containerized on port 5433)
 - **Cache**: Redis 7 (containerized on port 6379)
@@ -30,6 +30,14 @@ node start-dev.js --turbo                                # Start with Turbopack 
 
 ### Docker Development (Alternative)
 
+Multiple Docker Compose configurations are available:
+
+- `docker-compose.yml` - Standard development with local PostgreSQL and Redis
+- `docker-compose.dev.yml` - Minimal development setup
+- `docker-compose.supabase.yml` - Development with external Supabase database
+- `docker-compose.prod.yml` - Production deployment with external databases
+- `docker-compose.coolify.prod.yml` - Coolify VPS-specific production setup
+
 ```bash
 docker-compose up -d --build                              # Start all services
 docker-compose exec medusa-backend npx medusa db:migrate  # Run migrations
@@ -40,24 +48,32 @@ docker-compose exec medusa-backend npm run seed          # Seed data
 ### Root Level (Frontend)
 
 - `npm run dev` - Start Next.js frontend (standard mode)
-- `npm run dev:turbo` - Start Next.js frontend with Turbopack
+- `npm run dev:turbo` - Start Next.js frontend with Turbopack (faster builds)
+- `npm run dev:full` - Start both frontend and backend concurrently
+- `npm run dev:full:turbo` - Start both frontend (with Turbopack) and backend
 - `npm run build` - Build Next.js frontend (standard mode)
 - `npm run build:turbo` - Build Next.js frontend with Turbopack
-- `npm start` - Start production Next.js server
+- `npm start` - Start production Next.js server (uses standalone build)
+- `npm run start:pm2` - Start with PM2 process manager (production)
 - `npm run lint` - Run ESLint
 - `npm run db:seed` - Seed Prisma database
 - `npm run algolia:index` - Index products to Algolia
 
 ### Backend (`ocean-backend/`)
 
-- `npm run dev` - Start Medusa development server
-- `npm run build` - Build Medusa backend
-- `npm start` - Start production Medusa server
+- `npm run dev` - Start Medusa development server (port 9000)
+- `npm run build` - Build Medusa backend (outputs to `.medusa/server` and `.medusa/client` directories)
+- `npm start` - Start production Medusa server (port 9000, admin at /app)
+- `npm run start:pm2` - Start with PM2 process manager (production)
 - `npm run seed` - Seed Medusa database with sample data
 - `npm run create-admin` - Create admin user for Medusa
 - `npm run test:integration:http` - Run HTTP integration tests
 - `npm run test:integration:modules` - Run module integration tests
 - `npm run test:unit` - Run unit tests
+
+**Build Output**: Medusa v2 builds to `.medusa/` directory (not `build/`):
+- `.medusa/server/` - Backend build output
+- `.medusa/client/` - Admin panel build output
 
 ## TypeScript Configuration
 
@@ -68,7 +84,7 @@ docker-compose exec medusa-backend npm run seed          # Seed data
 
 ## Key Dependencies
 
-- **Frontend**: Next.js 15.5.2, React 19.1.1, Tailwind CSS, Stripe, NextAuth 5.0.0-beta.28, Prisma 6.15.0
+- **Frontend**: Next.js 15.5.3, React 18.3.1, Tailwind CSS, Stripe, NextAuth 5.0.0-beta.28, Prisma 6.15.0
 - **Backend**: Medusa 2.10.1, MikroORM 6.4.3, PostgreSQL, Redis, TypeScript 5.7.2
 - **Testing**: Jest 30.1.2 with experimental VM modules (backend only)
 - **Build Tools**: SWC compiler, Turbopack (optional)
@@ -151,10 +167,12 @@ docker-compose exec medusa-backend npm run seed
 ### Service URLs
 
 - **Frontend**: http://localhost:3000 (Next.js storefront)
-- **Medusa Admin**: http://localhost:7001 (Admin dashboard)
 - **Medusa API**: http://localhost:9000 (Backend API)
+- **Medusa Admin**: http://localhost:9000/app (Admin dashboard - Medusa v2 serves admin on same port as API)
 - **PostgreSQL**: localhost:5433 (Database)
 - **Redis**: localhost:6379 (Cache)
+
+**Important**: Medusa v2 does NOT use a separate port for the admin panel. Both API and admin run on port 9000, with the admin accessible at the `/app` path.
 
 ### Production Deployment
 
@@ -165,14 +183,21 @@ docker-compose exec medusa-backend npm run seed
 
 ## Database Management
 
-### Medusa Database
+### Medusa Database (Backend)
 
+The backend supports multiple database configurations:
+- **Local PostgreSQL**: Via Docker (port 5433) - default for development
+- **Supabase**: External managed PostgreSQL - for production/cloud
+- **SSL Support**: Configured via DATABASE_SSL and DATABASE_SSL_REJECT_UNAUTHORIZED env vars
+
+Commands (run from `ocean-backend/`):
 - Run migrations: `npx medusa db:migrate`
 - Create admin: `npm run create-admin`
 - Seed data: `npm run seed`
 
 ### Prisma Database (Frontend)
 
+The frontend uses its own Prisma database for additional features:
 - Seed: `npm run db:seed`
 - Generate client: `npx prisma generate`
 - Push schema: `npx prisma db push`
@@ -187,12 +212,19 @@ docker-compose exec medusa-backend npm run seed
 
 Default credentials (change immediately in production):
 
-- **Email**: admin@shennastudio.com
-- **Password**: ChangeThisPassword123!
+- **Email**: admin@shennasstudio.com (or as configured in ADMIN_EMAIL)
+- **Password**: ChangeThisPassword123! (or as configured in ADMIN_PASSWORD)
 
-Access at http://localhost:7001 (development) or configured admin URL.
+### Admin Panel Access
 
-The system includes auto-initialization that creates the admin user on first run via Docker environment variables.
+In Medusa v2, the admin panel runs on the **same port** as the API (9000), accessible at `/app` path:
+
+- **Development**: http://localhost:9000/app
+- **Production**: https://api.shennastudio.com/app (or your configured MEDUSA_BACKEND_URL + /app)
+
+**Critical**: Medusa v2 does NOT use port 7001. There is only ONE port (9000) for both API and admin. The admin panel is a path (`/app`) on the same server, not a separate service.
+
+The system includes auto-initialization that creates the admin user on first run via Docker environment variables (AUTO_CREATE_ADMIN=true).
 
 ## Deployment Notes
 
@@ -250,6 +282,15 @@ The Docker setup includes:
 - **Network isolation**: Services communicate via Docker network
 - **Auto-initialization**: Backend automatically migrates, seeds, and creates admin on startup
 - **Service dependencies**: Proper startup order with health check dependencies
+
+## Process Management (Production)
+
+Both frontend and backend support PM2 for production process management:
+
+- **Frontend**: `npm run start:pm2` - Runs Next.js standalone server with PM2
+- **Backend**: `npm run start:pm2` - Runs Medusa server with PM2
+- **Configuration**: `ecosystem.config.js` in root directory
+- **Benefits**: Auto-restart on failure, zero-downtime deployments, log management
 
 # Important Instructions
 

@@ -28,8 +28,8 @@ RUN mkdir -p /app/uploads /app/static && \
 # Switch to non-root user for security
 USER node
 
-# Expose ports for API and Admin
-EXPOSE 9000 7001
+# Expose port for API (admin is served at /app on same port)
+EXPOSE 9000
 
 # Add health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \

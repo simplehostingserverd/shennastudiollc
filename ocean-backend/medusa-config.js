@@ -60,10 +60,8 @@ module.exports = defineConfig({
   // Admin dashboard config - ENABLED for production
   admin: {
     backendUrl: process.env.MEDUSA_BACKEND_URL || 'https://api.shennastudio.com',
-    // Admin panel served at /app path on same port as API
+    // Admin panel served at /app path on same port as API (9000)
     path: '/app',
-    // Build directory for admin assets
-    outDir: './build',
     // Enable admin dashboard for production
     disable: false,
   },
