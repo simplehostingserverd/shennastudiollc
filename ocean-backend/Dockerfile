@@ -12,28 +12,23 @@ ENV NODE_ENV=production
 COPY package*.json ./
 
 # Install all dependencies including dev dependencies (needed for TypeScript build)
-RUN npm install --include=dev --legacy-peer-deps && npm cache clean --force
+RUN npm ci --include=dev && npm cache clean --force
+
+# Install PM2 globally
+RUN npm install -g pm2
 
 # Copy source code
 COPY . .
 
-# Copy and make startup scripts executable
-COPY startup.sh startup-simple.sh startup-emergency.sh /app/
-RUN chmod +x /app/startup.sh /app/startup-simple.sh /app/startup-emergency.sh
-
-# Create uploads and static directories with proper permissions
-RUN mkdir -p /app/uploads /app/static && \
-    chown -R node:node /app
-
-# Switch to non-root user for security
-USER node
+# Build the application
+RUN npm run build && mkdir -p logs
 
 # Expose port for API (admin is served at /app on same port)
 EXPOSE 9000
 
 # Add health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
-    CMD curl -f http://localhost:9000/health || curl -f http://localhost:9000 || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=180s --retries=5 \
+    CMD curl -f http://localhost:9000/health || exit 1
 
-# Use startup script based on STARTUP_MODE
-CMD ["sh", "-c", "if [ \"$STARTUP_MODE\" = \"emergency\" ]; then exec /app/startup-emergency.sh; elif [ \"$STARTUP_MODE\" = \"simple\" ]; then exec /app/startup-simple.sh; else exec /app/startup.sh; fi"]
+# Start command: run migrations then start with PM2
+CMD ["sh", "-c", "npx medusa db:migrate && pm2-runtime start ecosystem.config.js"]
