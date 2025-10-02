@@ -72,13 +72,12 @@ services:
       # Backend Connection - Set this in Coolify environment variables
       - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL}
 
-      # Payment Processing - Use production Stripe keys
+      # Payment Processing - Use production Stripe keys (set in Coolify)
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
-      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
 
       # Search (Algolia Production)
-      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${ALGOLIA_APPLICATION_ID}
-      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${ALGOLIA_SEARCH_API_KEY}
+      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}
+      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}
 
       # Image Optimization (Cloudinary Production)
       - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
@@ -88,7 +87,6 @@ services:
       # App Configuration
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
-      - PORT=3000
       - HOSTNAME=0.0.0.0
     depends_on:
       - backend
