@@ -28,7 +28,7 @@ services:
 
       # CORS - Production domains
       - STORE_CORS=${STORE_CORS:-https://shennastudio.com,https://www.shennastudio.com}
-      - ADMIN_CORS=${ADMIN_CORS:-https://admin.shennastudio.com,https://shennastudio.com,https://www.shennastudio.com}
+      - ADMIN_CORS=${ADMIN_CORS:-https://api.shennastudio.com}
       - AUTH_CORS=${AUTH_CORS:-https://shennastudio.com,https://www.shennastudio.com}
 
       # Admin setup

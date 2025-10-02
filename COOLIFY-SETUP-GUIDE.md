@@ -90,9 +90,9 @@ openssl rand -hex 32
 
 #### CORS Configuration (⚠️ CRITICAL - Must be exact)
 ```bash
-STORE_CORS=https://www.shennastudio.com
-ADMIN_CORS=https://admin.shennastudio.com
-AUTH_CORS=https://www.shennastudio.com
+STORE_CORS=https://shennastudio.com,https://www.shennastudio.com
+ADMIN_CORS=https://api.shennastudio.com
+AUTH_CORS=https://shennastudio.com,https://www.shennastudio.com
 ```
 
 **IMPORTANT**:
