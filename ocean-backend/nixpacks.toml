@@ -10,12 +10,11 @@ cmds = [
 [phases.build]
 cmds = [
   "npm run build",
-  "npx medusa migrations run || echo 'Migrations will run at startup'",
   "mkdir -p logs"
 ]
 
 [start]
-cmd = "npx medusa migrations run && pm2-runtime start ecosystem.config.js"
+cmd = "npx medusa db:migrate && pm2-runtime start ecosystem.config.js"
 
 [[ports]]
 port = "9000"
