@@ -20,13 +20,6 @@ cmd = "npx medusa db:migrate && pm2-runtime start ecosystem.config.js"
 port = "9000"
 protocol = "tcp"
 
-[healthcheck]
-test = ["CMD", "curl", "-f", "http://localhost:9000/health"]
-interval = "30s"
-timeout = "10s"
-retries = 5
-start_period = "180s"
-
 [variables]
 NODE_ENV = "production"
 NODE_OPTIONS = "--experimental-vm-modules"
