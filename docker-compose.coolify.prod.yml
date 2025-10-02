@@ -3,7 +3,42 @@ version: '3.8'
 name: shenna-studio-production
 
 services:
-  # Medusa Backend API (Production with external Coolify databases)
+  # PostgreSQL Database (Coolify-hosted)
+  postgres:
+    image: postgres:15-alpine
+    container_name: shenna-postgres-prod
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-medusa_db}
+      POSTGRES_USER: ${POSTGRES_USER:-medusa_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-medusa_user} -d ${POSTGRES_DB:-medusa_db}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: shenna-redis-prod
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Medusa Backend API (Production with Coolify-hosted databases)
   backend:
     build:
       context: ./ocean-backend
@@ -13,11 +48,11 @@ services:
     ports:
       - '9000:9000' # API and Admin Panel (admin at /app path)
     environment:
-      # Database - Use the provided DATABASE_URL and REDIS_URL directly
-      - DATABASE_URL=${DATABASE_URL}
-      - DATABASE_SSL=${DATABASE_SSL:-false}
-      - DATABASE_SSL_REJECT_UNAUTHORIZED=${DATABASE_SSL_REJECT_UNAUTHORIZED:-true}
-      - REDIS_URL=${REDIS_URL}
+      # Database - Use Coolify-hosted PostgreSQL
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-medusa_user}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-medusa_db}
+      - DATABASE_SSL=false
+      - DATABASE_SSL_REJECT_UNAUTHORIZED=false
+      - REDIS_URL=redis://redis:6379
 
       # Security - Use strong production secrets
       - NODE_ENV=production
@@ -44,14 +79,16 @@ services:
       # Medusa Configuration
       - MEDUSA_ADMIN_ONBOARDING_TYPE=${MEDUSA_ADMIN_ONBOARDING_TYPE:-default}
       - MEDUSA_ADMIN_ONBOARDING_NEXTJS=${MEDUSA_ADMIN_ONBOARDING_NEXTJS:-true}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
       - medusa_uploads:/app/uploads
       - medusa_static:/app/static
     networks:
       - shenna-network-prod
-    labels:
-      - 'coolify.managed=true'
-      - 'coolify.name=backend'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:9000/health']
       interval: 30s
@@ -92,9 +129,6 @@ services:
       - backend
     networks:
       - shenna-network-prod
-    labels:
-      - 'coolify.managed=true'
-      - 'coolify.name=frontend'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:3000']
       interval: 30s
@@ -102,12 +136,12 @@ services:
       retries: 5
       start_period: 120s
 
-# Named Volumes for production
+# Named Volumes for production (no locks - freely deletable)
 volumes:
+  postgres_data:
+  redis_data:
   medusa_uploads:
-    driver: local
   medusa_static:
-    driver: local
 
 # Networks
 networks:

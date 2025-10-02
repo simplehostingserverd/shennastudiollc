@@ -34,9 +34,8 @@ Multiple Docker Compose configurations are available:
 
 - `docker-compose.yml` - Standard development with local PostgreSQL and Redis
 - `docker-compose.dev.yml` - Minimal development setup
-- `docker-compose.supabase.yml` - Development with external Supabase database
 - `docker-compose.prod.yml` - Production deployment with external databases
-- `docker-compose.coolify.prod.yml` - Coolify VPS-specific production setup
+- `docker-compose.coolify.prod.yml` - Coolify VPS-specific production setup with local PostgreSQL and Redis
 
 ```bash
 docker-compose up -d --build                              # Start all services
@@ -186,8 +185,7 @@ docker-compose exec medusa-backend npm run seed
 ### Medusa Database (Backend)
 
 The backend supports multiple database configurations:
-- **Local PostgreSQL**: Via Docker (port 5433) - default for development
-- **Supabase**: External managed PostgreSQL - for production/cloud
+- **Local PostgreSQL**: Via Docker (port 5433 for dev, 5432 for production) - default for development
 - **SSL Support**: Configured via DATABASE_SSL and DATABASE_SSL_REJECT_UNAUTHORIZED env vars
 
 Commands (run from `ocean-backend/`):

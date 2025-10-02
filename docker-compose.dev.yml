@@ -34,6 +34,7 @@ services:
       timeout: 5s
       retries: 5
 
+# Volumes (no locks - freely deletable)
 volumes:
   postgres_data:
   redis_data:

@@ -6,8 +6,6 @@ This guide provides complete instructions for deploying both the frontend and ba
 
 - Coolify instance running and accessible
 - GitHub repository connected to Coolify
-- PostgreSQL database (Supabase recommended)
-- Redis instance
 - Stripe account with API keys
 - Domain configured with DNS (Cloudflare recommended)
 
@@ -60,26 +58,24 @@ PORT=9000
 ADMIN_PORT=7001
 ```
 
-#### Database Configuration
+#### Database Configuration (Coolify-hosted PostgreSQL)
 ```bash
-DATABASE_URL=postgresql://[username]:[password]@[host]:6543/postgres?pgbouncer=true
-DATABASE_SSL=true
+POSTGRES_DB=medusa_db
+POSTGRES_USER=medusa_user
+POSTGRES_PASSWORD=your_secure_password
+DATABASE_URL=postgresql://medusa_user:your_secure_password@postgres:5432/medusa_db
+DATABASE_SSL=false
 DATABASE_SSL_REJECT_UNAUTHORIZED=false
 ```
 
-**Note**: Replace with your actual Supabase connection string. Use the **Transaction** pooling mode connection string.
+**Note**: PostgreSQL and Redis are included in the docker-compose.coolify.prod.yml configuration.
 
-#### Redis Configuration (⚠️ REQUIRED for Production)
+#### Redis Configuration
 ```bash
-REDIS_URL=redis://default:[password]@[host]:6379/0
+REDIS_URL=redis://redis:6379
 ```
 
-**CRITICAL**:
-- Redis is REQUIRED for production - without it, the backend will use in-memory storage
-- In-memory storage will leak memory and won't scale
-- Without Redis, sessions won't persist across restarts
-- Get a Redis instance from: Upstash, Railway, Redis Cloud, or self-hosted
-- **DO NOT deploy to production without Redis**
+**Note**: Redis is automatically configured in the Docker Compose stack.
 
 #### Security Secrets
 ```bash

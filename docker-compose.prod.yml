@@ -14,12 +14,12 @@ services:
     environment:
       - NODE_ENV=production
 
-      # Database - External (Supabase/Railway/etc)
+      # Database - External (managed PostgreSQL)
       - DATABASE_URL=${DATABASE_URL}
-      - DATABASE_SSL=${DATABASE_SSL:-true}
+      - DATABASE_SSL=${DATABASE_SSL:-false}
       - DATABASE_SSL_REJECT_UNAUTHORIZED=${DATABASE_SSL_REJECT_UNAUTHORIZED:-false}
 
-      # Redis - External or Coolify managed
+      # Redis - External or managed
       - REDIS_URL=${REDIS_URL}
 
       # Security - Generate strong secrets for production
@@ -50,8 +50,6 @@ services:
       - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}
       - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}
       - NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
-      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-      - NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY}
 
       # Stripe
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
@@ -81,6 +79,7 @@ services:
       retries: 5
       start_period: 180s
 
+# Volumes (no locks - freely deletable)
 volumes:
   medusa_uploads:
   medusa_static:

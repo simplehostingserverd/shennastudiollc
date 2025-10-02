@@ -7,9 +7,9 @@
 NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.shennastudio.com
 NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_c98766c1f4cd3eae138e5a337134ebf9a88f073220ec26d55dfab65f1b0d25c1
 
-# Backend Configuration
-DATABASE_URL=postgresql://postgres.ncmpqawcsdlnnhpsgjvz:Q5XWV7Ghap9Ue0Mc@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true
-DATABASE_SSL=true
+# Backend Configuration (Coolify-hosted PostgreSQL)
+DATABASE_URL=postgresql://medusa_user:your_password@postgres:5432/medusa_db
+DATABASE_SSL=false
 DATABASE_SSL_REJECT_UNAUTHORIZED=false
 JWT_SECRET=ef4cd5fd10a4e9c7b30e53633b273a84de38c6d2d2d827967f6e753b519c21dc
 COOKIE_SECRET=c5ef1ed588a19514cf64fc1c02aea5ceb023c4f1a53dfec3ac7e0c1e3493510a
@@ -36,8 +36,8 @@ AUTO_CREATE_ADMIN=true
 AUTO_MIGRATE=true
 AUTO_SEED=false
 
-# Redis Configuration
-REDIS_URL=redis://default:uDHR58Q2T3HUDV09xqfMMw1gTLz7l2e8PRjEbH8GDsBq5L8cxF6knZxpg0rIP3rE@ns4cskowscs08c4kgs8kswgw:6379/0
+# Redis Configuration (Coolify-hosted)
+REDIS_URL=redis://redis:6379
 
 # Stripe Configuration
 STRIPE_SECRET_KEY=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
@@ -52,10 +52,6 @@ NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=demo
 CLOUDINARY_API_KEY=629228798352575
 CLOUDINARY_API_SECRET=8xvuYnJlAaDZVGHkoen4ORlNi4E
 CLOUDINARY_UPLOAD_PRESET=ml_default
-
-# Supabase (if using directly)
-NEXT_PUBLIC_SUPABASE_URL=https://ncmpqawcsdlnnhpsgjvz.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=sb_publishable_wWEUEF2FwRIGXPVvOlwEng_zBMgm5jR
 
 # Builder.io (if using)
 NEXT_PUBLIC_BUILDER_API_KEY=5816e8c9df5d4640b4dcb2ae0ed22782
