@@ -1,5 +1,6 @@
 import { ExecArgs } from '@medusajs/framework/types'
 import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
+import { linkSalesChannelsToApiKeyWorkflow } from '@medusajs/medusa/core-flows'
 
 export default async function createAdminAndKey({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
@@ -80,6 +81,24 @@ export default async function createAdminAndKey({ container }: ExecArgs) {
       logger.info('✅ Admin user created successfully!')
     }
 
+    // Get or create sales channel
+    logger.info('🏪 Setting up sales channel...')
+    const salesChannelService = container.resolve(Modules.SALES_CHANNEL)
+
+    let salesChannel
+    const existingChannels = await salesChannelService.listSalesChannels()
+    if (existingChannels && existingChannels.length > 0) {
+      salesChannel = existingChannels[0]
+      logger.info(`✅ Using existing sales channel: ${salesChannel.name}`)
+    } else {
+      const createdChannel = await salesChannelService.createSalesChannels({
+        name: 'Default Sales Channel',
+        description: 'Default sales channel for the store',
+      })
+      salesChannel = Array.isArray(createdChannel) ? createdChannel[0] : createdChannel
+      logger.info(`✅ Sales channel created: ${salesChannel.name}`)
+    }
+
     // Create publishable API key for the storefront
     logger.info('🔑 Creating publishable API key...')
 
@@ -100,6 +119,25 @@ export default async function createAdminAndKey({ container }: ExecArgs) {
       })
       apiKey = Array.isArray(createdKey) ? createdKey[0] : createdKey
       logger.info(`✅ Publishable API key created`)
+    }
+
+    // Link API key to sales channel
+    logger.info('🔗 Linking API key to sales channel...')
+
+    try {
+      await linkSalesChannelsToApiKeyWorkflow(container).run({
+        input: {
+          id: apiKey.id,
+          add: [salesChannel.id],
+        },
+      })
+      logger.info(`✅ API key linked to sales channel`)
+    } catch (error: any) {
+      if (error.message && error.message.includes('already') || error.message && error.message.includes('exist')) {
+        logger.info(`✅ API key already linked to sales channel`)
+      } else {
+        logger.warn(`⚠️  Could not link API key: ${error.message}`)
+      }
     }
 
     // Console log the credentials
