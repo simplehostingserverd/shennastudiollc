@@ -106,27 +106,40 @@ services:
     ports:
       - '3000:3000'
     environment:
-      # Backend Connection - Set this in Coolify environment variables
+      # Backend Connection - Required for build and runtime
       - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL}
+      - NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
+
+      # Backend internal connection (for startup script to wait for backend service)
+      - BACKEND_HOST=backend
+      - BACKEND_PORT=9000
 
       # Payment Processing - Use production Stripe keys (set in Coolify)
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-}
 
       # Search (Algolia Production)
       - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}
       - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}
+      - ALGOLIA_ADMIN_API_KEY=${ALGOLIA_ADMIN_API_KEY:-}
 
       # Image Optimization (Cloudinary Production)
       - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
       - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
       - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
 
       # App Configuration
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
       - HOSTNAME=0.0.0.0
     depends_on:
-      - backend
+      backend:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - shenna-network-prod
     healthcheck:
@@ -134,7 +147,7 @@ services:
       interval: 30s
       timeout: 15s
       retries: 5
-      start_period: 120s
+      start_period: 180s
 
 # Named Volumes for production (no locks - freely deletable)
 volumes:
