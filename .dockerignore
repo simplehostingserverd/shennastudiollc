@@ -120,3 +120,7 @@ temp/
 Dockerfile.*
 docker-compose*.yml
 !Dockerfile
+.env*
+.flaskenv*
+!.env.project
+!.env.vault

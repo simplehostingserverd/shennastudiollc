@@ -14,15 +14,15 @@ module.exports = defineConfig({
     // Driver options - disabled for SQLite development
     databaseDriverOptions: process.env.DATABASE_URL?.startsWith('sqlite:')
       ? undefined
-      : {
-          connection: process.env.DATABASE_SSL === 'true'
-            ? {
-                ssl: {
-                  rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false',
-                }
+      : process.env.DATABASE_SSL === 'true'
+        ? {
+            connection: {
+              ssl: {
+                rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false',
               }
-            : false,
-        },
+            }
+          }
+        : {},
 
     // Redis for sessions, caches etc.
     redisUrl: process.env.REDIS_URL || undefined,
