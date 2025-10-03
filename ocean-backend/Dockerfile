@@ -12,7 +12,7 @@ ENV NODE_ENV=production
 COPY package*.json ./
 
 # Install all dependencies including dev dependencies (needed for TypeScript build)
-RUN npm ci --include=dev && npm cache clean --force
+RUN npm install --include=dev --legacy-peer-deps && npm cache clean --force
 
 # Install PM2 globally
 RUN npm install -g pm2
