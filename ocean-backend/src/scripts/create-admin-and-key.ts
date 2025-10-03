@@ -155,7 +155,7 @@ export default async function createAdminAndKey({ container }: ExecArgs) {
 
     logger.info('✅ Setup completed successfully!')
 
-  } catch (error) {
+  } catch (error: any) {
     logger.error('❌ Error during setup:', error)
     throw error
   }
