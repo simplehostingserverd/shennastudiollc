@@ -71,6 +71,10 @@ echo "⏭️  Skipping build (already completed at Docker build time)"
 
 echo "🚀 Starting Medusa server..."
 echo "Server will bind to 0.0.0.0:9000 (includes admin at /app)"
+echo "Build output located in .medusa/server directory"
 export HOST=0.0.0.0
 export PORT=9000
-exec npm start
+
+# Start the server from the built location
+cd /app/.medusa/server
+exec node index.js
