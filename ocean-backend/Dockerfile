@@ -14,14 +14,14 @@ COPY package*.json ./
 # Install all dependencies including dev dependencies (needed for TypeScript build)
 RUN npm install --include=dev --legacy-peer-deps && npm cache clean --force
 
-# Install PM2 globally
-RUN npm install -g pm2
-
 # Copy source code
 COPY . .
 
-# Build the application
+# Build the application (done at build time since we have all dependencies)
 RUN npm run build && mkdir -p logs
+
+# Make startup script executable
+RUN chmod +x startup.sh
 
 # Expose port for API (admin is served at /app on same port)
 EXPOSE 9000
@@ -30,5 +30,5 @@ EXPOSE 9000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=180s --retries=5 \
     CMD curl -f http://localhost:9000/health || exit 1
 
-# Start command: run migrations then start with PM2
-CMD ["sh", "-c", "npx medusa db:migrate && pm2-runtime start ecosystem.config.js"]
+# Use startup script which handles migrations and starts server
+CMD ["./startup.sh"]
