@@ -42,9 +42,9 @@ services:
       - COOKIE_SECRET=${COOKIE_SECRET}
 
       # CORS - Allow all for development, restrict in production
-      - STORE_CORS=${STORE_CORS:-http://localhost:3000,https://shennastudio.com,https://www.shennastudio.com}
-      - ADMIN_CORS=${ADMIN_CORS:-http://localhost:3000,http://localhost:9000}
-      - AUTH_CORS=${AUTH_CORS:-http://localhost:3000,https://shennastudio.com,https://www.shennastudio.com}
+      - STORE_CORS=${STORE_CORS:-http://localhost:3000,https://shop.shennastudio.com,https://www.shennastudio.com,https://shennastudio.com}
+      - ADMIN_CORS=${ADMIN_CORS:-http://localhost:3000,http://localhost:9000,https://admin.shennastudio.com}
+      - AUTH_CORS=${AUTH_CORS:-http://localhost:3000,https://shop.shennastudio.com,https://www.shennastudio.com,https://shennastudio.com}
 
       # Admin setup
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennastudio.com}

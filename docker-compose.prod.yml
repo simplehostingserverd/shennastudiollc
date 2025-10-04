@@ -27,9 +27,10 @@ services:
       - COOKIE_SECRET=${COOKIE_SECRET}
 
       # CORS - Production domains
-      - STORE_CORS=${STORE_CORS:-https://shennastudio.com,https://www.shennastudio.com}
-      - ADMIN_CORS=${ADMIN_CORS:-http://localhost:9000}
-      - AUTH_CORS=${AUTH_CORS:-https://shennastudio.com,https://www.shennastudio.com}
+      # shop.shennastudio.com = storefront, admin.shennastudio.com = backend/admin, www/root = main website
+      - STORE_CORS=${STORE_CORS:-https://shop.shennastudio.com,https://www.shennastudio.com,https://shennastudio.com}
+      - ADMIN_CORS=${ADMIN_CORS:-https://admin.shennastudio.com}
+      - AUTH_CORS=${AUTH_CORS:-https://shop.shennastudio.com,https://www.shennastudio.com,https://shennastudio.com}
 
       # Admin setup
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennastudio.com}
@@ -45,7 +46,7 @@ services:
       - MEDUSA_ADMIN_ONBOARDING_NEXTJS=true
 
       # Frontend environment variables
-      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://localhost:9000}
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-https://admin.shennastudio.com}
       - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
       - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}
       - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}

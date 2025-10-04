@@ -60,9 +60,10 @@ services:
       - COOKIE_SECRET=${COOKIE_SECRET}
 
       # CORS Configuration for production
-      - STORE_CORS=https://shennastudio.com,https://www.shennastudio.com
-      - ADMIN_CORS=http://localhost:9000
-      - AUTH_CORS=https://shennastudio.com,https://www.shennastudio.com
+      # shop.shennastudio.com = storefront, admin.shennastudio.com = backend/admin, www/root = main website
+      - STORE_CORS=https://shop.shennastudio.com,https://www.shennastudio.com,https://shennastudio.com
+      - ADMIN_CORS=https://admin.shennastudio.com
+      - AUTH_CORS=https://shop.shennastudio.com,https://www.shennastudio.com,https://shennastudio.com
 
       # Admin Setup
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennastudio.com}
