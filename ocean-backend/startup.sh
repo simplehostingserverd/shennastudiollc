@@ -66,13 +66,8 @@ if [ "$AUTO_SEED" = "true" ]; then
   fi
 fi
 
-# Build app at runtime (when env vars are available)
-echo "🔨 Building Medusa application..."
-if timeout 300 npm run build; then
-  echo "✅ Build completed successfully"
-else
-  echo "⚠️  Build failed or timed out, but continuing to start server..."
-fi
+# Skip build - already done at Docker build time
+echo "⏭️  Skipping build (already completed at Docker build time)"
 
 echo "🚀 Starting Medusa server..."
 echo "Server will bind to 0.0.0.0:9000 (includes admin at /app)"
