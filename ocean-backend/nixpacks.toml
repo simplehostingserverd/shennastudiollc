@@ -1,26 +1,11 @@
 [phases.setup]
-nixPkgs = ["nodejs_20", "curl"]
+nixPkgs = ["nodejs-20_x"]
 
 [phases.install]
-cmds = [
-  "npm ci --include=dev",
-  "npm install -g pm2"
-]
+cmds = ["npm install"]
 
 [phases.build]
-cmds = [
-  "npm run build",
-  "mkdir -p logs"
-]
+cmds = ["npm run build"]
 
 [start]
-cmd = "npx medusa db:migrate && pm2-runtime start ecosystem.config.js"
-
-[[ports]]
-port = "9000"
-protocol = "tcp"
-
-[variables]
-NODE_ENV = "production"
-NODE_OPTIONS = "--experimental-vm-modules"
-PORT = "9000"
+cmd = "cd .medusa/server && npm install --omit=dev && npx medusa db:migrate && node index.js"
