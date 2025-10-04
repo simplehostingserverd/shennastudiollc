@@ -61,7 +61,7 @@ services:
 
       # CORS Configuration for production
       - STORE_CORS=https://shennastudio.com,https://www.shennastudio.com
-      - ADMIN_CORS=https://api.shennastudio.com
+      - ADMIN_CORS=http://localhost:9000
       - AUTH_CORS=https://shennastudio.com,https://www.shennastudio.com
 
       # Admin Setup

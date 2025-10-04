@@ -43,7 +43,7 @@ services:
 
       # CORS - Allow all for development, restrict in production
       - STORE_CORS=${STORE_CORS:-http://localhost:3000,https://shennastudio.com,https://www.shennastudio.com}
-      - ADMIN_CORS=${ADMIN_CORS:-http://localhost:3000,http://localhost:9000,https://api.shennastudio.com}
+      - ADMIN_CORS=${ADMIN_CORS:-http://localhost:3000,http://localhost:9000}
       - AUTH_CORS=${AUTH_CORS:-http://localhost:3000,https://shennastudio.com,https://www.shennastudio.com}
 
       # Admin setup
