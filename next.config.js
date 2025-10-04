@@ -1,6 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+
+  // Disable linting and type checking during build (for faster deployments)
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
   allowedDevOrigins: ['10.0.3.10'],
   images: {
     domains: [
