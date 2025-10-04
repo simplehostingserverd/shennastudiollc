@@ -1,29 +1,11 @@
 [phases.setup]
-nixPkgs = ["nodejs_20"]
+nixPkgs = ["nodejs-20_x"]
 
 [phases.install]
-cmds = [
-  "npm ci",
-  "npm install -g pm2"
-]
+cmds = ["npm install"]
 
 [phases.build]
-cmds = [
-  "npm run build",
-  "cp -r public .next/standalone/",
-  "cp -r .next/static .next/standalone/.next/",
-  "mkdir -p logs"
-]
+cmds = ["npm run build"]
 
 [start]
-cmd = "pm2-runtime start ecosystem.config.js"
-
-[[ports]]
-port = "3000"
-protocol = "tcp"
-
-[variables]
-NODE_ENV = "production"
-PORT = "3000"
-HOSTNAME = "0.0.0.0"
-NEXT_TELEMETRY_DISABLED = "1"
+cmd = "npm start"
