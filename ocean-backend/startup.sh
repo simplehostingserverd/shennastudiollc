@@ -75,6 +75,6 @@ echo "Build output located in .medusa/server directory"
 export HOST=0.0.0.0
 export PORT=9000
 
-# Start the server from the built location
-cd /app/.medusa/server
-exec node index.js
+# Start the server using medusa start command (runs the built server)
+cd /app
+exec npm start
