@@ -9,3 +9,6 @@ cmds = ["npm run build"]
 
 [start]
 cmd = "cd .medusa/server && npm install --omit=dev && npx medusa db:migrate && node index.js"
+
+[variables]
+NODE_ENV = "production"
