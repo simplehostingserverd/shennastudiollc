@@ -1,0 +1,188 @@
+version: '3.8'
+
+# Coolify-optimized Docker Compose for Shenna's Studio
+# Deploy as a single stack with all services included
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-medusa_db}
+      POSTGRES_USER: ${POSTGRES_USER:-medusa_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-medusa_user}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Medusa Backend (API + Admin)
+  backend:
+    build:
+      context: ./ocean-backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      # Database
+      DATABASE_URL: postgresql://${POSTGRES_USER:-medusa_user}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-medusa_db}
+      DATABASE_SSL: ${DATABASE_SSL:-false}
+      DATABASE_SSL_REJECT_UNAUTHORIZED: ${DATABASE_SSL_REJECT_UNAUTHORIZED:-false}
+
+      # Redis
+      REDIS_URL: redis://redis:6379
+
+      # Security
+      NODE_ENV: production
+      JWT_SECRET: ${JWT_SECRET}
+      COOKIE_SECRET: ${COOKIE_SECRET}
+
+      # CORS
+      STORE_CORS: ${STORE_CORS}
+      ADMIN_CORS: ${ADMIN_CORS}
+      AUTH_CORS: ${AUTH_CORS}
+
+      # Admin
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      BACKEND_URL: ${BACKEND_URL}
+      MEDUSA_BACKEND_URL: ${MEDUSA_BACKEND_URL}
+      DISABLE_ADMIN: ${DISABLE_ADMIN:-false}
+
+      # Auto-initialization
+      AUTO_MIGRATE: ${AUTO_MIGRATE:-true}
+      AUTO_SEED: ${AUTO_SEED:-false}
+      AUTO_CREATE_ADMIN: ${AUTO_CREATE_ADMIN:-true}
+
+      # Worker mode
+      WORKER_MODE: ${BACKEND_WORKER_MODE:-shared}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - medusa_uploads:/app/uploads
+      - medusa_static:/app/static
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/health']
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 180s
+    labels:
+      - "coolify.managed=true"
+      - "coolify.port=9000"
+      - "coolify.domains=${BACKEND_DOMAIN:-admin.shennastudio.com}"
+
+  # Frontend (Next.js Storefront)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      # Backend connection
+      NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL}
+      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
+
+      # Internal backend connection (for startup script)
+      BACKEND_HOST: backend
+      BACKEND_PORT: 9000
+
+      # Payment
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+
+      # Search (Optional)
+      NEXT_PUBLIC_ALGOLIA_APPLICATION_ID: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID:-}
+      NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY: ${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY:-}
+      ALGOLIA_ADMIN_API_KEY: ${ALGOLIA_ADMIN_API_KEY:-}
+
+      # Image optimization (Optional)
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+
+      # App config
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: 1
+      HOSTNAME: 0.0.0.0
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000']
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 180s
+    labels:
+      - "coolify.managed=true"
+      - "coolify.port=3000"
+      - "coolify.domains=${FRONTEND_DOMAINS:-www.shennastudio.com,shennastudio.com,shop.shennastudio.com}"
+
+  # Worker (Optional - for background jobs)
+  worker:
+    build:
+      context: ./ocean-backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      # Database
+      DATABASE_URL: postgresql://${POSTGRES_USER:-medusa_user}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-medusa_db}
+      DATABASE_SSL: ${DATABASE_SSL:-false}
+      DATABASE_SSL_REJECT_UNAUTHORIZED: ${DATABASE_SSL_REJECT_UNAUTHORIZED:-false}
+
+      # Redis
+      REDIS_URL: redis://redis:6379
+
+      # Security (must match backend)
+      NODE_ENV: production
+      JWT_SECRET: ${JWT_SECRET}
+      COOKIE_SECRET: ${COOKIE_SECRET}
+
+      # CORS (same as backend)
+      STORE_CORS: ${STORE_CORS}
+      ADMIN_CORS: ${ADMIN_CORS}
+      AUTH_CORS: ${AUTH_CORS}
+
+      # Backend URL
+      BACKEND_URL: ${BACKEND_URL}
+      MEDUSA_BACKEND_URL: ${MEDUSA_BACKEND_URL}
+
+      # Worker mode
+      WORKER_MODE: worker
+      DISABLE_ADMIN: true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    labels:
+      - "coolify.managed=true"
+
+volumes:
+  postgres_data:
+  redis_data:
+  medusa_uploads:
+  medusa_static:
