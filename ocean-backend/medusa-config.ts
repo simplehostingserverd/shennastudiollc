@@ -22,7 +22,11 @@ module.exports = defineConfig({
               }
             }
           }
-        : undefined,
+        : {
+            connection: {
+              ssl: false  // Explicitly disable SSL when DATABASE_SSL is not 'true'
+            }
+          },
 
     // Redis URL (Required for production with Redis modules)
     redisUrl: process.env.REDIS_URL,
