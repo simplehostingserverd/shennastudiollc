@@ -60,7 +60,16 @@
       "WebFetch(domain:www.shennastudio.com)",
       "WebFetch(domain:api.shennastudio.com)",
       "Bash(npx prisma generate:*)",
-      "Read(//c/Users/Shadow/Documents/Collections&Derogatory/**)"
+      "Read(//c/Users/Shadow/Documents/Collections&Derogatory/**)",
+      "Bash(/dev/null)",
+      "Bash(python3:*)",
+      "Bash(git restore:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)",
+      "Bash(xargs docker stop:*)",
+      "Bash(xargs docker rm:*)",
+      "Bash(open:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []
