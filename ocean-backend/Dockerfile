@@ -61,6 +61,12 @@ RUN mkdir -p .medusa
 # Copy built artifacts from builder stage
 COPY --from=builder /app/.medusa ./.medusa
 
+# Copy configuration file (required by medusa-config.ts or medusa-config.js)
+COPY --from=builder /app/medusa-config.* ./
+
+# Copy source directory (needed for scripts like create-admin, seed, etc.)
+COPY --from=builder /app/src ./src
+
 # Copy package files for production dependencies
 COPY package*.json ./
 
