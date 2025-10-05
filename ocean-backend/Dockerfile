@@ -61,17 +61,20 @@ RUN mkdir -p .medusa
 # Copy built artifacts from builder stage
 COPY --from=builder /app/.medusa ./.medusa
 
-# Copy configuration file (required by medusa-config.ts or medusa-config.js)
+# Copy configuration file
 COPY --from=builder /app/medusa-config.* ./
 
-# Copy source directory (needed for scripts like create-admin, seed, etc.)
+# Copy source directory
 COPY --from=builder /app/src ./src
 
-# Copy package files for production dependencies
+# Copy package files
 COPY package*.json ./
 
-# Install production dependencies only
-RUN npm install --production --legacy-peer-deps && npm cache clean --force
+# Copy tsconfig for runtime TypeScript compilation
+COPY --from=builder /app/tsconfig.json ./
+
+# Install ALL dependencies (production needs ts-node and @medusajs/utils)
+RUN npm install --legacy-peer-deps && npm cache clean --force
 
 # Copy migrations script
 COPY migrations.sh ./migrations.sh

@@ -30,6 +30,7 @@
     "@medusajs/framework": "2.10.3",
     "@medusajs/js-sdk": "^2.10.3",
     "@medusajs/medusa": "2.10.3",
+    "@medusajs/utils": "2.10.3",
     "@mikro-orm/core": "6.4.3",
     "@mikro-orm/knex": "6.4.3",
     "@mikro-orm/migrations": "6.4.3",
@@ -38,7 +39,8 @@
     "awilix": "^8.0.1",
     "pg": "^8.13.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "@types/node": "^24.3.0"
   },
   "devDependencies": {
     "@medusajs/test-utils": "2.10.3",
