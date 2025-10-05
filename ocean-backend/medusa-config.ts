@@ -46,18 +46,6 @@ module.exports = defineConfig({
 
       // Cookie Secret for session signing (Required - min 32 characters)
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
-
-      // Cookie options
-      cookieOptions: {
-        // Use secure cookies in production (HTTPS only)
-        secure: process.env.NODE_ENV === "production",
-        // Prevent JavaScript access to cookies
-        httpOnly: true,
-        // CSRF protection
-        sameSite: (process.env.COOKIE_SAME_SITE as "strict" | "lax" | "none") || "lax",
-        // Cookie expiration (24 hours)
-        maxAge: 24 * 60 * 60 * 1000,
-      },
     },
 
     // Database logging (useful for debugging)
@@ -73,7 +61,7 @@ module.exports = defineConfig({
     backendUrl: process.env.BACKEND_URL || process.env.MEDUSA_BACKEND_URL || "http://localhost:9000",
 
     // Admin dashboard path (default: /app)
-    path: process.env.ADMIN_PATH || "/app",
+    path: "/app" as `/${string}`,
   },
 
   // Module Registrations
