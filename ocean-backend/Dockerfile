@@ -18,7 +18,18 @@ RUN apt-get update && apt-get install -y python3 python3-pip python-is-python3
 RUN npm install --loglevel=error --legacy-peer-deps
 
 # Build the application - outputs to .medusa directory
+# Set DISABLE_ADMIN=false explicitly to ensure admin panel is built
+ENV DISABLE_ADMIN=false
 RUN npm run build
+
+# Verify admin build exists
+RUN ls -la .medusa/ && \
+    if [ -d ".medusa/client" ]; then \
+      echo "✅ Admin client build found"; \
+      ls -la .medusa/client/; \
+    else \
+      echo "⚠️  Admin client build not found - this may cause issues"; \
+    fi
 
 
 # Production stage
@@ -60,6 +71,17 @@ RUN mkdir -p .medusa
 
 # Copy built artifacts from builder stage
 COPY --from=builder /app/.medusa ./.medusa
+
+# Verify admin build was copied
+RUN if [ -f ".medusa/client/index.html" ]; then \
+      echo "✅ Admin panel index.html found in production stage"; \
+    else \
+      echo "❌ ERROR: Admin panel index.html NOT found in production stage"; \
+      echo "Contents of .medusa directory:"; \
+      ls -la .medusa/ || true; \
+      echo "Contents of .medusa/client directory (if exists):"; \
+      ls -la .medusa/client/ || true; \
+    fi
 
 # Copy configuration file
 COPY --from=builder /app/medusa-config.* ./
