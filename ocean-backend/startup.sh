@@ -40,10 +40,11 @@ fi
 # Auto-migrate if enabled
 if [ "$AUTO_MIGRATE" = "true" ]; then
   echo "🔄 Running database migrations..."
-  if timeout 180 npx medusa db:migrate 2>/dev/null; then
+  if timeout 180 npx medusa db:migrate 2>&1; then
     echo "✅ Database migrations completed successfully"
   else
-    echo "❌ Database migrations failed or timed out, but continuing..."
+    EXIT_CODE=$?
+    echo "⚠️  Database migrations failed with exit code $EXIT_CODE, but continuing..."
     # Try to continue even if migrations fail
   fi
 fi
@@ -51,10 +52,11 @@ fi
 # Auto-create admin if enabled
 if [ "$AUTO_CREATE_ADMIN" = "true" ]; then
   echo "👤 Creating admin user..."
-  if timeout 60 npm run create-admin 2>/dev/null; then
+  if timeout 60 npm run create-admin 2>&1; then
     echo "✅ Admin user created successfully"
   else
-    echo "⚠️  Admin user creation failed or timed out, but continuing..."
+    EXIT_CODE=$?
+    echo "⚠️  Admin user creation failed with exit code $EXIT_CODE, but continuing..."
     echo "   You can create admin manually later with: npm run create-admin"
   fi
 fi
@@ -62,10 +64,11 @@ fi
 # Auto-seed if enabled (skip on errors to allow server to start)
 if [ "$AUTO_SEED" = "true" ]; then
   echo "🌱 Seeding database with sample data..."
-  if timeout 120 npm run seed 2>/dev/null; then
+  if timeout 120 npm run seed 2>&1; then
     echo "✅ Database seeding completed"
   else
-    echo "⚠️  Database seeding failed or timed out, but continuing to allow server startup..."
+    EXIT_CODE=$?
+    echo "⚠️  Database seeding failed with exit code $EXIT_CODE, but continuing..."
   fi
 fi
 
@@ -99,6 +102,19 @@ fi
 export HOST=0.0.0.0
 export PORT=9000
 
+# Show environment info for debugging
+echo "🔍 Environment check:"
+echo "  NODE_ENV: $NODE_ENV"
+echo "  HOST: $HOST"
+echo "  PORT: $PORT"
+echo "  DATABASE_URL: ${DATABASE_URL:0:50}..."
+echo "  REDIS_URL: $REDIS_URL"
+
+# Verify npm start script exists
+echo "📝 Package.json scripts:"
+grep -A5 '"scripts"' package.json || echo "Could not read package.json scripts"
+
 # Start the server using medusa start command (runs the built server)
 echo "📦 Starting server from $(pwd)"
+echo "🚀 Executing: npm start"
 exec npm start
