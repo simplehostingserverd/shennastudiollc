@@ -44,13 +44,13 @@ RUN mkdir -p /app/ocean-backend/uploads /app/ocean-backend/static && \
 # Switch to non-root user
 USER node
 
-# Expose port for frontend only
-EXPOSE 3000
+# Expose ports for both frontend and backend
+EXPOSE 3000 9000
 
 # Health check for frontend only
 HEALTHCHECK --interval=30s --timeout=15s --start-period=180s --retries=5 \
     CMD curl -f http://localhost:3000 >/dev/null 2>&1 || exit 1
 
-# Use frontend-only startup script for Coolify (separate backend container)
-# For standalone deployments, use start-prod.sh instead
-CMD ["/app/start-frontend-only.sh"]
+# Use unified startup script for single-container deployment
+# This runs both backend and frontend in one container
+CMD ["/app/start-prod.sh"]

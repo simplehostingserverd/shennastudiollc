@@ -1,6 +1,24 @@
 name: shennas-studio
 
 services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: shennas-postgres
+    restart: unless-stopped
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_USER=medusa_user
+      - POSTGRES_PASSWORD=medusa_password
+      - POSTGRES_DB=medusa_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U medusa_user -d medusa_db']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   redis:
     image: redis:7-alpine
     container_name: shennas-redis
@@ -24,15 +42,14 @@ services:
     restart: unless-stopped
     ports:
       - '3000:3000' # Frontend
-      - '9000:9000' # Backend API
-      - '7001:7001' # Admin UI
+      - '9000:9000' # Backend API and Admin UI at /app
     environment:
       - NODE_ENV=production
 
       # Database
-      - DATABASE_URL=${DATABASE_URL}
-      - DATABASE_SSL=${DATABASE_SSL:-true}
-      - DATABASE_SSL_REJECT_UNAUTHORIZED=${DATABASE_SSL_REJECT_UNAUTHORIZED:-true}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://medusa_user:medusa_password@postgres:5432/medusa_db}
+      - DATABASE_SSL=${DATABASE_SSL:-false}
+      - DATABASE_SSL_REJECT_UNAUTHORIZED=${DATABASE_SSL_REJECT_UNAUTHORIZED:-false}
 
       # Redis
       - REDIS_URL=redis://redis:6379
@@ -75,6 +92,8 @@ services:
       - NEXT_TELEMETRY_DISABLED=1
 
     depends_on:
+      postgres:
+        condition: service_healthy
       redis:
         condition: service_healthy
     volumes:
@@ -99,9 +118,10 @@ services:
 
 # Volumes (no locks - freely deletable)
 volumes:
-  redis_data:
-  medusa_uploads:
-  medusa_static:
+  postgres_data: {}
+  redis_data: {}
+  medusa_uploads: {}
+  medusa_static: {}
 
 networks:
   default:
