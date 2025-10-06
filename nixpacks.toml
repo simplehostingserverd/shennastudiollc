@@ -14,4 +14,4 @@ cmds = [
 ]
 
 [start]
-cmd = "npm run start:pm2"
+cmd = "./railway-start.sh"

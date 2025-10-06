@@ -8,6 +8,6 @@
     "numReplicas": 1,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10,
-    "startCommand": "npm run start:pm2"
+    "startCommand": "./railway-start.sh"
   }
 }

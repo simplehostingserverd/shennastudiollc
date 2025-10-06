@@ -1,1 +1,1 @@
-web: npm run start:pm2
+web: ./railway-start.sh
