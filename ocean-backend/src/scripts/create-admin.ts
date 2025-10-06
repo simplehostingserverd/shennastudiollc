@@ -18,39 +18,9 @@ export default async function createAdminUser({ container }: ExecArgs) {
 
     if (existingUsers.length > 0) {
       logger.info(`✅ Admin user already exists: ${adminEmail}`)
-
-      // Update the password for existing user
-      const adminUser = existingUsers[0]
-
-      // Delete existing user and recreate to ensure proper auth setup
-      logger.info('🗑️ Deleting existing admin user to recreate...')
-      await userService.deleteUsers([adminUser.id])
-
-      // Create the admin user fresh
-      const newAdminUser = await userService.createUsers({
-        email: adminEmail,
-        first_name: 'Admin',
-        last_name: 'User',
-      })
-
-      // Create auth identity with password using emailpass provider
-      await authService.createAuthIdentities({
-        provider_identities: [
-          {
-            provider: 'emailpass',
-            entity_id: Array.isArray(newAdminUser) ? newAdminUser[0].id : newAdminUser.id,
-            provider_metadata: {
-              email: adminEmail,
-              password: adminPassword,
-            },
-          },
-        ],
-      })
-      logger.info('🔄 Admin user recreated with fresh auth')
-
       logger.info(`📧 Email: ${adminEmail}`)
-      logger.info(`🔐 Password: ${adminPassword}`)
       logger.info('🌐 Admin Panel URL: http://localhost:9000/app')
+      logger.info('ℹ️  Skipping admin creation - user already configured')
       return
     }
 
@@ -83,7 +53,10 @@ export default async function createAdminUser({ container }: ExecArgs) {
     logger.warn('⚠️  IMPORTANT: Change the password after first login!')
   } catch (error) {
     logger.error(`❌ Error creating admin user: ${error}`)
-    throw error
+    logger.warn('⚠️  Continuing despite error - you may need to create admin manually')
+    // Don't throw - allow the script to exit gracefully
+    // This prevents restart loops in production
+    process.exit(0)
   }
 }
 

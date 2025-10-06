@@ -52,13 +52,16 @@ fi
 # Auto-create admin if enabled
 if [ "$AUTO_CREATE_ADMIN" = "true" ]; then
   echo "👤 Creating admin user..."
-  if timeout 60 npm run create-admin 2>&1; then
-    echo "✅ Admin user created successfully"
-  else
+  # Use timeout with || true to ensure we never fail here
+  timeout 60 npm run create-admin 2>&1 || {
     EXIT_CODE=$?
-    echo "⚠️  Admin user creation failed with exit code $EXIT_CODE, but continuing..."
-    echo "   You can create admin manually later with: npm run create-admin"
-  fi
+    if [ $EXIT_CODE -eq 0 ]; then
+      echo "✅ Admin user created/verified successfully"
+    else
+      echo "⚠️  Admin user creation exited with code $EXIT_CODE, but continuing..."
+      echo "   You can create admin manually later with: npm run create-admin"
+    fi
+  }
 fi
 
 # Auto-seed if enabled (skip on errors to allow server to start)
