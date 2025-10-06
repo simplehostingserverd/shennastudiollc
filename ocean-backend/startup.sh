@@ -1,6 +1,9 @@
 #!/bin/sh
 echo "🌊 Starting Shenna Studio Backend..."
 echo "🔧 Startup Mode: ${STARTUP_MODE:-full}"
+echo "📍 Current directory: $(pwd)"
+echo "📂 Directory contents:"
+ls -la
 
 # Set default Redis URL if not provided
 if [ -z "$REDIS_URL" ]; then
@@ -84,9 +87,18 @@ fi
 echo "🚀 Starting Medusa server..."
 echo "Server will bind to 0.0.0.0:9000 (includes admin at /app)"
 echo "Build output located in .medusa/server directory"
+
+# Verify build exists before starting
+if [ ! -d ".medusa/server" ]; then
+  echo "❌ ERROR: .medusa/server directory not found!"
+  echo "Directory contents:"
+  ls -la .medusa/ || echo "No .medusa directory"
+  exit 1
+fi
+
 export HOST=0.0.0.0
 export PORT=9000
 
 # Start the server using medusa start command (runs the built server)
-cd /app/ocean-backend
+echo "📦 Starting server from $(pwd)"
 exec npm start
