@@ -132,11 +132,12 @@ export default async function createAdminAndKey({ container }: ExecArgs) {
         },
       })
       logger.info(`✅ API key linked to sales channel`)
-    } catch (error: any) {
-      if (error.message && error.message.includes('already') || error.message && error.message.includes('exist')) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      if (errorMessage.includes('already') || errorMessage.includes('exist')) {
         logger.info(`✅ API key already linked to sales channel`)
       } else {
-        logger.warn(`⚠️  Could not link API key: ${error.message}`)
+        logger.warn(`⚠️  Could not link API key: ${errorMessage}`)
       }
     }
 
@@ -155,8 +156,9 @@ export default async function createAdminAndKey({ container }: ExecArgs) {
 
     logger.info('✅ Setup completed successfully!')
 
-  } catch (error: any) {
-    logger.error('❌ Error during setup:', error)
-    throw error
+  } catch (error: unknown) {
+    const errorObj = error instanceof Error ? error : new Error(String(error))
+    logger.error('❌ Error during setup:', errorObj)
+    throw errorObj
   }
 }

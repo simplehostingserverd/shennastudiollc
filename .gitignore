@@ -110,3 +110,6 @@ nul
 .flaskenv*
 !.env.project
 !.env.vault
+# Railway Credentials - DO NOT COMMIT
+CREDENTIALS.txt
+railway-env-variables.json

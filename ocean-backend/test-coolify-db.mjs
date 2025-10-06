@@ -4,8 +4,8 @@
  * This script verifies that your Medusa backend can connect to Coolify's internal databases
  */
 
-const { Client } = require('pg');
-const { createClient } = require('redis');
+import { Client } from 'pg';
+import { createClient } from 'redis';
 
 // Coolify Internal Database URLs
 const DATABASE_URL = 'postgres://postgres:5nMC5VaPTPVdyOPKdPYJhPvq00MS8UoR2KAEAJp0IGkVJOd1l3D7Q1PLHiPWz5bi@fc880wcg88k88wcwco4gowoo:5432/postgres';
