@@ -50,6 +50,23 @@ module.exports = defineConfig({
 
       // Cookie Secret for session signing (Required - min 32 characters)
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
+
+      // Cookie options for authentication
+      cookieOptions: {
+        httpOnly: true,
+        sameSite: "lax" as const,
+        secure: process.env.NODE_ENV === "production",
+      },
+
+      // Session options
+      sessionOptions: {
+        name: "connect.sid",
+        resave: false,
+        rolling: false,
+        saveUninitialized: false,
+        secret: process.env.COOKIE_SECRET || "supersecret",
+        ttl: 10 * 24 * 60 * 60 * 1000, // 10 days
+      },
     },
 
     // Database logging (useful for debugging)
