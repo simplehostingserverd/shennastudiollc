@@ -10,7 +10,7 @@ cmds = [
 [phases.build]
 cmds = [
   "npm run build",
-  "cd ocean-backend && npm run build"
+  "cd ocean-backend && npx --yes @medusajs/cli@latest build"
 ]
 
 [start]

@@ -8,20 +8,21 @@ set -e
 echo "🚂 Starting Shenna's Studio on Railway..."
 echo "📁 Working directory: $(pwd)"
 echo "📦 Node version: $(node --version)"
+echo "📦 npm version: $(npm --version)"
 
-# Check if backend build exists
+# Verify backend build exists
 if [ ! -d "ocean-backend/.medusa" ]; then
-  echo "⚠️  Backend build not found, building now..."
-  cd ocean-backend
-  npx medusa build
-  cd ..
+  echo "❌ Backend build not found! Check Railway build logs."
+  echo "Expected: ocean-backend/.medusa"
+  ls -la ocean-backend/ || true
+  exit 1
 fi
 
 # Run migrations if AUTO_MIGRATE is true
 if [ "$AUTO_MIGRATE" = "true" ]; then
   echo "🔄 Running database migrations..."
   cd ocean-backend
-  npx medusa db:migrate || echo "⚠️  Migrations failed or already applied"
+  node_modules/.bin/medusa db:migrate || echo "⚠️  Migrations failed or already applied"
   cd ..
 fi
 
@@ -36,7 +37,7 @@ fi
 # Start backend in the background
 echo "🔧 Starting Medusa backend on port $BACKEND_PORT..."
 cd ocean-backend
-npx medusa start &
+node_modules/.bin/medusa start &
 BACKEND_PID=$!
 cd ..
 

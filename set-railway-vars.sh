@@ -1,84 +1,52 @@
 #!/bin/bash
 
-# Railway Environment Variables Setup for Shenna's Studio
-# Configures all required environment variables in Railway
+# Set Railway Environment Variables
+# Run this after creating the Web Service in Railway
 
-set -e
-
-echo "🚂 Railway Environment Setup for Shenna's Studio"
-echo "================================================"
+echo "🚂 Setting Railway Environment Variables..."
 echo ""
 
-# Check Railway status
-echo "📋 Railway Project Status:"
-railway status
-echo ""
+# Check if service is linked
+if ! railway service 2>&1 | grep -q "shennastudio"; then
+  echo "⚠️  No service linked!"
+  echo "Please run: railway service"
+  echo "And select your web service"
+  exit 1
+fi
 
-# Generate secure production secrets
-echo "🔐 Generating secure production secrets..."
-JWT_SECRET=$(openssl rand -base64 48)
-COOKIE_SECRET=$(openssl rand -base64 48)
-ADMIN_PASSWORD="ShennasOcean2024Secure$(openssl rand -base64 12)"
+# Set each variable from railway-env-variables.json
+echo "Setting environment variables..."
 
-echo ""
-echo "📦 Setting environment variables..."
-echo ""
-
-# Set all variables using a batch approach
-railway variables --set "NODE_ENV=production" \
-  --set "RAILWAY_DEPLOYMENT=true" \
-  --set "DATABASE_SSL=true" \
-  --set "DATABASE_SSL_REJECT_UNAUTHORIZED=false" \
-  --set "JWT_SECRET=$JWT_SECRET" \
-  --set "COOKIE_SECRET=$COOKIE_SECRET" \
-  --set "STORE_CORS=https://shennastudio.com,https://www.shennastudio.com,https://shop.shennastudio.com" \
-  --set "ADMIN_CORS=https://admin.shennastudio.com,https://api.shennastudio.com" \
-  --set "AUTH_CORS=https://shennastudio.com,https://www.shennastudio.com,https://shop.shennastudio.com" \
-  --set "ADMIN_EMAIL=admin@shennasstudio.com" \
-  --set "ADMIN_PASSWORD=$ADMIN_PASSWORD" \
-  --set "AUTO_MIGRATE=true" \
-  --set "AUTO_SEED=false" \
-  --set "AUTO_CREATE_ADMIN=true" \
-  --set "MEDUSA_ADMIN_ONBOARDING_TYPE=default" \
-  --set "MEDUSA_ADMIN_ONBOARDING_NEXTJS=true" \
-  --set "DISABLE_ADMIN=false" \
-  --set "NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.shennastudio.com" \
-  --set "STRIPE_SECRET_KEY=sk_test_replace_with_your_production_key" \
-  --set "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_replace_with_your_production_key" \
-  --set "PORT=3000" \
-  --set "BACKEND_PORT=9000" \
-  --set "HOSTNAME=0.0.0.0" \
-  --set "NEXT_TELEMETRY_DISABLED=1"
+railway variables set NODE_ENV=production
+railway variables set RAILWAY_DEPLOYMENT=true
+railway variables set DATABASE_SSL=true
+railway variables set DATABASE_SSL_REJECT_UNAUTHORIZED=false
+railway variables set JWT_SECRET="ULmb5s66BaKhO5FK24kgKXkjsUzy+zdQyJUd+qDrm1AUHqaWuq/SKIMDY54Olm5i"
+railway variables set COOKIE_SECRET="DoceiIZnEvO9CzVw5N5TP8rurPIVXRuUSUvqxeHSeJSy0aAP6A7mxi+S3ggrVGoi"
+railway variables set STORE_CORS="https://shennastudio.com,https://www.shennastudio.com,https://shop.shennastudio.com"
+railway variables set ADMIN_CORS="https://admin.shennastudio.com,https://api.shennastudio.com"
+railway variables set AUTH_CORS="https://shennastudio.com,https://www.shennastudio.com,https://shop.shennastudio.com"
+railway variables set ADMIN_EMAIL="admin@shennasstudio.com"
+railway variables set ADMIN_PASSWORD="ShennasOcean2024SecureEcKbcXb4+RrzcvXl"
+railway variables set AUTO_MIGRATE=true
+railway variables set AUTO_SEED=false
+railway variables set AUTO_CREATE_ADMIN=true
+railway variables set MEDUSA_ADMIN_ONBOARDING_TYPE=default
+railway variables set MEDUSA_ADMIN_ONBOARDING_NEXTJS=true
+railway variables set DISABLE_ADMIN=false
+railway variables set STRIPE_SECRET_KEY="sk_test_replace_with_your_production_key"
+railway variables set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_replace_with_your_production_key"
+railway variables set PORT=3000
+railway variables set BACKEND_PORT=9000
+railway variables set HOSTNAME="0.0.0.0"
+railway variables set NEXT_TELEMETRY_DISABLED=1
 
 echo ""
-echo "✅ Environment variables have been set!"
+echo "✅ Environment variables set!"
 echo ""
-echo "📋 SAVE THESE CREDENTIALS SECURELY:"
-echo "=========================================="
-echo "Admin Email: admin@shennasstudio.com"
-echo "Admin Password: $ADMIN_PASSWORD"
-echo "JWT Secret: $JWT_SECRET"
-echo "Cookie Secret: $COOKIE_SECRET"
-echo "=========================================="
+echo "⚠️  IMPORTANT: Set these manually in Railway dashboard:"
+echo "  DATABASE_URL = \${{Postgres.DATABASE_URL}}"
+echo "  REDIS_URL = \${{Redis.REDIS_URL}}"
+echo "  NEXT_PUBLIC_MEDUSA_BACKEND_URL = \${{RAILWAY_PUBLIC_DOMAIN}}"
 echo ""
-echo "⚠️  IMPORTANT NEXT STEPS:"
-echo ""
-echo "1. Add PostgreSQL Service in Railway Dashboard:"
-echo "   - Go to: https://railway.app"
-echo "   - Click '+ New Service' → 'PostgreSQL'"
-echo "   - Then set: railway variables --set 'DATABASE_URL=\${{Postgres.DATABASE_URL}}'"
-echo ""
-echo "2. Add Redis Service in Railway Dashboard:"
-echo "   - Click '+ New Service' → 'Redis'"
-echo "   - Then set: railway variables --set 'REDIS_URL=\${{Redis.REDIS_URL}}'"
-echo ""
-echo "3. Update Stripe Keys (replace test keys with production):"
-echo "   railway variables --set 'STRIPE_SECRET_KEY=sk_live_your_key'"
-echo "   railway variables --set 'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_your_key'"
-echo ""
-echo "4. Verify all variables:"
-echo "   railway variables"
-echo ""
-echo "5. Deploy:"
-echo "   railway up"
-echo ""
+echo "Then trigger a deployment!"
