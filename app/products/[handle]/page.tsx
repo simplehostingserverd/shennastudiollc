@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
-import { Product } from '@/src/lib/medusa'
+import type { StoreProduct } from '@medusajs/types'
 import createMedusaClient from '@/src/lib/medusa'
 import { useCart } from '@/app/context/CartContext'
 import Button from '@/app/components/ui/Button'
@@ -19,7 +19,7 @@ export default function ProductDetailPage() {
   const handle = params.handle as string
   const { addItem, isLoading: cartLoading } = useCart()
 
-  const [product, setProduct] = useState<Product | null>(null)
+  const [product, setProduct] = useState<StoreProduct | null>(null)
   const [loading, setLoading] = useState(true)
   const [selectedVariant, setSelectedVariant] = useState<string>('')
   const [quantity, setQuantity] = useState(1)
@@ -32,7 +32,7 @@ export default function ProductDetailPage() {
       const medusa = await createMedusaClient()
       const response = await medusa.store.product.list({ handle })
       if (response.products && response.products.length > 0) {
-        const foundProduct = response.products[0] as Product
+        const foundProduct = response.products[0] as StoreProduct
         setProduct(foundProduct)
         // Select first variant by default
         if (foundProduct.variants && foundProduct.variants.length > 0) {
