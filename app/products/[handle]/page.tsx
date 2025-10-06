@@ -115,7 +115,9 @@ export default function ProductDetailPage() {
   const selectedVariantData = product.variants?.find(
     (v) => v.id === selectedVariant
   )
-  const price = selectedVariantData?.prices?.[0]?.amount || 0
+  // Use calculated_price from the variant (Medusa v2 structure)
+  const variantWithPrice = selectedVariantData as { calculated_price?: { calculated_amount?: number } } | undefined
+  const price = variantWithPrice?.calculated_price?.calculated_amount || 0
   const formattedPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
