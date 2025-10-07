@@ -1,114 +1,131 @@
-import { loadEnv, defineConfig } from "@medusajs/framework/utils";
+import { loadEnv, defineConfig } from '@medusajs/framework/utils'
 
 // Load environment variables based on NODE_ENV
-loadEnv(process.env.NODE_ENV || "development", process.cwd());
+loadEnv(process.env.NODE_ENV || 'production', process.cwd())
 
 module.exports = defineConfig({
   projectConfig: {
-    // Database URL (Required)
+    // Database URL (Required - from Railway PostgreSQL)
     databaseUrl: process.env.DATABASE_URL,
 
     // Database name (Optional - extracted from DATABASE_URL if not provided)
-    databaseName: process.env.DATABASE_NAME,
+    databaseName: process.env.DATABASE_NAME || 'railway',
 
-    // Database driver options for SSL connections
+    // Database driver options for SSL connections (Railway requires SSL)
     databaseDriverOptions: process.env.DATABASE_URL?.startsWith('sqlite:')
       ? undefined
-      : process.env.DATABASE_SSL === 'true'
-        ? {
-            connection: {
-              ssl: {
-                rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false',
-              }
-            }
-          }
-        : {
-            connection: {
-              ssl: false  // Explicitly disable SSL when DATABASE_SSL is not 'true'
-            }
+      : {
+          connection: {
+            ssl:
+              process.env.NODE_ENV === 'production' ||
+              process.env.DATABASE_SSL === 'true'
+                ? {
+                    rejectUnauthorized:
+                      process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === 'true',
+                  }
+                : false,
           },
+        },
 
-    // Redis URL (Required for production with Redis modules)
+    // Redis URL (Required for production with Redis modules - from Railway)
     redisUrl: process.env.REDIS_URL,
 
     // Worker mode configuration (shared | worker | server)
-    workerMode: (process.env.WORKER_MODE || "shared") as "shared" | "worker" | "server",
+    workerMode: (process.env.WORKER_MODE || 'shared') as
+      | 'shared'
+      | 'worker'
+      | 'server',
 
     // HTTP Configuration
     http: {
-      // CORS - Store API (Required)
-      storeCors: process.env.STORE_CORS || "http://localhost:3000",
+      // CORS - Store API (Production domains)
+      storeCors:
+        process.env.STORE_CORS ||
+        'https://shennastudio.com,https://www.shennastudio.com',
 
-      // CORS - Admin API (Required)
-      adminCors: process.env.ADMIN_CORS || "http://localhost:9000",
+      // CORS - Admin API (Production domains)
+      adminCors: process.env.ADMIN_CORS || 'https://api.shennastudio.com',
 
-      // CORS - Authentication (Required)
-      authCors: process.env.AUTH_CORS || "http://localhost:3000",
+      // CORS - Authentication (Production domains)
+      authCors:
+        process.env.AUTH_CORS ||
+        'https://shennastudio.com,https://www.shennastudio.com,https://api.shennastudio.com',
 
       // JWT Secret for token generation (Required - min 32 characters)
-      jwtSecret: process.env.JWT_SECRET || "supersecret",
+      jwtSecret: process.env.JWT_SECRET || 'supersecret',
 
       // Cookie Secret for session signing (Required - min 32 characters)
-      cookieSecret: process.env.COOKIE_SECRET || "supersecret",
+      cookieSecret: process.env.COOKIE_SECRET || 'supersecret',
 
-      // Cookie options for authentication
-      cookieOptions: {
-        httpOnly: true,
-        sameSite: "lax" as const,
-        secure: process.env.NODE_ENV === "production",
-      },
-
-      // Session options
-      sessionOptions: {
-        name: "connect.sid",
-        resave: false,
-        rolling: false,
-        saveUninitialized: false,
-        secret: process.env.COOKIE_SECRET || "supersecret",
-        ttl: 10 * 24 * 60 * 60 * 1000, // 10 days
+      // Compression settings for production
+      compression: {
+        enabled: process.env.NODE_ENV === 'production',
+        level: 6,
+        threshold: 1024,
       },
     },
 
-    // Database logging (useful for debugging)
-    databaseLogging: process.env.DATABASE_LOGGING === "true",
+    // Database logging (disabled in production for performance)
+    databaseLogging: process.env.DATABASE_LOGGING === 'true',
+
+    // Additional production optimizations
+    databaseExtraOptions: {
+      pool: {
+        min: 2,
+        max: 10,
+      },
+    },
   },
 
   // Admin Dashboard Configuration
   admin: {
     // Disable admin dashboard (default: false)
-    disable: process.env.DISABLE_ADMIN === "true",
+    disable: process.env.DISABLE_ADMIN === 'true',
 
-    // Backend URL for admin panel
-    backendUrl: process.env.BACKEND_URL || process.env.MEDUSA_BACKEND_URL || "http://localhost:9000",
+    // Backend URL for admin panel (Production URL)
+    backendUrl:
+      process.env.BACKEND_URL ||
+      process.env.MEDUSA_BACKEND_URL ||
+      'https://api.shennastudio.com',
 
     // Admin dashboard path (default: /app)
-    path: "/app" as `/${string}`,
+    path: '/app' as `/${string}`,
+
+    // Disable development features in production
+    outDir: '.medusa/admin',
   },
 
   // Module Registrations
   modules: [
     // Redis Cache Module
     {
-      resolve: "@medusajs/medusa/cache-redis",
+      resolve: '@medusajs/medusa/cache-redis',
       options: {
         redisUrl: process.env.REDIS_URL,
-        // Optional: TTL in seconds
-        ttl: process.env.CACHE_TTL ? parseInt(process.env.CACHE_TTL) : 30,
+        // TTL in seconds (5 minutes for production)
+        ttl: process.env.CACHE_TTL ? parseInt(process.env.CACHE_TTL) : 300,
+        // Namespace for cache keys
+        namespace: 'medusa',
       },
     },
     // Redis Event Bus Module
     {
-      resolve: "@medusajs/medusa/event-bus-redis",
+      resolve: '@medusajs/medusa/event-bus-redis',
       options: {
         redisUrl: process.env.REDIS_URL,
       },
     },
     // Redis Workflow Engine Module
     {
-      resolve: "@medusajs/medusa/workflow-engine-redis",
+      resolve: '@medusajs/medusa/workflow-engine-redis',
       options: {
         redis: {
           url: process.env.REDIS_URL,
+          // Connection retry strategy
+          retryStrategy: (times: number) => {
+            const delay = Math.min(times * 50, 2000)
+            return delay
+          },
         },
       },
     },
@@ -116,7 +133,6 @@ module.exports = defineConfig({
 
   // Feature Flags (Optional - for beta features)
   featureFlags: {
-    // Example: Enable product categories
-    // product_categories: process.env.FEATURE_PRODUCT_CATEGORIES === "true",
+    // Enable any production feature flags here
   },
-});
+})

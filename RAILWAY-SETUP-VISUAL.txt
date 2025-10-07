@@ -1,0 +1,190 @@
+═══════════════════════════════════════════════════════════════════════════
+                    RAILWAY ARCHITECTURE FOR SHENNA'S STUDIO
+═══════════════════════════════════════════════════════════════════════════
+
+                              ┌─────────────────┐
+                              │  RAILWAY.APP    │
+                              │    PROJECT      │
+                              └────────┬────────┘
+                                       │
+                ┌──────────────────────┼──────────────────────┐
+                │                      │                      │
+                ▼                      ▼                      ▼
+    ┌───────────────────┐  ┌───────────────────┐  ┌───────────────────┐
+    │   PostgreSQL      │  │      Redis        │  │   Application     │
+    │   Database        │  │      Cache        │  │    Services       │
+    │                   │  │                   │  │                   │
+    │ ✅ Auto-Config    │  │ ✅ Auto-Config    │  │ ⚙️ Manual Setup   │
+    │                   │  │                   │  │                   │
+    │ Port: 5432        │  │ Port: 6379        │  └─────────┬─────────┘
+    └───────┬───────────┘  └───────┬───────────┘            │
+            │                      │                         │
+            └──────────┬───────────┘                         │
+                       │                                     │
+                       └───────────┬─────────────────────────┤
+                                   │                         │
+                                   ▼                         ▼
+                       ┌─────────────────────┐  ┌─────────────────────┐
+                       │  MEDUSA BACKEND     │  │  NEXT.JS FRONTEND   │
+                       │  (API + Admin)      │  │    (Storefront)     │
+                       │                     │  │                     │
+                       │  Port: 9000         │  │  Port: 3000         │
+                       │                     │  │                     │
+                       │  Environment Vars:  │  │  Environment Vars:  │
+                       │  ─────────────────  │  │  ─────────────────  │
+                       │  • DATABASE_URL ──┐ │  │  • BACKEND_URL ───┐ │
+                       │  • REDIS_URL ─────┤ │  │  • PUBLISHABLE_KEY│ │
+                       │  • JWT_SECRET     │ │  │  • STRIPE_PUB_KEY │ │
+                       │  • COOKIE_SECRET  │ │  │  • NEXTAUTH_SECRET│ │
+                       │  • STRIPE_API_KEY │ │  │  • CORS CONFIG    │ │
+                       │  • ADMIN_EMAIL    │ │  └─────────────────────┘
+                       │  • ADMIN_PASSWORD │ │              │
+                       │  • CORS CONFIG    │ │              │
+                       └─────────────────────┘              │
+                                   │                         │
+                                   └─────────────────────────┤
+                                                             │
+                              ┌──────────────────────────────┘
+                              │
+                              ▼
+                    ┌──────────────────────┐
+                    │   CUSTOM DOMAINS     │
+                    │                      │
+                    │  Backend:            │
+                    │  api.shennastudio.com│
+                    │                      │
+                    │  Frontend:           │
+                    │  shennastudio.com    │
+                    │  www.shennastudio.com│
+                    └──────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════
+                             ENVIRONMENT VARIABLE FLOW
+═══════════════════════════════════════════════════════════════════════════
+
+STEP 1: PostgreSQL → Backend
+─────────────────────────────
+  PostgreSQL Service generates:
+    ✓ DATABASE_URL
+    ✓ POSTGRES_USER
+    ✓ POSTGRES_PASSWORD
+    ✓ POSTGRES_DB
+    
+  Backend references:
+    DATABASE_URL=${{PostgreSQL.DATABASE_URL}}
+
+STEP 2: Redis → Backend
+───────────────────────
+  Redis Service generates:
+    ✓ REDIS_URL
+    ✓ REDIS_PASSWORD
+    
+  Backend references:
+    REDIS_URL=${{Redis.REDIS_URL}}
+
+STEP 3: Backend → Frontend
+──────────────────────────
+  Backend provides:
+    ✓ API Endpoint (https://api.shennastudio.com)
+    ✓ Publishable Key (from Admin Panel)
+    
+  Frontend uses:
+    NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.shennastudio.com
+    NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_...
+
+STEP 4: External Services → Both
+─────────────────────────────────
+  Stripe (Required):
+    Backend:  STRIPE_API_KEY=sk_live_...
+    Frontend: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
+  
+  Algolia (Optional):
+    Both:     ALGOLIA_* variables
+  
+  Cloudinary (Optional):
+    Both:     CLOUDINARY_* variables
+
+═══════════════════════════════════════════════════════════════════════════
+                              DEPLOYMENT ORDER
+═══════════════════════════════════════════════════════════════════════════
+
+  1. Create Railway Project
+            ↓
+  2. Add PostgreSQL Service (auto-configures)
+            ↓
+  3. Add Redis Service (auto-configures)
+            ↓
+  4. Configure Backend Service
+     • Set root directory: ocean-backend
+     • Add 18 required environment variables
+     • Reference PostgreSQL and Redis
+            ↓
+  5. Deploy Backend
+     • Wait for deployment to complete
+     • Check health endpoint
+            ↓
+  6. Access Admin Panel
+     • Login at: https://[backend-url].railway.app/app
+     • Get Publishable Key from Settings
+            ↓
+  7. Configure Frontend Service
+     • Set root directory: / (or empty)
+     • Add 8 required environment variables
+     • Include Publishable Key from step 6
+            ↓
+  8. Deploy Frontend
+     • Wait for deployment to complete
+     • Verify storefront loads
+            ↓
+  9. Configure Custom Domains
+     • Backend: api.shennastudio.com
+     • Frontend: shennastudio.com, www.shennastudio.com
+            ↓
+ 10. Update Environment Variables
+     • Backend: Update CORS with production domains
+     • Frontend: Update BACKEND_URL to custom domain
+            ↓
+ 11. Test Complete System
+     • Browse products
+     • Add to cart
+     • Complete checkout
+     • Verify admin panel
+
+═══════════════════════════════════════════════════════════════════════════
+                           REQUIRED SECRETS TO GENERATE
+═══════════════════════════════════════════════════════════════════════════
+
+Run these commands BEFORE deployment:
+
+Backend:
+  JWT_SECRET (64 chars):     openssl rand -hex 32
+  COOKIE_SECRET (64 chars):  openssl rand -hex 32
+  ADMIN_PASSWORD (32 chars): openssl rand -base64 24
+
+Frontend:
+  NEXTAUTH_SECRET (44 chars): openssl rand -base64 32
+
+External:
+  Get from Stripe Dashboard:
+    - STRIPE_API_KEY (sk_live_...)
+    - STRIPE_SECRET_KEY (sk_live_...)  
+    - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY (pk_live_...)
+
+═══════════════════════════════════════════════════════════════════════════
+                              HELPFUL RESOURCES
+═══════════════════════════════════════════════════════════════════════════
+
+Documentation Files Created:
+  📖 RAILWAY-DEPLOYMENT-INDEX.md         - Start here!
+  🏗️ RAILWAY-ARCHITECTURE.md             - Visual diagrams
+  🔧 RAILWAY-PRODUCTION-ENV.md           - Complete variable guide
+  ⚡ RAILWAY-ENV-QUICK-REFERENCE.md      - Quick copy-paste config
+  💻 RAILWAY-LOCAL-SETUP.md              - Local development guide
+
+External Links:
+  🚂 Railway Docs:  https://docs.railway.app
+  🛒 Medusa Docs:   https://docs.medusajs.com
+  💳 Stripe Dash:   https://dashboard.stripe.com
+
+═══════════════════════════════════════════════════════════════════════════
+
