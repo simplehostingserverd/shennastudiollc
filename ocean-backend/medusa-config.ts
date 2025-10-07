@@ -25,6 +25,10 @@ module.exports = defineConfig({
                   }
                 : false,
           },
+          pool: {
+            min: 2,
+            max: 10,
+          },
         },
 
     // Redis URL (Required for production with Redis modules - from Railway)
@@ -67,14 +71,6 @@ module.exports = defineConfig({
 
     // Database logging (disabled in production for performance)
     databaseLogging: process.env.DATABASE_LOGGING === 'true',
-
-    // Additional production optimizations
-    databaseDriverOptions: {
-      pool: {
-        min: 2,
-        max: 10,
-      },
-    },
   },
 
   // Admin Dashboard Configuration
