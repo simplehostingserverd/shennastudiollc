@@ -1,0 +1,178 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "services": {
+    "medusa-backend": {
+      "name": "Medusa Backend",
+      "source": {
+        "type": "github",
+        "repo": "simplehostingserverd/shennastudiollc",
+        "branch": "main"
+      },
+      "settings": {
+        "rootDirectory": "ocean-backend",
+        "buildCommand": "npm ci && npm run build",
+        "startCommand": "npm start",
+        "watchPaths": ["ocean-backend/**"],
+        "healthcheckPath": "/health",
+        "healthcheckTimeout": 300,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+      },
+      "envVars": {
+        "NODE_ENV": "production",
+        "PORT": "9000",
+        "JWT_SECRET": "GENERATE_WITH_openssl_rand_base64_32",
+        "COOKIE_SECRET": "GENERATE_WITH_openssl_rand_base64_32",
+        "ADMIN_EMAIL": "admin@shennastudio.com",
+        "ADMIN_PASSWORD": "SET_YOUR_SECURE_PASSWORD",
+        "STORE_CORS": "https://shennastudio.com,https://www.shennastudio.com",
+        "ADMIN_CORS": "https://api.shennastudio.com",
+        "AUTH_CORS": "https://shennastudio.com,https://www.shennastudio.com,https://api.shennastudio.com",
+        "DATABASE_LOGGING": "false",
+        "DATABASE_SSL": "true",
+        "DATABASE_SSL_REJECT_UNAUTHORIZED": "false",
+        "WORKER_MODE": "shared",
+        "AUTO_MIGRATE": "true",
+        "AUTO_SEED": "false",
+        "AUTO_CREATE_ADMIN": "true",
+        "BACKEND_URL": "https://api.shennastudio.com",
+        "MEDUSA_BACKEND_URL": "https://api.shennastudio.com",
+        "MEDUSA_ADMIN_ONBOARDING_TYPE": "default",
+        "MEDUSA_ADMIN_ONBOARDING_NEXTJS": "true"
+      },
+      "requiredAddons": [
+        {
+          "type": "postgresql",
+          "envVar": "DATABASE_URL"
+        },
+        {
+          "type": "redis",
+          "envVar": "REDIS_URL"
+        }
+      ],
+      "domains": [
+        {
+          "domain": "api.shennastudio.com",
+          "type": "custom"
+        }
+      ]
+    },
+    "nextjs-frontend": {
+      "name": "Next.js Frontend",
+      "source": {
+        "type": "github",
+        "repo": "simplehostingserverd/shennastudiollc",
+        "branch": "main"
+      },
+      "settings": {
+        "rootDirectory": ".",
+        "buildCommand": "npm ci && npm run build",
+        "startCommand": "npm start",
+        "watchPaths": [
+          "app/**",
+          "src/**",
+          "public/**",
+          "next.config.js",
+          "package.json"
+        ],
+        "healthcheckPath": "/",
+        "healthcheckTimeout": 300,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+      },
+      "envVars": {
+        "NODE_ENV": "production",
+        "PORT": "3000",
+        "HOSTNAME": "0.0.0.0",
+        "NEXT_TELEMETRY_DISABLED": "1",
+        "NEXT_PUBLIC_MEDUSA_BACKEND_URL": "https://api.shennastudio.com",
+        "NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY": "GET_FROM_ADMIN_PANEL_AFTER_BACKEND_DEPLOYED",
+        "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "pk_live_51RdPwMP4GPds5FMqYouB5PBrSK8udOL1PcTXM6J4rGqIKnA75jTTBOGqkMGKIDRnqOSxIK4BakHFUFXK9Bd0TTGB00VoS4YZTX",
+        "STRIPE_SECRET_KEY": "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",
+        "NEXTAUTH_SECRET": "GENERATE_WITH_openssl_rand_base64_32",
+        "NEXTAUTH_URL": "https://shennastudio.com"
+      },
+      "requiredAddons": [],
+      "domains": [
+        {
+          "domain": "shennastudio.com",
+          "type": "custom"
+        },
+        {
+          "domain": "www.shennastudio.com",
+          "type": "custom",
+          "redirectTo": "shennastudio.com"
+        }
+      ]
+    }
+  },
+  "instructions": {
+    "setup": [
+      "1. Create a new project in Railway",
+      "2. Add PostgreSQL addon (auto-generates DATABASE_URL)",
+      "3. Add Redis addon (auto-generates REDIS_URL)",
+      "4. Create 'Medusa Backend' service from GitHub",
+      "5. Set Root Directory to 'ocean-backend' in service settings",
+      "6. Add all environment variables from medusa-backend.envVars",
+      "7. Generate JWT_SECRET and COOKIE_SECRET: openssl rand -base64 32",
+      "8. Deploy backend and wait for health check to pass",
+      "9. Login to admin panel: https://api.shennastudio.com/app",
+      "10. Get Publishable API Key from Settings → Publishable API Keys",
+      "11. Create 'Next.js Frontend' service from GitHub",
+      "12. Set Root Directory to '.' (root) in service settings",
+      "13. Add all environment variables from nextjs-frontend.envVars",
+      "14. Generate NEXTAUTH_SECRET: openssl rand -base64 32",
+      "15. Update NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY with value from step 10",
+      "16. Deploy frontend and wait for health check to pass",
+      "17. Configure custom domains in Railway → Settings → Networking",
+      "18. Test both services and verify CORS works correctly"
+    ],
+    "validation": {
+      "backend": [
+        "Health check: curl https://api.shennastudio.com/health",
+        "Admin panel: https://api.shennastudio.com/app",
+        "Store API: curl https://api.shennastudio.com/store/products"
+      ],
+      "frontend": [
+        "Homepage: curl https://shennastudio.com",
+        "Products page: https://shennastudio.com/products",
+        "Browser console: Check for no CORS errors"
+      ]
+    },
+    "troubleshooting": {
+      "backend_not_building": "Ensure Root Directory is set to 'ocean-backend'",
+      "backend_crashes": "Check DATABASE_URL and REDIS_URL are set from addons",
+      "frontend_not_building": "Ensure Root Directory is '.' or empty (repository root)",
+      "frontend_crashes": "Check NEXT_PUBLIC_MEDUSA_BACKEND_URL points to deployed backend",
+      "cors_errors": "Verify STORE_CORS includes frontend domain in backend env vars"
+    }
+  },
+  "notes": {
+    "security": [
+      "Always generate new secrets with: openssl rand -base64 32",
+      "Never commit secrets to Git repository",
+      "Use Railway's Variables tab to set environment variables",
+      "Enable SSL/HTTPS for production domains",
+      "Rotate secrets regularly"
+    ],
+    "architecture": [
+      "Backend serves both API (port 9000) and Admin UI (/app)",
+      "Frontend is standalone Next.js server (port 3000)",
+      "PostgreSQL and Redis run as Railway addons",
+      "CORS allows frontend to communicate with backend API",
+      "Health checks ensure services are running correctly"
+    ],
+    "deployment_order": [
+      "1. Deploy PostgreSQL addon first",
+      "2. Deploy Redis addon second",
+      "3. Deploy Backend service third (needs DB and Redis)",
+      "4. Get Publishable Key from Backend admin",
+      "5. Deploy Frontend service last (needs Backend URL and key)"
+    ]
+  },
+  "version": "1.0.0",
+  "updated": "2025-01-07",
+  "medusa_version": "2.10.1",
+  "nextjs_version": "15.5.3",
+  "node_version": "20.19.5"
+}

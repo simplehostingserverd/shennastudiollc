@@ -1,0 +1,26 @@
+# Nixpacks configuration for Next.js Frontend on Railway
+# This ensures proper build and deployment for the storefront
+
+[phases.setup]
+nixPkgs = ["nodejs_20", "openssl"]
+
+[phases.install]
+cmds = [
+  "npm ci --production=false || npm install",
+  "echo 'Frontend dependencies installed'"
+]
+
+[phases.build]
+cmds = [
+  "npm run build",
+  "echo 'Frontend build completed successfully'"
+]
+
+[start]
+cmd = "npm start"
+
+[variables]
+NODE_ENV = "production"
+PORT = "3000"
+HOSTNAME = "0.0.0.0"
+NEXT_TELEMETRY_DISABLED = "1"
