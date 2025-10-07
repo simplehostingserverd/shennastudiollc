@@ -69,7 +69,7 @@ module.exports = defineConfig({
     databaseLogging: process.env.DATABASE_LOGGING === 'true',
 
     // Additional production optimizations
-    databaseExtraOptions: {
+    databaseDriverOptions: {
       pool: {
         min: 2,
         max: 10,
