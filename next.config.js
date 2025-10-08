@@ -12,12 +12,27 @@ const nextConfig = {
 
   allowedDevOrigins: ['10.0.3.10'],
   images: {
-    domains: [
-      'localhost',
-      'res.cloudinary.com',
-      'shennastudio.com',
-      'www.shennastudio.com',
-      'api.shennastudio.com',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'shennastudio.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.shennastudio.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.shennastudio.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
     ],
     unoptimized: true, // For static assets in production
   },
@@ -44,10 +59,7 @@ const nextConfig = {
           // CORS Headers - Allow backend API access
           {
             key: 'Access-Control-Allow-Origin',
-            value:
-              process.env.NODE_ENV === 'production'
-                ? 'https://api.shennastudio.com'
-                : '*',
+            value: '*',
           },
           {
             key: 'Access-Control-Allow-Methods',
@@ -99,10 +111,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
-            value:
-              process.env.NODE_ENV === 'production'
-                ? 'https://api.shennastudio.com'
-                : '*',
+            value: '*',
           },
           {
             key: 'Access-Control-Allow-Methods',
