@@ -48,6 +48,11 @@ const nextConfig = {
   outputFileTracingIncludes: {
     '/': ['./public/**/*', './app/globals.css'],
   },
+  // Experimental features for standalone build
+  experimental: {
+    // Ensure static files are copied to standalone build
+    outputFileTracingRoot: process.cwd(),
+  },
 
   // CORS and Security Headers Configuration
   async headers() {
