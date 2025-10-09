@@ -48,13 +48,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# Copy standalone build
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/ ./
+# Copy standalone build - this copies everything including server.js
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-
-# Copy the server.js file to root if it exists in standalone
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/server.js ./server.js 2>/dev/null || true
 
 # Copy startup script
 COPY --chown=nextjs:nodejs railway-start.sh ./

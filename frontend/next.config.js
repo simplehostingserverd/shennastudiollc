@@ -44,15 +44,12 @@ const nextConfig = {
   trailingSlash: false,
   // Disable asset optimization that can cause issues in containers
   generateEtags: false,
-  // Ensure static files are properly handled in production (moved out of experimental)
+  // Ensure static files are properly handled in production
   outputFileTracingIncludes: {
     '/': ['./public/**/*', './app/globals.css'],
   },
-  // Experimental features for standalone build
-  experimental: {
-    // Ensure static files are copied to standalone build
-    outputFileTracingRoot: process.cwd(),
-  },
+  // Output file tracing root (moved out of experimental in Next.js 15)
+  outputFileTracingRoot: process.cwd(),
 
   // CORS and Security Headers Configuration
   async headers() {
