@@ -32,7 +32,7 @@ ehthumbs.db
 Thumbs.db
 
 # Logs
-logs
+logs/
 *.log
 pids
 *.pid
@@ -100,10 +100,10 @@ uploads/
 
 # Claude Code
 .claude/
-app/components/MouseAnimation.tsx
-public/Manta_Ray_Animation_For_Website.mp4
-ocean-backend/static/private-1757582111018-1757582111018-product-exports.csv
-ocean-backend/pnpm-lock.yaml
+frontend/app/components/MouseAnimation.tsx
+frontend/public/Manta_Ray_Animation_For_Website.mp4
+backend/static/private-1757582111018-1757582111018-product-exports.csv
+backend/pnpm-lock.yaml
 nul
 
 .env*

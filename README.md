@@ -86,7 +86,7 @@ A beautiful, ocean-inspired e-commerce platform built with Next.js and Medusa, s
 | Service         | URL                   | Purpose                      |
 | --------------- | --------------------- | ---------------------------- |
 | **🛍️ Store**    | http://localhost:3000 | Customer shopping experience |
-| **⚙️ Admin**    | http://localhost:7001 | Store management dashboard   |
+| **⚙️ Admin**    | http://localhost:9000/app | Store management dashboard   |
 | **🔌 API**      | http://localhost:9000 | Backend API endpoints        |
 | **🗄️ Database** | localhost:5433        | PostgreSQL database          |
 | **⚡ Redis**    | localhost:6379        | Caching layer                |
@@ -94,14 +94,13 @@ A beautiful, ocean-inspired e-commerce platform built with Next.js and Medusa, s
 ## 📁 Project Structure
 
 ```
-shenandoah/
+shennastudiollc/
 ├── 🏢 Root Configuration
 │   ├── docker-compose.yml      # Orchestrates all services
-│   ├── Dockerfile             # Multi-stage build setup
 │   ├── .env.example           # Environment template
 │   └── README.md              # This file
 │
-├── 🎨 ocean-store/            # Frontend Application
+├── 🎨 frontend/               # Frontend Application
 │   ├── app/                   # Next.js App Router
 │   │   ├── components/        # Reusable UI components
 │   │   ├── api/              # API routes
@@ -113,7 +112,7 @@ shenandoah/
 │   ├── Dockerfile            # Frontend container
 │   └── package.json          # Frontend dependencies
 │
-└── 🏪 ocean-backend/          # Medusa Backend
+└── 🏪 backend/                # Medusa Backend
     ├── src/                   # Backend source code
     │   ├── api/              # API routes
     │   ├── scripts/          # Utility scripts
@@ -130,11 +129,11 @@ shenandoah/
 
    ```bash
    # Frontend
-   cd ocean-store
+   cd frontend
    npm install
 
    # Backend
-   cd ocean-backend
+   cd backend
    npm install
    ```
 
@@ -142,22 +141,22 @@ shenandoah/
 
    ```bash
    # Backend (Terminal 1)
-   cd ocean-backend
+   cd backend
    npm run dev
 
    # Frontend (Terminal 2)
-   cd ocean-store
+   cd frontend
    npm run dev
    ```
 
 3. **Access development environment**
    - Frontend: http://localhost:3000
-   - Admin: http://localhost:7001
+   - Admin: http://localhost:9000/app
    - API: http://localhost:9000
 
 ### 🔧 Available Scripts
 
-**Frontend (ocean-store/)**
+**Frontend (frontend/)**
 
 ```bash
 npm run dev          # Start development server
@@ -166,7 +165,7 @@ npm start           # Start production server
 npm run lint        # Run ESLint
 ```
 
-**Backend (ocean-backend/)**
+**Backend (backend/)**
 
 ```bash
 npm run dev          # Start development server

@@ -8,10 +8,10 @@ Shenna's Studio is an ocean-themed e-commerce platform built with Next.js and Me
 
 ## Architecture
 
-This is a monorepo structure with the frontend in the root directory and backend in `/ocean-backend/`.
+This is a monorepo structure with separate frontend and backend directories.
 
-- **Frontend**: Next.js 15.5.3 application in root directory with App Router, standalone output mode
-- **Backend**: Medusa 2.10.1 e-commerce backend in `/ocean-backend/`
+- **Frontend**: Next.js 15.5.3 application in `/frontend/` with App Router, standalone output mode
+- **Backend**: Medusa 2.10.1 e-commerce backend in `/backend/`
 - **Database**: PostgreSQL 15 (containerized on port 5433)
 - **Cache**: Redis 7 (containerized on port 6379)
 - **Payment**: Stripe integration
@@ -44,12 +44,10 @@ docker-compose exec medusa-backend npm run create-admin   # Create admin user
 docker-compose exec medusa-backend npm run seed          # Seed data
 ```
 
-### Root Level (Frontend)
+### Frontend (`frontend/`)
 
 - `npm run dev` - Start Next.js frontend (standard mode)
 - `npm run dev:turbo` - Start Next.js frontend with Turbopack (faster builds)
-- `npm run dev:full` - Start both frontend and backend concurrently
-- `npm run dev:full:turbo` - Start both frontend (with Turbopack) and backend
 - `npm run build` - Build Next.js frontend (standard mode)
 - `npm run build:turbo` - Build Next.js frontend with Turbopack
 - `npm start` - Start production Next.js server (uses standalone build)
@@ -58,7 +56,7 @@ docker-compose exec medusa-backend npm run seed          # Seed data
 - `npm run db:seed` - Seed Prisma database
 - `npm run algolia:index` - Index products to Algolia
 
-### Backend (`ocean-backend/`)
+### Backend (`backend/`)
 
 - `npm run dev` - Start Medusa development server (port 9000)
 - `npm run build` - Build Medusa backend (outputs to `.medusa/server` and `.medusa/client` directories)
@@ -92,19 +90,25 @@ docker-compose exec medusa-backend npm run seed          # Seed data
 
 ```
 shennastudiollc/
-├── app/                   # Next.js App Router pages and components
-│   ├── about/            # About page components
-│   ├── api/              # API routes
-│   ├── cart/             # Shopping cart pages
-│   ├── checkout/         # Checkout flow
-│   ├── components/       # Reusable React components
-│   ├── contact/          # Contact page
-│   ├── context/          # React context providers
-│   ├── faq/              # FAQ pages
-│   ├── products/         # Product listing and detail pages
-│   ├── returns/          # Returns policy page
-│   └── shipping/         # Shipping information
-├── ocean-backend/         # Medusa e-commerce backend
+├── frontend/              # Next.js storefront application
+│   ├── app/              # Next.js App Router pages and components
+│   │   ├── about/        # About page components
+│   │   ├── api/          # API routes
+│   │   ├── cart/         # Shopping cart pages
+│   │   ├── checkout/     # Checkout flow
+│   │   ├── components/   # Reusable React components
+│   │   ├── contact/      # Contact page
+│   │   ├── context/      # React context providers
+│   │   ├── faq/          # FAQ pages
+│   │   ├── products/     # Product listing and detail pages
+│   │   ├── returns/      # Returns policy page
+│   │   └── shipping/     # Shipping information
+│   ├── src/lib/          # Shared utilities
+│   ├── prisma/           # Database schema and migrations (frontend)
+│   ├── scripts/          # Frontend utility scripts
+│   ├── public/           # Static assets (images, favicon, etc.)
+│   └── Dockerfile        # Frontend Docker build
+├── backend/               # Medusa e-commerce backend
 │   ├── src/
 │   │   ├── admin/        # Admin panel customizations
 │   │   ├── api/          # Custom API routes
@@ -115,21 +119,17 @@ shennastudiollc/
 │   │   ├── subscribers/  # Event subscribers
 │   │   └── workflows/    # Business workflows
 │   ├── integration-tests/ # HTTP and module integration tests
-│   └── medusa-config.ts  # Medusa configuration
-├── src/lib/              # Shared utilities
-├── prisma/               # Database schema and migrations (frontend)
-├── scripts/              # Frontend utility scripts
-├── public/               # Static assets (images, favicon, etc.)
+│   ├── medusa-config.ts  # Medusa configuration
+│   └── Dockerfile        # Backend Docker build
 ├── docker-compose.yml    # Docker orchestration for development
-├── docker-compose.prod.yml # Production Docker configuration
-└── Dockerfile            # Multi-stage Docker build
+└── docker-compose.prod.yml # Production Docker configuration
 ```
 
 ## Environment Setup
 
 ### Required Environment Variables
 
-**Frontend (.env)**:
+**Frontend (frontend/.env)**:
 
 - `NEXT_PUBLIC_MEDUSA_BACKEND_URL` - Backend API URL
 - `STRIPE_SECRET_KEY` - Stripe secret key
@@ -140,7 +140,7 @@ shennastudiollc/
 - `CLOUDINARY_API_KEY` - Cloudinary API key (optional)
 - `CLOUDINARY_API_SECRET` - Cloudinary API secret (optional)
 
-**Backend (ocean-backend/.env)**:
+**Backend (backend/.env)**:
 
 - `DATABASE_URL` - PostgreSQL connection string
 - `REDIS_URL` - Redis connection string
@@ -188,7 +188,7 @@ The backend supports multiple database configurations:
 - **Local PostgreSQL**: Via Docker (port 5433 for dev, 5432 for production) - default for development
 - **SSL Support**: Configured via DATABASE_SSL and DATABASE_SSL_REJECT_UNAUTHORIZED env vars
 
-Commands (run from `ocean-backend/`):
+Commands (run from `backend/`):
 - Run migrations: `npx medusa db:migrate`
 - Create admin: `npm run create-admin`
 - Seed data: `npm run seed`

@@ -40,7 +40,7 @@ services:
   # Medusa Backend (API + Admin Panel)
   backend:
     build:
-      context: https://github.com/simplehostingserverd/shennastudiollc.git#main:ocean-backend
+      context: https://github.com/simplehostingserverd/shennastudiollc.git#main:backend
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
@@ -152,7 +152,7 @@ services:
   # Background Worker (Optional - uncomment if you need separate worker processing)
   # worker:
   #   build:
-  #     context: https://github.com/simplehostingserverd/shennastudiollc.git#main:ocean-backend
+  #     context: https://github.com/simplehostingserverd/shennastudiollc.git#main:backend
   #     dockerfile: Dockerfile
   #   restart: unless-stopped
   #   environment:

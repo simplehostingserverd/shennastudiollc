@@ -61,8 +61,8 @@ services:
       - NEXT_TELEMETRY_DISABLED=1
 
     volumes:
-      - medusa_uploads:/app/ocean-backend/uploads
-      - medusa_static:/app/ocean-backend/static
+      - medusa_uploads:/app/backend/uploads
+      - medusa_static:/app/backend/static
     healthcheck:
       test:
         [

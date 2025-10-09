@@ -87,7 +87,11 @@
       "Bash(railway up:*)",
       "Bash(export NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000)",
       "Bash(echo:*)",
-      "Bash(killall:*)"
+      "Bash(killall:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(rmdir:*)",
+      "Bash(awk:*)"
     ],
     "deny": [],
     "ask": []

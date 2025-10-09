@@ -41,7 +41,7 @@ services:
   # Medusa Backend API (Production with Coolify-hosted databases)
   backend:
     build:
-      context: ./ocean-backend
+      context: ./backend
       dockerfile: Dockerfile
     container_name: shenna-medusa-backend-prod
     restart: unless-stopped
@@ -100,7 +100,7 @@ services:
   # Next.js Frontend (Production)
   frontend:
     build:
-      context: .
+      context: ./frontend
       dockerfile: Dockerfile
     container_name: shenna-frontend-prod
     restart: unless-stopped
