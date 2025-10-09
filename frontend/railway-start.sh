@@ -9,30 +9,25 @@ echo "🚀 Starting Shenna's Studio Frontend..."
 echo "================================================"
 echo ""
 
-# Check if standalone build exists
-if [ ! -f ".next/standalone/server.js" ]; then
-    echo "❌ ERROR: Standalone build not found!"
-    echo "   Expected: .next/standalone/server.js"
+# Check multiple possible locations for server.js
+if [ -f "server.js" ]; then
+    SERVER_PATH="server.js"
+    echo "✅ Found server.js in root"
+elif [ -f ".next/standalone/server.js" ]; then
+    SERVER_PATH=".next/standalone/server.js"
+    echo "✅ Found server.js in .next/standalone"
+else
+    echo "❌ ERROR: server.js not found!"
+    echo "   Searched:"
+    echo "   - ./server.js"
+    echo "   - ./.next/standalone/server.js"
     echo ""
-    echo "   This usually means the build didn't complete successfully."
-    echo "   Check build logs for errors."
+    echo "   Current directory contents:"
+    ls -la
     echo ""
+    echo "   .next directory contents:"
     ls -la .next/ 2>/dev/null || echo "   .next directory doesn't exist!"
     exit 1
-fi
-
-echo "✅ Standalone build found"
-echo ""
-
-# Copy public and static files if needed
-if [ -d "public" ] && [ -d ".next/standalone" ]; then
-    echo "📁 Copying public files to standalone..."
-    cp -r public .next/standalone/ 2>/dev/null || true
-fi
-
-if [ -d ".next/static" ] && [ -d ".next/standalone/.next" ]; then
-    echo "📁 Copying static files to standalone..."
-    cp -r .next/static .next/standalone/.next/ 2>/dev/null || true
 fi
 
 echo ""
@@ -44,9 +39,11 @@ echo ""
 
 # Set default port if not specified
 export PORT=${PORT:-3000}
+export HOSTNAME=${HOSTNAME:-0.0.0.0}
 
-echo "✨ Starting Next.js server on port $PORT..."
+echo "✨ Starting Next.js server on $HOSTNAME:$PORT..."
+echo "   Using: $SERVER_PATH"
 echo ""
 
 # Start the server
-exec node .next/standalone/server.js
+exec node "$SERVER_PATH"
