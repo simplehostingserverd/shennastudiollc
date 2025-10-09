@@ -1,45 +1,71 @@
 # Production Dockerfile for Shenna's Studio Frontend
-# For Coolify deployment with separate backend service
+# Multi-stage build for optimized Next.js standalone deployment
 
-FROM node:20-alpine AS base
+# Stage 1: Dependencies
+FROM node:20-alpine AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
 
-# Install system dependencies
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies including sharp for image optimization
+RUN npm install --legacy-peer-deps && \
+    npm install sharp --legacy-peer-deps && \
+    npm cache clean --force
+
+# Stage 2: Builder
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy source code
+COPY . .
+
+# Set environment for build
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+# Build Next.js with standalone output
+RUN npm run build
+
+# Stage 3: Runner
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+# Install runtime dependencies
 RUN apk add --no-cache \
-    libc6-compat \
     curl \
     bash \
     netcat-openbsd
 
-WORKDIR /app
-
-# Copy package files for frontend only
-COPY package*.json ./
-
-# Install frontend dependencies
-RUN npm install --legacy-peer-deps && npm cache clean --force
-
-# Copy all source code (but backend won't be used in this container)
-COPY . .
-
-# Skip frontend build at Docker build time - will build at runtime with env vars
+ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Copy and make frontend startup script executable
-COPY start-frontend-only.sh /app/
-RUN chmod +x /app/start-frontend-only.sh
+# Create node user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
-# Set ownership
-RUN chown -R node:node /app
+# Copy standalone build
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+# Copy startup script
+COPY --chown=nextjs:nodejs railway-start.sh ./
+RUN chmod +x railway-start.sh
 
 # Switch to non-root user
-USER node
+USER nextjs
 
-# Expose frontend port only
+# Expose port
 EXPOSE 3000
 
-# Health check for frontend
-HEALTHCHECK --interval=30s --timeout=15s --start-period=180s --retries=5 \
-    CMD curl -f http://localhost:3000 >/dev/null 2>&1 || exit 1
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:3000/api/health || exit 1
 
-# Use frontend-only startup script for Coolify (backend runs separately)
-CMD ["/app/start-frontend-only.sh"]
+# Start the application
+CMD ["bash", "railway-start.sh"]
