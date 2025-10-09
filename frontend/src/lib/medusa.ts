@@ -116,14 +116,13 @@ const createMedusaClient = async (): Promise<MedusaClient> => {
         (process.env.NODE_ENV === 'production' ? 'https://backend-production-38d0a.up.railway.app' : 'http://localhost:9000')
       const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 
-      // Debug logging (will be stripped in production build)
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Medusa Config:', {
-          baseUrl: backendUrl,
-          hasPublishableKey: !!publishableKey,
-          publishableKeyPrefix: publishableKey?.substring(0, 10)
-        })
-      }
+      // Debug logging for both dev and production to help diagnose issues
+      console.log('Medusa Client Initializing:', {
+        baseUrl: backendUrl,
+        hasPublishableKey: !!publishableKey,
+        publishableKeyPrefix: publishableKey?.substring(0, 15) + '...',
+        environment: process.env.NODE_ENV
+      })
 
       medusaClient = new Medusa({
         baseUrl: backendUrl,
@@ -132,12 +131,12 @@ const createMedusaClient = async (): Promise<MedusaClient> => {
         auth: {
           type: 'session',
         },
-        // Ensure credentials are included in requests
-        fetchOptions: {
+        // Global fetch configuration
+        globalFetchOptions: {
           credentials: 'include',
-          headers: publishableKey ? {
-            'x-publishable-api-key': publishableKey,
-          } : {},
+          headers: {
+            'x-publishable-api-key': publishableKey || '',
+          },
         },
       })
       return medusaClient
