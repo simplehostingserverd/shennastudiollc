@@ -112,12 +112,23 @@ const createMedusaClient = async (): Promise<MedusaClient> => {
     }
 
     if (Medusa) {
+      const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ||
+        (process.env.NODE_ENV === 'production' ? 'https://backend-production-38d0a.up.railway.app' : 'http://localhost:9000')
+      const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+
+      // Debug logging (will be stripped in production build)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Medusa Config:', {
+          baseUrl: backendUrl,
+          hasPublishableKey: !!publishableKey,
+          publishableKeyPrefix: publishableKey?.substring(0, 10)
+        })
+      }
+
       medusaClient = new Medusa({
-        baseUrl:
-          process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ||
-          (process.env.NODE_ENV === 'production' ? 'https://backend-production-38d0a.up.railway.app' : 'http://localhost:9000'),
+        baseUrl: backendUrl,
         debug: process.env.NODE_ENV === 'development',
-        publishableKey: process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
+        publishableKey: publishableKey,
         auth: {
           type: 'session',
         },
