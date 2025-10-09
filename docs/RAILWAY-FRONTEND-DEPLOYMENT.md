@@ -151,7 +151,23 @@ STORE_CORS=https://your-frontend.up.railway.app,https://yourdomain.com
 ### 1. Check Frontend Health
 
 ```bash
+# Check home page
 curl https://your-frontend.up.railway.app
+
+# Check health endpoint (used by Railway)
+curl https://your-frontend.up.railway.app/api/health
+```
+
+Expected health check response:
+```json
+{
+  "status": "healthy",
+  "timestamp": "2025-01-09T...",
+  "service": "shenna-studio-frontend",
+  "version": "1.0.0",
+  "uptime": 123.45,
+  "environment": "production"
+}
 ```
 
 ### 2. Check Backend Connection
@@ -213,8 +229,9 @@ frontend/
 
 ### railway.json
 - Defines build and deploy settings
-- Sets healthcheck path
-- Configures restart policy
+- Sets healthcheck path to `/api/health`
+- Configures healthcheck timeout (100s)
+- Configures restart policy (ON_FAILURE, max 10 retries)
 
 ### nixpacks.toml
 - Specifies Node.js 20
