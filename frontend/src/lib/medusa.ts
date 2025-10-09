@@ -135,6 +135,9 @@ const createMedusaClient = async (): Promise<MedusaClient> => {
         // Ensure credentials are included in requests
         fetchOptions: {
           credentials: 'include',
+          headers: publishableKey ? {
+            'x-publishable-api-key': publishableKey,
+          } : {},
         },
       })
       return medusaClient
