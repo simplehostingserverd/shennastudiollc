@@ -84,37 +84,14 @@ export default function HomePage() {
     setIsSubmittingNewsletter(true)
     setNewsletterStatus({ type: null, message: '' })
 
-    try {
-      const response = await fetch('/api/newsletter', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: newsletterEmail }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to subscribe')
-      }
-
+    // Temporarily disabled - show message
+    setTimeout(() => {
       setNewsletterStatus({
         type: 'success',
-        message: data.message || 'Thank you for subscribing!',
+        message: 'Newsletter signup is temporarily unavailable. Please email us at shenna@shennastudio.com to be added to our mailing list!',
       })
-      setNewsletterEmail('')
-    } catch (error) {
-      setNewsletterStatus({
-        type: 'error',
-        message:
-          error instanceof Error
-            ? error.message
-            : 'Failed to subscribe. Please try again.',
-      })
-    } finally {
       setIsSubmittingNewsletter(false)
-    }
+    }, 500)
   }
 
   return (

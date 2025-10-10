@@ -2,10 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import ReCAPTCHA from 'react-google-recaptcha'
 import Button from '@/app/components/ui/Button'
-
-const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''
 
 interface FormData {
   name: string
@@ -35,7 +32,6 @@ export default function ContactPage() {
     type: 'success' | 'error' | null
     message: string
   }>({ type: null, message: '' })
-  const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   // Animation refs
   const headerRef = useRef(null)
@@ -114,60 +110,17 @@ export default function ContactPage() {
       return
     }
 
-    // Get reCAPTCHA token
-    const recaptchaToken = await recaptchaRef.current?.executeAsync()
-    recaptchaRef.current?.reset()
-
-    if (!recaptchaToken) {
-      setErrors({ recaptcha: 'Please complete the reCAPTCHA verification' })
-      return
-    }
-
     setIsSubmitting(true)
     setSubmitStatus({ type: null, message: '' })
 
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          recaptchaToken,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message')
-      }
-
+    // For now, show a message directing users to email directly
+    setTimeout(() => {
       setSubmitStatus({
         type: 'success',
-        message:
-          data.message || 'Thank you! Your message has been sent successfully.',
+        message: 'Please email us directly at shenna@shennastudio.com - our contact form is temporarily unavailable.',
       })
-
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: '',
-      })
-    } catch (error) {
-      setSubmitStatus({
-        type: 'error',
-        message:
-          error instanceof Error
-            ? error.message
-            : 'Failed to send message. Please try again.',
-      })
-    } finally {
       setIsSubmitting(false)
-    }
+    }, 500)
   }
 
   return (
@@ -376,24 +329,6 @@ export default function ContactPage() {
                 )}
               </motion.div>
 
-              {/* reCAPTCHA */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={formInView ? { opacity: 1 } : {}}
-                transition={{ delay: 0.7 }}
-              >
-                <ReCAPTCHA
-                  ref={recaptchaRef}
-                  size="invisible"
-                  sitekey={RECAPTCHA_SITE_KEY}
-                />
-                {errors.recaptcha && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.recaptcha}
-                  </p>
-                )}
-              </motion.div>
-
               {/* Submit Status */}
               {submitStatus.type && (
                 <motion.div
@@ -437,7 +372,7 @@ export default function ContactPage() {
               </motion.div>
 
               <p className="text-sm text-ocean-500 text-center">
-                Protected by reCAPTCHA and spam filters
+                Or email us directly at shenna@shennastudio.com
               </p>
             </form>
           </motion.div>
