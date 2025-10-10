@@ -229,18 +229,37 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     try {
       setIsLoading(true)
-      if (!medusa || !medusa.store || !medusa.store.cart) {
-        throw new Error('Medusa client not properly initialized')
-      }
-      const response = await medusa.store.cart.updateLineItem(cartId, itemId, {
-        quantity,
-      })
 
-      if (response.cart) {
-        setItems((response.cart.items || []) as CartItem[])
+      // Medusa v2: Use direct API call to update line item
+      const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+      const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+
+      const response = await fetch(
+        `${backendUrl}/store/carts/${cartId}/line-items/${itemId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-publishable-api-key': publishableKey || '',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ quantity }),
+        }
+      )
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data?.cart) {
+          setItems((data.cart.items || []) as CartItem[])
+        }
+      } else {
+        const errorData = await response.json().catch(() => ({}))
+        console.error('Failed to update item:', errorData)
+        throw new Error(errorData.message || 'Failed to update item quantity')
       }
     } catch (error) {
       console.error('Error updating cart item:', error)
+      alert('Failed to update item quantity. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -251,16 +270,39 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     try {
       setIsLoading(true)
-      if (!medusa || !medusa.store || !medusa.store.cart) {
-        throw new Error('Medusa client not properly initialized')
-      }
-      const response = await medusa.store.cart.deleteLineItem(cartId, itemId)
 
-      if (response?.cart) {
-        setItems((response.cart.items || []) as CartItem[])
+      // Medusa v2: Use direct API call to delete line item
+      const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+      const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+
+      const response = await fetch(
+        `${backendUrl}/store/carts/${cartId}/line-items/${itemId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-publishable-api-key': publishableKey || '',
+          },
+          credentials: 'include',
+        }
+      )
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data?.cart) {
+          setItems((data.cart.items || []) as CartItem[])
+        } else {
+          // If response doesn't include cart, manually filter out the item
+          setItems(prevItems => prevItems.filter(item => item.id !== itemId))
+        }
+      } else {
+        const errorData = await response.json().catch(() => ({}))
+        console.error('Failed to remove item:', errorData)
+        throw new Error(errorData.message || 'Failed to remove item from cart')
       }
     } catch (error) {
       console.error('Error removing cart item:', error)
+      alert('Failed to remove item from cart. Please try again.')
     } finally {
       setIsLoading(false)
     }
