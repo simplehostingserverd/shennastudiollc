@@ -184,11 +184,23 @@ function Scene() {
 }
 
 export default function AnimatedShark() {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted) {
+    return null
+  }
+
   return (
     <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-50">
       <Canvas
         camera={{ position: [0, 0, 8], fov: 50 }}
         style={{ background: 'transparent' }}
+        gl={{ alpha: true, antialias: true }}
+        dpr={[1, 2]}
       >
         <Scene />
       </Canvas>
