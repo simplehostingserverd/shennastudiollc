@@ -6,12 +6,16 @@ import {
   OrderEmailData,
 } from '@/src/lib/resend'
 
-// Initialize Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-08-27.basil',
-})
-
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || ''
+// Helper to get Stripe instance (lazy initialization)
+function getStripe() {
+  const apiKey = process.env.STRIPE_SECRET_KEY
+  if (!apiKey) {
+    throw new Error('STRIPE_SECRET_KEY is not configured')
+  }
+  return new Stripe(apiKey, {
+    apiVersion: '2025-08-27.basil',
+  })
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,6 +30,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
     if (!webhookSecret) {
       console.error('STRIPE_WEBHOOK_SECRET not configured')
       return NextResponse.json(
@@ -33,6 +38,9 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
+
+    // Get Stripe instance
+    const stripe = getStripe()
 
     // Verify webhook signature
     let event: Stripe.Event
