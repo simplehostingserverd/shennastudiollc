@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-// Initialize Resend with a default value to prevent build errors
+// Force dynamic rendering to prevent build-time static analysis
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
+// Initialize Resend - will only run at request time, not build time
 const resend = new Resend(process.env.RESEND_API_KEY || '')
 
 // Rate limiting store (in production, use Redis or a database)
