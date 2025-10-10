@@ -8,11 +8,11 @@ import { Product } from '@/src/lib/medusa'
 import Link from 'next/link'
 import Image from 'next/image'
 
-// Dynamically import the shark component to avoid SSR issues
-const AnimatedShark = dynamic(() => import('@/app/components/AnimatedShark'), {
-  ssr: false,
-  loading: () => null,
-})
+// Temporarily removed AnimatedShark to test client-side errors
+// const AnimatedShark = dynamic(() => import('@/app/components/AnimatedShark'), {
+//   ssr: false,
+//   loading: () => null,
+// })
 
 interface MedusaClient {
   store?: {
@@ -96,10 +96,10 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
-      {/* Animated Shark */}
-      <Suspense fallback={null}>
+      {/* Animated Shark - Temporarily removed to test client-side errors */}
+      {/* <Suspense fallback={null}>
         <AnimatedShark />
-      </Suspense>
+      </Suspense> */}
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-ocean-900 via-ocean-700 to-teal-600 text-white overflow-hidden">
