@@ -8,7 +8,17 @@ cmds = [
 ]
 
 [phases.build]
-cmds = ["npm run build"]
+cmds = [
+  "chmod +x pre-build.sh",
+  "bash pre-build.sh",
+  "npm run build"
+]
+# Make environment variables available during build
+dependsOn = ["install"]
+
+[variables]
+# Ensure NEXT_PUBLIC_* variables are available during build
+NODE_ENV = "production"
 
 [start]
 cmd = "bash railway-start.sh"
