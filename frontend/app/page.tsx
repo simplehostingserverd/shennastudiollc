@@ -96,10 +96,10 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
-      {/* Animated Shark - Temporarily disabled to fix production errors */}
-      {/* <Suspense fallback={null}>
+      {/* Animated Shark */}
+      <Suspense fallback={null}>
         <AnimatedShark />
-      </Suspense> */}
+      </Suspense>
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-ocean-900 via-ocean-700 to-teal-600 text-white overflow-hidden">
