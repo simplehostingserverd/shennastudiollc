@@ -123,7 +123,7 @@ export default function CartPage() {
                       </div>
 
                       {/* Quantity Controls */}
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div className="flex items-center space-x-3">
                           <span className="text-sm font-medium text-ocean-700">
                             Quantity:
