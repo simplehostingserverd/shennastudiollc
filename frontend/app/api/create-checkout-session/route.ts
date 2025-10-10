@@ -43,7 +43,8 @@ export async function POST(request: NextRequest) {
         title: item.title,
         unit_price: item.unit_price,
         unitAmount,
-        quantity: item.quantity
+        quantity: item.quantity,
+        thumbnail: item.thumbnail
       })
 
       // Validate price
@@ -51,13 +52,27 @@ export async function POST(request: NextRequest) {
         throw new Error(`Invalid price for item: ${item.title} (${unitAmount})`)
       }
 
+      // Validate image URL - must be absolute URL starting with http/https
+      const isValidUrl = (url: string) => {
+        try {
+          const parsed = new URL(url)
+          return parsed.protocol === 'http:' || parsed.protocol === 'https:'
+        } catch {
+          return false
+        }
+      }
+
+      const validImages = item.thumbnail && isValidUrl(item.thumbnail)
+        ? [item.thumbnail]
+        : []
+
       return {
         price_data: {
           currency: 'usd',
           product_data: {
             name: item.title,
             description: item.description || 'Product from Shenna\'s Studio',
-            images: item.thumbnail ? [item.thumbnail] : [],
+            images: validImages,
           },
           unit_amount: unitAmount, // Stripe expects amount in cents
         },
