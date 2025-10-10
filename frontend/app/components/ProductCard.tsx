@@ -28,8 +28,10 @@ export default function ProductCard({ product }: ProductCardProps) {
   const variant = product.variants?.[0]
   // Try calculated_price first, fall back to prices array
   const calculatedPrice = variant?.calculated_price
+  // NOTE: calculated_price.calculated_amount is in dollars (not cents)
+  // Convert to cents for formatPrice compatibility
   const price = calculatedPrice ? {
-    amount: calculatedPrice.calculated_amount,
+    amount: calculatedPrice.calculated_amount * 100, // Convert dollars to cents
     currency_code: calculatedPrice.currency_code
   } : variant?.prices?.find((p) => p.currency_code === 'usd')
   const imageUrl = product.images?.[0]?.url || '/placeholder-product.jpg'

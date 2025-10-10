@@ -30,7 +30,10 @@ export default function ProductDetailPage() {
     try {
       setLoading(true)
       const medusa = await createMedusaClient()
-      const response = await medusa.store.product.list({ handle })
+      const response = await medusa.store.product.list({
+        handle,
+        fields: '+variants,+variants.calculated_price'
+      })
       if (response.products && response.products.length > 0) {
         const foundProduct = response.products[0] as StoreProduct
         setProduct(foundProduct)
@@ -116,12 +119,13 @@ export default function ProductDetailPage() {
     (v) => v.id === selectedVariant
   )
   // Use calculated_price from the variant (Medusa v2 structure)
+  // NOTE: calculated_price.calculated_amount is in dollars (not cents)
   const variantWithPrice = selectedVariantData as { calculated_price?: { calculated_amount?: number } } | undefined
-  const price = variantWithPrice?.calculated_price?.calculated_amount || 0
+  const priceInDollars = variantWithPrice?.calculated_price?.calculated_amount || 0
   const formattedPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-  }).format(price / 100)
+  }).format(priceInDollars) // Already in dollars, no need to divide
 
   return (
     <div className="min-h-screen product-detail-background py-20">

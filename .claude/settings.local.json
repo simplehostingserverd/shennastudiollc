@@ -91,7 +91,20 @@
       "Bash(mkdir:*)",
       "Bash(mv:*)",
       "Bash(rmdir:*)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "WebFetch(domain:backend-production-38d0a.up.railway.app)",
+      "Bash(railway logs:*)",
+      "Bash(railway link:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(railway run:*)",
+      "Bash(railway redeploy:*)",
+      "WebFetch(domain:smithery.ai)",
+      "WebFetch(domain:nixpacks.com)",
+      "WebFetch(domain:docs.railway.app)",
+      "WebFetch(domain:docs.railway.com)",
+      "Bash(railway:*)",
+      "Bash(npx playwright install:*)",
+      "Read(//tmp/**)"
     ],
     "deny": [],
     "ask": []

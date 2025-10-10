@@ -69,6 +69,7 @@ module.exports = defineConfig({
       },
 
       // Temporarily disable publishable key requirement for troubleshooting
+      authMethodsStore: ['session'],
     },
 
     // Database logging (disabled in production for performance)
@@ -95,26 +96,6 @@ module.exports = defineConfig({
 
   // Module Registrations
   modules: [
-    // Stripe Payment Provider Module
-    {
-      resolve: '@medusajs/medusa/payment',
-      options: {
-        providers: [
-          {
-            resolve: '@medusajs/medusa/payment-stripe',
-            id: 'stripe',
-            options: {
-              apiKey: process.env.STRIPE_API_KEY || process.env.STRIPE_SECRET_KEY,
-              webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
-              // Capture payment automatically upon checkout completion
-              capture: true,
-              // Enable automatic payment methods for better UX
-              automatic_payment_methods: true,
-            },
-          },
-        ],
-      },
-    },
     // Redis Cache Module
     {
       resolve: '@medusajs/medusa/cache-redis',

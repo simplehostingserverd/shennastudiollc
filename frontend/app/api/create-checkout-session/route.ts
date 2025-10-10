@@ -35,7 +35,9 @@ export async function POST(request: NextRequest) {
 
     // Create line items for Stripe
     const lineItems = items.map((item: CartItem) => {
-      const unitAmount = Math.round(item.unit_price)
+      // Medusa v2 returns unit_price in dollars (e.g., 34.99)
+      // Stripe expects amount in cents (e.g., 3499)
+      const unitAmount = Math.round(item.unit_price * 100)
 
       console.log('Processing item:', {
         title: item.title,
