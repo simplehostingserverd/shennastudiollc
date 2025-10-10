@@ -104,7 +104,8 @@
       "WebFetch(domain:docs.railway.com)",
       "Bash(railway:*)",
       "Bash(npx playwright install:*)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "WebFetch(domain:docs.stripe.com)"
     ],
     "deny": [],
     "ask": []
