@@ -11,6 +11,8 @@ cmds = [
 cmds = [
   "chmod +x pre-build.sh",
   "bash pre-build.sh",
+  "cp .env.railway .env.production.local",
+  "cat .env.production.local",
   "npm run build"
 ]
 # Make environment variables available during build
