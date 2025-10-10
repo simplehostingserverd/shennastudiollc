@@ -24,9 +24,26 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy source code
 COPY . .
 
+# CRITICAL: Define build-time arguments for NEXT_PUBLIC environment variables
+# These MUST be available during `npm run build` for Next.js to embed them in the bundle
+ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL
+ARG NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+ARG NEXT_PUBLIC_BASE_URL
+
 # Set environment for build
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+
+# Pass NEXT_PUBLIC vars as environment variables for the build
+ENV NEXT_PUBLIC_MEDUSA_BACKEND_URL=$NEXT_PUBLIC_MEDUSA_BACKEND_URL
+ENV NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=$NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
+
+# Verify environment variables are set before building
+RUN echo "🔍 Build-time environment check:" && \
+    echo "NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:0:50}..." && \
+    echo "NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:0:30}..." && \
+    echo "NEXT_PUBLIC_BASE_URL: $NEXT_PUBLIC_BASE_URL"
 
 # Build Next.js with standalone output
 RUN npm run build
