@@ -81,10 +81,21 @@ export async function POST(request: NextRequest) {
     })
 
     // Determine base URL based on environment
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ||
-      process.env.VERCEL_URL ||
-      'http://localhost:3000'
+    // Ensure we always have a valid absolute URL with protocol
+    let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || ''
+
+    if (!baseUrl && process.env.VERCEL_URL) {
+      baseUrl = `https://${process.env.VERCEL_URL}`
+    }
+
+    if (!baseUrl) {
+      // Fallback: Try to get from request headers
+      const host = request.headers.get('host')
+      const protocol = request.headers.get('x-forwarded-proto') || 'https'
+      baseUrl = host ? `${protocol}://${host}` : 'https://www.shennastudio.com'
+    }
+
+    console.log('Using base URL for Stripe redirect:', baseUrl)
 
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
