@@ -45,13 +45,19 @@ export async function POST(request: NextRequest) {
       quantity: item.quantity,
     }))
 
+    // Determine base URL based on environment
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      process.env.VERCEL_URL ||
+      'http://localhost:3000'
+
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `https://shennastudio.com/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `https://shennastudio.com/cart`,
+      success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/cart`,
       metadata: {
         cart_id: cartId || '',
       },
