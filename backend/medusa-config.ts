@@ -67,6 +67,9 @@ module.exports = defineConfig({
         level: 6,
         threshold: 1024,
       },
+
+      // Temporarily disable publishable key requirement for troubleshooting
+      authMethodsStore: ['session'],
     },
 
     // Database logging (disabled in production for performance)
