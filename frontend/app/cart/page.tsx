@@ -230,18 +230,18 @@ export default function CartPage() {
                         }
                       )
 
-                      const { url, error } = await response.json()
+                      const data = await response.json()
 
-                      if (error) {
-                        console.error('Checkout error:', error)
+                      if (!response.ok || data.error) {
+                        console.error('Checkout error:', data.error || data.details || 'Unknown error')
                         alert(
-                          'There was an error creating your checkout session. Please try again.'
+                          data.details || 'There was an error creating your checkout session. Please try again.'
                         )
                         return
                       }
 
-                      if (url) {
-                        window.location.href = url
+                      if (data.url) {
+                        window.location.href = data.url
                       }
                     } catch (error) {
                       console.error('Checkout error:', error)
