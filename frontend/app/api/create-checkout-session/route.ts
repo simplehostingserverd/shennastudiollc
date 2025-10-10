@@ -24,6 +24,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { items, cartId } = body
 
+    console.log('Checkout request received:', { itemCount: items?.length, cartId })
+
     if (!items || items.length === 0) {
       return NextResponse.json({ error: 'No items in cart' }, { status: 400 })
     }
@@ -32,18 +34,34 @@ export async function POST(request: NextRequest) {
     const stripe = getStripe()
 
     // Create line items for Stripe
-    const lineItems = items.map((item: CartItem) => ({
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: item.title,
-          description: item.description,
-          images: [item.thumbnail].filter(Boolean),
+    const lineItems = items.map((item: CartItem) => {
+      const unitAmount = Math.round(item.unit_price)
+
+      console.log('Processing item:', {
+        title: item.title,
+        unit_price: item.unit_price,
+        unitAmount,
+        quantity: item.quantity
+      })
+
+      // Validate price
+      if (!unitAmount || unitAmount <= 0) {
+        throw new Error(`Invalid price for item: ${item.title} (${unitAmount})`)
+      }
+
+      return {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: item.title,
+            description: item.description || 'Product from Shenna\'s Studio',
+            images: item.thumbnail ? [item.thumbnail] : [],
+          },
+          unit_amount: unitAmount, // Stripe expects amount in cents
         },
-        unit_amount: Math.round(item.unit_price), // Stripe expects amount in cents
-      },
-      quantity: item.quantity,
-    }))
+        quantity: item.quantity,
+      }
+    })
 
     // Determine base URL based on environment
     const baseUrl =
@@ -67,11 +85,18 @@ export async function POST(request: NextRequest) {
       billing_address_collection: 'required',
     })
 
+    console.log('Stripe session created successfully:', session.id)
     return NextResponse.json({ url: session.url })
   } catch (error) {
     console.error('Stripe checkout error:', error)
+
+    // Return more detailed error for debugging
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      {
+        error: 'Failed to create checkout session',
+        details: errorMessage
+      },
       { status: 500 }
     )
   }
