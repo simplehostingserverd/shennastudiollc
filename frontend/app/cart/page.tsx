@@ -119,7 +119,7 @@ export default function CartPage() {
 
                       {/* Price */}
                       <div className="text-xl font-bold text-ocean-900 mb-3">
-                        {formatPrice(item.unit_price * 100)}
+                        {formatPrice(item.unit_price)}
                       </div>
 
                       {/* Quantity Controls */}

@@ -6,11 +6,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(price: number, currency: string = 'USD'): string {
+  // Medusa v2 returns prices in dollars (e.g., 34.99), not cents
+  // So we format directly without dividing by 100
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currency,
     minimumFractionDigits: 2,
-  }).format(price / 100) // Medusa stores prices in cents
+  }).format(price)
 }
 
 export function formatDate(date: string | Date): string {

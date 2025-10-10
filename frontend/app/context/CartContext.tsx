@@ -287,9 +287,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }
 
   // Calculate totals from items
-  // Medusa v2 returns unit_price in dollars, so multiply by 100 to convert to cents for consistency
+  // Medusa v2 returns unit_price in dollars (e.g., 34.99)
   const subtotal = items.reduce(
-    (acc, item) => acc + (item.unit_price * 100) * item.quantity,
+    (acc, item) => acc + item.unit_price * item.quantity,
     0
   )
   const total = subtotal // For now, just subtotal. In real app, this would include taxes, shipping, etc.
