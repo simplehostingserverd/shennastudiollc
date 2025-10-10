@@ -26,7 +26,12 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   // Get the first available variant and its price
   const variant = product.variants?.[0]
-  const price = variant?.prices?.find((p) => p.currency_code === 'usd')
+  // Try calculated_price first, fall back to prices array
+  const calculatedPrice = variant?.calculated_price
+  const price = calculatedPrice ? {
+    amount: calculatedPrice.calculated_amount,
+    currency_code: calculatedPrice.currency_code
+  } : variant?.prices?.find((p) => p.currency_code === 'usd')
   const imageUrl = product.images?.[0]?.url || '/placeholder-product.jpg'
 
   const handleAddToCart = async () => {

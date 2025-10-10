@@ -92,7 +92,10 @@ export default function ProductsPage() {
         }
 
         // Build query parameters
-        const queryParams: Record<string, unknown> = { limit: 50 }
+        const queryParams: Record<string, unknown> = {
+          limit: 50,
+          fields: '+variants,+variants.calculated_price'
+        }
 
         // If a specific collection is selected, add collection filter
         if (collectionHandle && collectionHandle !== 'all') {

@@ -59,6 +59,12 @@ export type Product = {
       amount: number
       currency_code: string
     }>
+    calculated_price?: {
+      calculated_amount: number
+      currency_code: string
+      is_calculated_price_price_list?: boolean
+      is_calculated_price_tax_inclusive?: boolean
+    }
     options?: Record<string, ProductOptionValue>
   }> | null
   weight?: number
