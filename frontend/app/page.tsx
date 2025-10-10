@@ -1,18 +1,11 @@
 'use client'
 
-import { useState, useEffect, useCallback, Suspense } from 'react'
-import dynamic from 'next/dynamic'
+import { useState, useEffect, useCallback } from 'react'
 import SearchBar from '@/app/components/SearchBar'
 import Button from '@/app/components/ui/Button'
 import { Product } from '@/src/lib/medusa'
 import Link from 'next/link'
 import Image from 'next/image'
-
-// Dynamically import the shark component to avoid SSR issues
-const AnimatedShark = dynamic(() => import('@/app/components/AnimatedShark'), {
-  ssr: false,
-  loading: () => null,
-})
 
 interface MedusaClient {
   store?: {
@@ -96,11 +89,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
-      {/* Animated Shark */}
-      <Suspense fallback={null}>
-        <AnimatedShark />
-      </Suspense>
-
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-ocean-900 via-ocean-700 to-teal-600 text-white overflow-hidden">
         <video

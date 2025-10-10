@@ -1,8 +1,15 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, Suspense } from 'react'
 import { motion, useInView } from 'framer-motion'
+import dynamic from 'next/dynamic'
 import Button from '@/app/components/ui/Button'
+
+// Dynamically import the shark component to avoid SSR issues
+const AnimatedShark = dynamic(() => import('@/app/components/AnimatedShark'), {
+  ssr: false,
+  loading: () => null,
+})
 
 interface FormData {
   name: string
@@ -125,6 +132,11 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-ocean-50 via-white to-seafoam-50 py-20">
+      {/* Animated Whale Shark */}
+      <Suspense fallback={null}>
+        <AnimatedShark />
+      </Suspense>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Animated Header */}
         <motion.div
