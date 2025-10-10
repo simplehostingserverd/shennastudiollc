@@ -13,6 +13,7 @@ import Image from 'next/image'
 export default function Navbar() {
   const { itemCount } = useCart()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isCustomDropdownOpen, setIsCustomDropdownOpen] = useState(false)
 
   return (
     <nav className="sticky top-0 z-50 w-full glass-effect border-b border-ocean-200/20">
@@ -47,6 +48,40 @@ export default function Navbar() {
             >
               Products
             </Link>
+
+            {/* Custom Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setIsCustomDropdownOpen(true)}
+              onMouseLeave={() => setIsCustomDropdownOpen(false)}
+            >
+              <button className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium flex items-center">
+                Custom
+                <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {isCustomDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-ocean-200 py-2 z-50">
+                  <Link
+                    href="/custom-design"
+                    className="block px-4 py-3 text-ocean-700 hover:bg-ocean-50 hover:text-ocean-900 transition-colors"
+                  >
+                    <div className="font-semibold">Jewelry Design</div>
+                    <div className="text-sm text-ocean-500">Bracelets & Necklaces</div>
+                  </Link>
+                  <Link
+                    href="/custom-tshirt"
+                    className="block px-4 py-3 text-ocean-700 hover:bg-ocean-50 hover:text-ocean-900 transition-colors"
+                  >
+                    <div className="font-semibold">T-Shirt Design</div>
+                    <div className="text-sm text-ocean-500">Upload Your Design</div>
+                  </Link>
+                </div>
+              )}
+            </div>
+
             <Link
               href="/about"
               className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium"
@@ -131,6 +166,28 @@ export default function Navbar() {
               >
                 Products
               </Link>
+
+              {/* Mobile Custom Submenu */}
+              <div className="py-2">
+                <div className="text-ocean-700 font-semibold mb-2">Custom</div>
+                <div className="pl-4 space-y-2">
+                  <Link
+                    href="/custom-design"
+                    className="block text-ocean-600 hover:text-ocean-900 transition-colors py-1"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Jewelry Design
+                  </Link>
+                  <Link
+                    href="/custom-tshirt"
+                    className="block text-ocean-600 hover:text-ocean-900 transition-colors py-1"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    T-Shirt Design
+                  </Link>
+                </div>
+              </div>
+
               <Link
                 href="/about"
                 className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium py-2"
