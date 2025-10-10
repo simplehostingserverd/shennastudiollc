@@ -1,15 +1,26 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { useScroll } from 'framer-motion'
 import * as THREE from 'three'
 
 function Shark() {
   const meshRef = useRef<THREE.Group>(null)
-  const { scrollYProgress } = useScroll()
+  const [scrollY, setScrollY] = useState(0)
 
-  // Create shark shape
+  // Track scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+      setScrollY(maxScroll > 0 ? scrollPosition / maxScroll : 0)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Create shark shape and animate idle motion
   useEffect(() => {
     if (meshRef.current) {
       // Animate idle swimming motion
@@ -28,7 +39,6 @@ function Shark() {
   // Update position based on scroll
   useFrame(() => {
     if (meshRef.current) {
-      const scrollY = scrollYProgress.get()
       // Shark swims down as user scrolls
       meshRef.current.position.y = 2 - scrollY * 8
       meshRef.current.position.x = Math.sin(scrollY * Math.PI * 2) * 2
