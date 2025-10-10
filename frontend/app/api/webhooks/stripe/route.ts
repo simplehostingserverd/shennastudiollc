@@ -13,7 +13,7 @@ function getStripe() {
     throw new Error('STRIPE_SECRET_KEY is not configured')
   }
   return new Stripe(apiKey, {
-    apiVersion: '2025-08-27.basil',
+    apiVersion: '2025-03-31.basil',
   })
 }
 
