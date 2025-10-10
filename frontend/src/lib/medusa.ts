@@ -127,16 +127,18 @@ const createMedusaClient = async (): Promise<MedusaClient> => {
       medusaClient = new Medusa({
         baseUrl: backendUrl,
         debug: process.env.NODE_ENV === 'development',
-        publishableKey: publishableKey,
+        // Temporarily disabled publishable key requirement
+        // publishableKey: publishableKey,
         auth: {
           type: 'session',
         },
         // Global fetch configuration
         globalFetchOptions: {
           credentials: 'include',
-          headers: {
-            'x-publishable-api-key': publishableKey || '',
-          },
+          // Temporarily disabled publishable key header
+          // headers: {
+          //   'x-publishable-api-key': publishableKey || '',
+          // },
         },
       })
       return medusaClient
