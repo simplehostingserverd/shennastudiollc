@@ -1,11 +1,18 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Suspense } from 'react'
+import dynamic from 'next/dynamic'
 import SearchBar from '@/app/components/SearchBar'
 import Button from '@/app/components/ui/Button'
 import { Product } from '@/src/lib/medusa'
 import Link from 'next/link'
 import Image from 'next/image'
+
+// Dynamically import the shark component to avoid SSR issues
+const AnimatedShark = dynamic(() => import('@/app/components/AnimatedShark'), {
+  ssr: false,
+  loading: () => null,
+})
 
 interface MedusaClient {
   store?: {
@@ -19,6 +26,12 @@ export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [medusa, setMedusa] = useState<MedusaClient | null>(null)
+  const [newsletterEmail, setNewsletterEmail] = useState('')
+  const [newsletterStatus, setNewsletterStatus] = useState<{
+    type: 'success' | 'error' | null
+    message: string
+  }>({ type: null, message: '' })
+  const [isSubmittingNewsletter, setIsSubmittingNewsletter] = useState(false)
 
   useEffect(() => {
     const initMedusa = async () => {
@@ -66,8 +79,51 @@ export default function HomePage() {
     }
   }, [medusa, fetchProducts])
 
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmittingNewsletter(true)
+    setNewsletterStatus({ type: null, message: '' })
+
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: newsletterEmail }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to subscribe')
+      }
+
+      setNewsletterStatus({
+        type: 'success',
+        message: data.message || 'Thank you for subscribing!',
+      })
+      setNewsletterEmail('')
+    } catch (error) {
+      setNewsletterStatus({
+        type: 'error',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Failed to subscribe. Please try again.',
+      })
+    } finally {
+      setIsSubmittingNewsletter(false)
+    }
+  }
+
   return (
     <div className="min-h-screen">
+      {/* Animated Shark */}
+      <Suspense fallback={null}>
+        <AnimatedShark />
+      </Suspense>
+
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-ocean-900 via-ocean-700 to-teal-600 text-white overflow-hidden">
         <video
@@ -379,24 +435,44 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="max-w-md mx-auto mb-12">
+            <form
+              onSubmit={handleNewsletterSubmit}
+              className="max-w-md mx-auto mb-12"
+            >
               <div className="flex flex-col sm:flex-row gap-4">
                 <input
                   type="email"
                   placeholder="Enter your email address"
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
+                  required
                   className="flex-1 px-6 py-4 border-2 border-ocean-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:border-transparent text-lg transition-all duration-300"
+                  disabled={isSubmittingNewsletter}
                 />
                 <Button
+                  type="submit"
                   variant="primary"
-                  className="px-8 py-4 bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-lg transform hover:scale-105 transition-all duration-300"
+                  className="px-8 py-4 bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-lg transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmittingNewsletter}
                 >
-                  Subscribe
+                  {isSubmittingNewsletter ? 'Subscribing...' : 'Subscribe'}
                 </Button>
               </div>
+              {newsletterStatus.type && (
+                <div
+                  className={`mt-4 p-3 rounded-lg text-center ${
+                    newsletterStatus.type === 'success'
+                      ? 'bg-green-50 text-green-700 border border-green-200'
+                      : 'bg-red-50 text-red-700 border border-red-200'
+                  }`}
+                >
+                  {newsletterStatus.message}
+                </div>
+              )}
               <p className="text-sm text-ocean-500 mt-3 text-center">
                 🔒 We respect your privacy and never share your email
               </p>
-            </div>
+            </form>
 
             <div className="grid md:grid-cols-3 gap-6 text-center">
               <div className="p-6">
