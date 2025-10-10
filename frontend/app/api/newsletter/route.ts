@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Initialize Resend with a default value to prevent build errors
+const resend = new Resend(process.env.RESEND_API_KEY || '')
 
 // Rate limiting store (in production, use Redis or a database)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
