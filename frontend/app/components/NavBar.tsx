@@ -63,21 +63,23 @@ export default function Navbar() {
               </button>
 
               {isCustomDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-ocean-200 py-2 z-50">
-                  <Link
-                    href="/custom-design"
-                    className="block px-4 py-3 text-ocean-700 hover:bg-ocean-50 hover:text-ocean-900 transition-colors"
-                  >
-                    <div className="font-semibold">Jewelry Design</div>
-                    <div className="text-sm text-ocean-500">Bracelets & Necklaces</div>
-                  </Link>
-                  <Link
-                    href="/custom-tshirt"
-                    className="block px-4 py-3 text-ocean-700 hover:bg-ocean-50 hover:text-ocean-900 transition-colors"
-                  >
-                    <div className="font-semibold">T-Shirt Design</div>
-                    <div className="text-sm text-ocean-500">Upload Your Design</div>
-                  </Link>
+                <div className="absolute top-full left-0 pt-2 w-56 z-50">
+                  <div className="bg-white rounded-2xl shadow-2xl border border-ocean-200 py-2">
+                    <Link
+                      href="/custom-design"
+                      className="block px-4 py-3 text-ocean-700 hover:bg-ocean-50 hover:text-ocean-900 transition-colors"
+                    >
+                      <div className="font-semibold">Jewelry Design</div>
+                      <div className="text-sm text-ocean-500">Bracelets & Necklaces</div>
+                    </Link>
+                    <Link
+                      href="/custom-tshirt"
+                      className="block px-4 py-3 text-ocean-700 hover:bg-ocean-50 hover:text-ocean-900 transition-colors"
+                    >
+                      <div className="font-semibold">T-Shirt Design</div>
+                      <div className="text-sm text-ocean-500">Upload Your Design</div>
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
