@@ -12,6 +12,7 @@ model User {
   email     String   @unique
   name      String?
   password  String
+  role      String   @default("customer")
   orders    Order[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -47,4 +48,38 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
   price     Int     // price at time of order in cents
+}
+
+model ProductComment {
+  id           String   @id @default(cuid())
+  productId    String
+  customerName String
+  email        String
+  comment      String
+  rating       Int      @default(5)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AffiliateLink {
+  id          String   @id @default(cuid())
+  title       String
+  url         String
+  description String?
+  placement   String
+  isActive    Boolean  @default(true)
+  clicks      Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AdPlacement {
+  id          String   @id @default(cuid())
+  name        String
+  adCode      String
+  placement   String
+  isActive    Boolean  @default(true)
+  impressions Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

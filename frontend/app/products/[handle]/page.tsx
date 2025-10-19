@@ -13,6 +13,8 @@ import {
 } from '@heroicons/react/24/solid'
 import Link from 'next/link'
 import Image from 'next/image'
+import ProductComments from '@/app/components/ProductComments'
+import Head from 'next/head'
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -127,8 +129,57 @@ export default function ProductDetailPage() {
     currency: 'USD',
   }).format(priceInDollars) // Already in dollars, no need to divide
 
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.title,
+    description: product.description || `Beautiful handcrafted ${product.title} from Shenna's Studio`,
+    image: product.images?.[0]?.url || '',
+    brand: {
+      '@type': 'Brand',
+      name: "Shenna's Studio",
+    },
+    offers: {
+      '@type': 'Offer',
+      url: `https://shennastudio.com/products/${product.handle}`,
+      priceCurrency: 'USD',
+      price: priceInDollars,
+      availability: 'https://schema.org/InStock',
+      seller: {
+        '@type': 'Organization',
+        name: "Shenna's Studio",
+      },
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '5',
+      reviewCount: '24',
+    },
+  }
+
   return (
-    <div className="min-h-screen product-detail-background py-20">
+    <>
+      <Head>
+        <title>{product.title} | Shenna&apos;s Studio - Handcrafted Ocean-Inspired Jewelry</title>
+        <meta
+          name="description"
+          content={`${product.description || `Shop ${product.title} at Shenna's Studio. Handcrafted ocean-inspired jewelry supporting marine conservation. Free shipping on orders over $50.`}`}
+        />
+        <meta name="keywords" content={`${product.title}, ocean jewelry, handcrafted bracelets, marine conservation, beach jewelry, ${product.handle}`} />
+        <link rel="canonical" href={`https://shennastudio.com/products/${product.handle}`} />
+        <meta property="og:title" content={`${product.title} | Shenna's Studio`} />
+        <meta property="og:description" content={product.description || `Shop ${product.title}`} />
+        <meta property="og:image" content={product.images?.[0]?.url || '/ShennasLogo.png'} />
+        <meta property="og:url" content={`https://shennastudio.com/products/${product.handle}`} />
+        <meta property="og:type" content="product" />
+        <meta property="product:price:amount" content={priceInDollars.toString()} />
+        <meta property="product:price:currency" content="USD" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+        />
+      </Head>
+      <div className="min-h-screen product-detail-background py-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Breadcrumb */}
         <nav className="mb-8">
@@ -328,7 +379,11 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
+
+        {/* Comments Section */}
+        <ProductComments productId={product.id} />
       </div>
     </div>
+    </>
   )
 }

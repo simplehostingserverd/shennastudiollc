@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { CartProvider } from '@/app/context/CartContext'
 import Navbar from '@/app/components/NavBar'
 import Footer from '@/app/components/Footer'
@@ -214,6 +215,11 @@ export default function RootLayout({
           <main className="flex-grow">{children}</main>
           <Footer />
         </CartProvider>
+        <Script
+          src="https://app.rybbit.io/api/script.js"
+          data-site-id="a56da861ea4f"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   )
