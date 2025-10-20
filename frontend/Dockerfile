@@ -1,8 +1,8 @@
 # Production Dockerfile for Shenna's Studio Frontend
-# Using Alpine base directly to avoid Docker registry issues
+# Using Quay.io mirror to avoid Docker Hub authentication issues
 
 # Stage 1: Dependencies
-FROM alpine:3.20 AS deps
+FROM quay.io/bedrock/alpine:3.20 AS deps
 RUN apk add --no-cache nodejs npm libc6-compat
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN npm install --legacy-peer-deps && \
     npm cache clean --force
 
 # Stage 2: Builder
-FROM alpine:3.20 AS builder
+FROM quay.io/bedrock/alpine:3.20 AS builder
 RUN apk add --no-cache nodejs npm
 WORKDIR /app
 
@@ -49,7 +49,7 @@ RUN echo "🔍 Build-time environment check:" && \
 RUN npm run build
 
 # Stage 3: Runner
-FROM alpine:3.20 AS runner
+FROM quay.io/bedrock/alpine:3.20 AS runner
 RUN apk add --no-cache nodejs npm curl bash netcat-openbsd
 WORKDIR /app
 
