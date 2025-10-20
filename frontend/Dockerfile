@@ -1,10 +1,9 @@
-# ALTERNATIVE Dockerfile using public.ecr.aws mirror (no authentication required)
-# Use this if Docker Hub continues to have issues
-# To use: cp frontend/Dockerfile.mirror frontend/Dockerfile
+# Production Dockerfile for Shenna's Studio Frontend
+# Using Alpine base directly to avoid Docker registry issues
 
 # Stage 1: Dependencies
-FROM public.ecr.aws/docker/library/node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat
+FROM alpine:3.20 AS deps
+RUN apk add --no-cache nodejs npm libc6-compat
 WORKDIR /app
 
 # Copy package files
@@ -16,7 +15,8 @@ RUN npm install --legacy-peer-deps && \
     npm cache clean --force
 
 # Stage 2: Builder
-FROM public.ecr.aws/docker/library/node:20-alpine AS builder
+FROM alpine:3.20 AS builder
+RUN apk add --no-cache nodejs npm
 WORKDIR /app
 
 # Copy dependencies from deps stage
@@ -49,21 +49,16 @@ RUN echo "🔍 Build-time environment check:" && \
 RUN npm run build
 
 # Stage 3: Runner
-FROM public.ecr.aws/docker/library/node:20-alpine AS runner
+FROM alpine:3.20 AS runner
+RUN apk add --no-cache nodejs npm curl bash netcat-openbsd
 WORKDIR /app
-
-# Install runtime dependencies
-RUN apk add --no-cache \
-    curl \
-    bash \
-    netcat-openbsd
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Create node user
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -u 1001 -S nextjs -G nodejs
 
 # Copy standalone build
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./

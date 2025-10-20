@@ -1,19 +1,23 @@
-# ALTERNATIVE Dockerfile using public.ecr.aws mirror (no authentication required)
-# Use this if Docker Hub continues to have issues
-# To use: cp backend/Dockerfile.mirror backend/Dockerfile
+# Multi-stage build for MedusaJS v2
+# Using Debian Bookworm base directly to avoid Docker registry issues
 
-FROM public.ecr.aws/docker/library/node:20 as builder
+FROM debian:bookworm-slim as builder
 
 WORKDIR /app
+
+# Install Node.js 20 and build tools
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs python3 python3-pip python-is-python3 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy all files
 COPY . .
 
 # Clean node_modules if exists
 RUN rm -rf node_modules
-
-# Install Python dependencies for build tools
-RUN apt-get update && apt-get install -y python3 python3-pip python-is-python3
 
 # Install dependencies with npm
 RUN npm install --loglevel=error --legacy-peer-deps
@@ -33,7 +37,7 @@ RUN ls -la .medusa/ && \
 
 
 # Production stage
-FROM public.ecr.aws/docker/library/node:20
+FROM debian:bookworm-slim
 
 # Coolify bug workaround - declare build args
 ARG COOKIE_SECRET
@@ -55,14 +59,14 @@ ARG ADMIN_PASSWORD
 
 WORKDIR /app
 
-# Install system dependencies for runtime
+# Install Node.js 20 and runtime dependencies
 RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    python-is-python3 \
     curl \
+    gnupg \
     netcat-openbsd \
     bash \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs python3 python3-pip python-is-python3 \
     && rm -rf /var/lib/apt/lists/*
 
 # Create .medusa directory
