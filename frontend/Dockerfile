@@ -1,9 +1,10 @@
 # Production Dockerfile for Shenna's Studio Frontend
-# Using Quay.io mirror to avoid Docker Hub authentication issues
+# Using cgr.dev (Chainguard) - reliable registry for CI/CD
 
 # Stage 1: Dependencies
-FROM quay.io/bedrock/alpine:3.20 AS deps
-RUN apk add --no-cache nodejs npm libc6-compat
+FROM cgr.dev/chainguard/node:latest-dev AS deps
+USER root
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Copy package files
@@ -14,9 +15,9 @@ RUN npm install --legacy-peer-deps && \
     npm install sharp --legacy-peer-deps && \
     npm cache clean --force
 
-# Stage 2: Builder
-FROM quay.io/bedrock/alpine:3.20 AS builder
-RUN apk add --no-cache nodejs npm
+# Stage 2: Builder  
+FROM cgr.dev/chainguard/node:latest-dev AS builder
+USER root
 WORKDIR /app
 
 # Copy dependencies from deps stage
@@ -49,8 +50,9 @@ RUN echo "🔍 Build-time environment check:" && \
 RUN npm run build
 
 # Stage 3: Runner
-FROM quay.io/bedrock/alpine:3.20 AS runner
-RUN apk add --no-cache nodejs npm curl bash netcat-openbsd
+FROM cgr.dev/chainguard/node:latest
+USER root
+RUN apk add --no-cache curl bash netcat-openbsd
 WORKDIR /app
 
 ENV NODE_ENV=production
