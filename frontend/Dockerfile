@@ -2,7 +2,7 @@
 # Multi-stage build for optimized Next.js standalone deployment
 
 # Stage 1: Dependencies
-FROM node:20-alpine AS deps
+FROM node:20.18.1-alpine3.20 AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN npm install --legacy-peer-deps && \
     npm cache clean --force
 
 # Stage 2: Builder
-FROM node:20-alpine AS builder
+FROM node:20.18.1-alpine3.20 AS builder
 WORKDIR /app
 
 # Copy dependencies from deps stage
@@ -49,7 +49,7 @@ RUN echo "🔍 Build-time environment check:" && \
 RUN npm run build
 
 # Stage 3: Runner
-FROM node:20-alpine AS runner
+FROM node:20.18.1-alpine3.20 AS runner
 WORKDIR /app
 
 # Install runtime dependencies

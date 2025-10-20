@@ -1,7 +1,7 @@
 # Multi-stage build for MedusaJS v2
 # Based on official MedusaJS v2 Dockerfile
 
-FROM node:20 as builder
+FROM node:20.18.1-bookworm as builder
 
 WORKDIR /app
 
@@ -33,7 +33,7 @@ RUN ls -la .medusa/ && \
 
 
 # Production stage
-FROM node:20
+FROM node:20.18.1-bookworm
 
 # Coolify bug workaround - declare build args
 # https://github.com/coollabsio/coolify/issues/1930
