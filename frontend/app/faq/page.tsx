@@ -3,6 +3,22 @@
 import { useState } from 'react'
 import Button from '@/app/components/ui/Button'
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'FAQ | Frequently Asked Questions | Shenna\'s Studio',
+  description: 'Find answers to common questions about Shenna\'s Studio ocean products, shipping, returns, ocean conservation donations, and product care.',
+  keywords: 'FAQ, frequently asked questions, ocean products help, shipping questions, returns policy, ocean conservation',
+  openGraph: {
+    title: 'Frequently Asked Questions | Shenna\'s Studio',
+    description: 'Get answers to common questions about our ocean products and services.',
+    url: 'https://shennastudio.com/faq',
+    type: 'website'
+  },
+  alternates: {
+    canonical: '/faq'
+  }
+}
 
 interface FAQItem {
   question: string
@@ -78,6 +94,19 @@ export default function FAQPage() {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set())
 
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqData.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  }
+
   const categories = [
     'All',
     ...Array.from(new Set(faqData.map((item) => item.category))),
@@ -104,6 +133,10 @@ export default function FAQPage() {
 
   return (
     <div className="min-h-screen bg-ocean-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="text-center mb-12">

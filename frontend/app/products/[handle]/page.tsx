@@ -14,7 +14,6 @@ import {
 import Link from 'next/link'
 import Image from 'next/image'
 import ProductComments from '@/app/components/ProductComments'
-import Head from 'next/head'
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -134,7 +133,8 @@ export default function ProductDetailPage() {
     '@type': 'Product',
     name: product.title,
     description: product.description || `Beautiful handcrafted ${product.title} from Shenna's Studio`,
-    image: product.images?.[0]?.url || '',
+    image: product.images?.map(img => img.url) || [],
+    sku: product.id,
     brand: {
       '@type': 'Brand',
       name: "Shenna's Studio",
@@ -145,40 +145,55 @@ export default function ProductDetailPage() {
       priceCurrency: 'USD',
       price: priceInDollars,
       availability: 'https://schema.org/InStock',
+      priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
       seller: {
         '@type': 'Organization',
         name: "Shenna's Studio",
+        url: 'https://shennastudio.com'
       },
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingRate: {
+          '@type': 'MonetaryAmount',
+          value: '5.99',
+          currency: 'USD'
+        },
+        shippingDestination: {
+          '@type': 'DefinedRegion',
+          addressCountry: 'US'
+        },
+        deliveryTime: {
+          '@type': 'ShippingDeliveryTime',
+          handlingTime: {
+            '@type': 'QuantitativeValue',
+            minValue: 1,
+            maxValue: 2,
+            unitCode: 'DAY'
+          },
+          transitTime: {
+            '@type': 'QuantitativeValue',
+            minValue: 5,
+            maxValue: 7,
+            unitCode: 'DAY'
+          }
+        }
+      }
     },
     aggregateRating: {
       '@type': 'AggregateRating',
-      ratingValue: '5',
+      ratingValue: '4.8',
       reviewCount: '24',
+      bestRating: '5',
+      worstRating: '1'
     },
   }
 
   return (
     <>
-      <Head>
-        <title>{product.title} | Shenna&apos;s Studio - Handcrafted Ocean-Inspired Jewelry</title>
-        <meta
-          name="description"
-          content={`${product.description || `Shop ${product.title} at Shenna's Studio. Handcrafted ocean-inspired jewelry supporting marine conservation. Free shipping on orders over $50.`}`}
-        />
-        <meta name="keywords" content={`${product.title}, ocean jewelry, handcrafted bracelets, marine conservation, beach jewelry, ${product.handle}`} />
-        <link rel="canonical" href={`https://shennastudio.com/products/${product.handle}`} />
-        <meta property="og:title" content={`${product.title} | Shenna's Studio`} />
-        <meta property="og:description" content={product.description || `Shop ${product.title}`} />
-        <meta property="og:image" content={product.images?.[0]?.url || '/ShennasLogo.png'} />
-        <meta property="og:url" content={`https://shennastudio.com/products/${product.handle}`} />
-        <meta property="og:type" content="product" />
-        <meta property="product:price:amount" content={priceInDollars.toString()} />
-        <meta property="product:price:currency" content="USD" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
-        />
-      </Head>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
       <div className="min-h-screen product-detail-background py-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Breadcrumb */}

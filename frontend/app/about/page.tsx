@@ -2,6 +2,36 @@
 
 import Button from '@/app/components/ui/Button'
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'About Shenna\'s Studio | Family-Owned Ocean Conservation Business',
+  description: 'Learn about Shenna\'s Studio, a family-owned business creating ocean-inspired products with 10% of proceeds donated to marine conservation. Meet our founders and discover our mission.',
+  keywords: 'about Shenna Studio, family business, ocean conservation, marine preservation, Brownsville Texas, ocean-themed business, eco-friendly company, sustainable business',
+  openGraph: {
+    title: 'About Shenna\'s Studio | Ocean Conservation & Family Values',
+    description: 'Discover our family story and commitment to ocean conservation. 10% of proceeds support marine preservation.',
+    url: 'https://shennastudio.com/about',
+    type: 'website',
+    images: [
+      {
+        url: '/ShennasLogo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Shenna\'s Studio - Family-Owned Ocean Business'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About Shenna\'s Studio',
+    description: 'Family-owned business supporting ocean conservation through beautiful products.',
+    images: ['/ShennasLogo.png']
+  },
+  alternates: {
+    canonical: '/about'
+  }
+}
 
 export default function AboutPage() {
   return (

@@ -2,6 +2,22 @@
 
 import Button from '@/app/components/ui/Button'
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Shipping Information | Free Shipping Over $75 | Shenna\'s Studio',
+  description: 'Learn about Shenna\'s Studio shipping options: Standard (5-7 days, $5.99) and Express (2-3 days, $12.99). Free shipping on orders over $75. International shipping available.',
+  keywords: 'shipping information, free shipping, express shipping, international shipping, delivery times',
+  openGraph: {
+    title: 'Shipping Information | Shenna\'s Studio',
+    description: 'Fast, reliable shipping for ocean-themed products. Free on orders over $75.',
+    url: 'https://shennastudio.com/shipping',
+    type: 'website'
+  },
+  alternates: {
+    canonical: '/shipping'
+  }
+}
 
 export default function ShippingPage() {
   return (

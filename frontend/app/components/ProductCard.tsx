@@ -55,7 +55,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
           <Image
             src={imageUrl}
-            alt={product.title}
+            alt={`${product.title} - Ocean-inspired ${product.subtitle || 'product'} from Shenna's Studio`}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className={`object-cover transition-transform duration-500 group-hover:scale-105 ${

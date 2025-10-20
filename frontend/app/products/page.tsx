@@ -3,6 +3,36 @@
 import { useState, useEffect, useCallback } from 'react'
 import ProductGrid from '@/app/components/ProductGrid'
 import { Product, MedusaClient } from '@/src/lib/medusa'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Ocean-Themed Products | Sea Turtle Jewelry, Nautical Decor & Marine Gifts | Shenna\'s Studio',
+  description: 'Shop premium ocean-inspired products including sea turtle jewelry, coral accessories, nautical home decor, marine life gifts, and eco-friendly treasures. 10% of proceeds support ocean conservation.',
+  keywords: 'ocean products, sea turtle jewelry, coral jewelry, nautical decor, marine life gifts, ocean conservation gifts, beach lifestyle products, ocean themed home decor, eco-friendly ocean gifts, sustainable marine products',
+  openGraph: {
+    title: 'Ocean-Themed Products & Marine Conservation Gifts',
+    description: 'Discover beautiful ocean-inspired products that support marine conservation. Shop sea turtle jewelry, nautical decor, and more.',
+    url: 'https://shennastudio.com/products',
+    type: 'website',
+    images: [
+      {
+        url: '/ShennasLogo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Shenna\'s Studio Ocean Products Collection'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Ocean-Themed Products | Shenna\'s Studio',
+    description: 'Beautiful ocean treasures supporting marine conservation.',
+    images: ['/ShennasLogo.png']
+  },
+  alternates: {
+    canonical: '/products'
+  }
+}
 
 const collections = [
   {

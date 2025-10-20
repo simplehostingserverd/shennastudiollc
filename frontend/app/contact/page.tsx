@@ -3,6 +3,22 @@
 import { useState, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Button from '@/app/components/ui/Button'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Contact Shenna\'s Studio | Ocean Products Customer Service',
+  description: 'Contact Shenna\'s Studio for questions about ocean-themed products, orders, or marine conservation. Located in Brownsville, Texas. Email: shenna@shennastudio.com',
+  keywords: 'contact Shenna Studio, customer service, ocean products support, Brownsville Texas studio, email contact',
+  openGraph: {
+    title: 'Contact Shenna\'s Studio',
+    description: 'Get in touch with our team for questions about ocean products and orders.',
+    url: 'https://shennastudio.com/contact',
+    type: 'website'
+  },
+  alternates: {
+    canonical: '/contact'
+  }
+}
 
 interface FormData {
   name: string

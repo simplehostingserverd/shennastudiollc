@@ -2,6 +2,22 @@
 
 import Button from '@/app/components/ui/Button'
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Returns & Exchanges | 30-Day Return Policy | Shenna\'s Studio',
+  description: 'Easy 30-day returns and exchanges for Shenna\'s Studio ocean products. Free return shipping on defective items. Simple return process with prepaid labels.',
+  keywords: 'returns policy, exchange policy, 30-day returns, refund policy, product returns',
+  openGraph: {
+    title: 'Returns & Exchanges | Shenna\'s Studio',
+    description: '30-day hassle-free returns. Your satisfaction is our priority.',
+    url: 'https://shennastudio.com/returns',
+    type: 'website'
+  },
+  alternates: {
+    canonical: '/returns'
+  }
+}
 
 export default function ReturnsPage() {
   return (
