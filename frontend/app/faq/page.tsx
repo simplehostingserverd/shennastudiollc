@@ -3,22 +3,7 @@
 import { useState } from 'react'
 import Button from '@/app/components/ui/Button'
 import Link from 'next/link'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'FAQ | Frequently Asked Questions | Shenna\'s Studio',
-  description: 'Find answers to common questions about Shenna\'s Studio ocean products, shipping, returns, ocean conservation donations, and product care.',
-  keywords: 'FAQ, frequently asked questions, ocean products help, shipping questions, returns policy, ocean conservation',
-  openGraph: {
-    title: 'Frequently Asked Questions | Shenna\'s Studio',
-    description: 'Get answers to common questions about our ocean products and services.',
-    url: 'https://shennastudio.com/faq',
-    type: 'website'
-  },
-  alternates: {
-    canonical: '/faq'
-  }
-}
+import Head from 'next/head'
 
 interface FAQItem {
   question: string
@@ -132,12 +117,17 @@ export default function FAQPage() {
   }
 
   return (
-    <div className="min-h-screen bg-ocean-50">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <>
+      <Head>
+        <title>FAQ | Frequently Asked Questions | Shenna's Studio</title>
+        <meta name="description" content="Find answers to common questions about Shenna's Studio ocean products, shipping, returns, ocean conservation donations, and product care." />
+      </Head>
+      <div className="min-h-screen bg-ocean-50">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-display font-bold text-ocean-900 mb-4">
@@ -244,5 +234,6 @@ export default function FAQPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

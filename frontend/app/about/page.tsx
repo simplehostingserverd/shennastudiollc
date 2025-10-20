@@ -1,5 +1,3 @@
-'use client'
-
 import Button from '@/app/components/ui/Button'
 import Link from 'next/link'
 import type { Metadata } from 'next'

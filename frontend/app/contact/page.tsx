@@ -3,22 +3,7 @@
 import { useState, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Button from '@/app/components/ui/Button'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Contact Shenna\'s Studio | Ocean Products Customer Service',
-  description: 'Contact Shenna\'s Studio for questions about ocean-themed products, orders, or marine conservation. Located in Brownsville, Texas. Email: shenna@shennastudio.com',
-  keywords: 'contact Shenna Studio, customer service, ocean products support, Brownsville Texas studio, email contact',
-  openGraph: {
-    title: 'Contact Shenna\'s Studio',
-    description: 'Get in touch with our team for questions about ocean products and orders.',
-    url: 'https://shennastudio.com/contact',
-    type: 'website'
-  },
-  alternates: {
-    canonical: '/contact'
-  }
-}
+import Head from 'next/head'
 
 interface FormData {
   name: string
@@ -140,7 +125,12 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-ocean-50 via-white to-seafoam-50 py-20">
+    <>
+      <Head>
+        <title>Contact Shenna's Studio | Ocean Products Customer Service</title>
+        <meta name="description" content="Contact Shenna's Studio for questions about ocean-themed products, orders, or marine conservation. Located in Brownsville, Texas. Email: shenna@shennastudio.com" />
+      </Head>
+      <div className="min-h-screen bg-gradient-to-br from-ocean-50 via-white to-seafoam-50 py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Animated Header */}
         <motion.div
@@ -614,5 +604,6 @@ export default function ContactPage() {
         </motion.div>
       </div>
     </div>
+    </>
   )
 }
