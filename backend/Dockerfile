@@ -1,8 +1,8 @@
-# Multi-stage build for MedusaJS v2
-# Based on official MedusaJS v2 Dockerfile
+# ALTERNATIVE Dockerfile using public.ecr.aws mirror (no authentication required)
+# Use this if Docker Hub continues to have issues
+# To use: cp backend/Dockerfile.mirror backend/Dockerfile
 
-# Use digest for reliability during Docker Hub outages
-FROM node@sha256:a5e0ed56f2c20b9689e0f69d5a655f2f4e91f7c5a9f9e7c4f098e73fc4d5f4e0 as builder
+FROM public.ecr.aws/docker/library/node:20 as builder
 
 WORKDIR /app
 
@@ -15,11 +15,10 @@ RUN rm -rf node_modules
 # Install Python dependencies for build tools
 RUN apt-get update && apt-get install -y python3 python3-pip python-is-python3
 
-# Install dependencies with npm (using npm instead of yarn for consistency)
+# Install dependencies with npm
 RUN npm install --loglevel=error --legacy-peer-deps
 
-# Build the application - outputs to .medusa directory
-# Set DISABLE_ADMIN=false explicitly to ensure admin panel is built
+# Build the application
 ENV DISABLE_ADMIN=false
 RUN npm run build
 
@@ -34,10 +33,9 @@ RUN ls -la .medusa/ && \
 
 
 # Production stage
-FROM node@sha256:a5e0ed56f2c20b9689e0f69d5a655f2f4e91f7c5a9f9e7c4f098e73fc4d5f4e0
+FROM public.ecr.aws/docker/library/node:20
 
 # Coolify bug workaround - declare build args
-# https://github.com/coollabsio/coolify/issues/1930
 ARG COOKIE_SECRET
 ARG JWT_SECRET
 ARG STORE_CORS
@@ -96,7 +94,7 @@ COPY package*.json ./
 # Copy tsconfig for runtime TypeScript compilation
 COPY --from=builder /app/tsconfig.json ./
 
-# Install ALL dependencies (production needs ts-node and @medusajs/utils)
+# Install ALL dependencies
 RUN npm install --legacy-peer-deps && npm cache clean --force
 
 # Copy migrations script
@@ -116,7 +114,7 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV=production
 
-# Expose port for API (admin is served at /app on same port)
+# Expose port for API
 EXPOSE 9000
 
 # Add health check

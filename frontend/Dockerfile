@@ -1,9 +1,9 @@
-# Production Dockerfile for Shenna's Studio Frontend
-# Multi-stage build for optimized Next.js standalone deployment
+# ALTERNATIVE Dockerfile using public.ecr.aws mirror (no authentication required)
+# Use this if Docker Hub continues to have issues
+# To use: cp frontend/Dockerfile.mirror frontend/Dockerfile
 
 # Stage 1: Dependencies
-# Use digest for reliability during Docker Hub outages
-FROM node@sha256:2d07db07a2df6830718ae2a47db6fedce6745f5bcd174c398f2acdda90a11c03 AS deps
+FROM public.ecr.aws/docker/library/node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -16,7 +16,7 @@ RUN npm install --legacy-peer-deps && \
     npm cache clean --force
 
 # Stage 2: Builder
-FROM node@sha256:2d07db07a2df6830718ae2a47db6fedce6745f5bcd174c398f2acdda90a11c03 AS builder
+FROM public.ecr.aws/docker/library/node:20-alpine AS builder
 WORKDIR /app
 
 # Copy dependencies from deps stage
@@ -26,7 +26,6 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # CRITICAL: Define build-time arguments for NEXT_PUBLIC environment variables
-# These MUST be available during `npm run build` for Next.js to embed them in the bundle
 ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL
 ARG NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 ARG NEXT_PUBLIC_BASE_URL
@@ -50,7 +49,7 @@ RUN echo "🔍 Build-time environment check:" && \
 RUN npm run build
 
 # Stage 3: Runner
-FROM node@sha256:2d07db07a2df6830718ae2a47db6fedce6745f5bcd174c398f2acdda90a11c03 AS runner
+FROM public.ecr.aws/docker/library/node:20-alpine AS runner
 WORKDIR /app
 
 # Install runtime dependencies
@@ -66,7 +65,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# Copy standalone build - this copies everything including server.js
+# Copy standalone build
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
