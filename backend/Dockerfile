@@ -1,7 +1,8 @@
 # Multi-stage build for MedusaJS v2
 # Based on official MedusaJS v2 Dockerfile
 
-FROM node:20.18.1-bookworm as builder
+# Use digest for reliability during Docker Hub outages
+FROM node@sha256:a5e0ed56f2c20b9689e0f69d5a655f2f4e91f7c5a9f9e7c4f098e73fc4d5f4e0 as builder
 
 WORKDIR /app
 
@@ -33,7 +34,7 @@ RUN ls -la .medusa/ && \
 
 
 # Production stage
-FROM node:20.18.1-bookworm
+FROM node@sha256:a5e0ed56f2c20b9689e0f69d5a655f2f4e91f7c5a9f9e7c4f098e73fc4d5f4e0
 
 # Coolify bug workaround - declare build args
 # https://github.com/coollabsio/coolify/issues/1930

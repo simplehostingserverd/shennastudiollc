@@ -2,7 +2,8 @@
 # Multi-stage build for optimized Next.js standalone deployment
 
 # Stage 1: Dependencies
-FROM node:20.18.1-alpine3.20 AS deps
+# Use digest for reliability during Docker Hub outages
+FROM node@sha256:2d07db07a2df6830718ae2a47db6fedce6745f5bcd174c398f2acdda90a11c03 AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -15,7 +16,7 @@ RUN npm install --legacy-peer-deps && \
     npm cache clean --force
 
 # Stage 2: Builder
-FROM node:20.18.1-alpine3.20 AS builder
+FROM node@sha256:2d07db07a2df6830718ae2a47db6fedce6745f5bcd174c398f2acdda90a11c03 AS builder
 WORKDIR /app
 
 # Copy dependencies from deps stage
@@ -49,7 +50,7 @@ RUN echo "🔍 Build-time environment check:" && \
 RUN npm run build
 
 # Stage 3: Runner
-FROM node:20.18.1-alpine3.20 AS runner
+FROM node@sha256:2d07db07a2df6830718ae2a47db6fedce6745f5bcd174c398f2acdda90a11c03 AS runner
 WORKDIR /app
 
 # Install runtime dependencies
