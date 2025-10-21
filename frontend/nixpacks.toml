@@ -13,7 +13,9 @@ cmds = [
   "chmod +x pre-build.sh",
   "bash pre-build.sh",
   "cp .env.railway .env.production.local 2>/dev/null || echo 'No .env.railway file'",
-  "npm run build"
+  "npm run build",
+  "cp -r .next/static .next/standalone/.next/static",
+  "cp -r public .next/standalone/public"
 ]
 # Make environment variables available during build
 dependsOn = ["install"]
