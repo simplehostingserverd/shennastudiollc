@@ -1,0 +1,50 @@
+# Railway ignore file - exclude unnecessary files from deployment
+
+# User directories (not part of project)
+/Users/
+Music/
+
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+out/
+build/
+.medusa/
+
+# Environment files (use Railway variables instead)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Documentation (not needed for runtime)
+*.md
+docs/
+
+# Scripts
+scripts/
+extract-serene-vars.sh
+apply-railway-serene-vars.sh
+apply-vars-simple.sh
+get-railway-vars.py
+apply-to-railway.py
+
+# Config files for local dev
+docker-compose*.yml
+Dockerfile
+
+# Test files
+**/*.test.js
+**/*.test.ts
+**/__tests__/

@@ -1,0 +1,10 @@
+{
+  "dockerComposeFile": "docker-compose.coolify.prod.yml",
+  "healthcheck": {
+    "enabled": true,
+    "path": "/health",
+    "interval": 30,
+    "timeout": 10,
+    "retries": 3
+  }
+}

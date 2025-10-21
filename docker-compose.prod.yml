@@ -1,0 +1,90 @@
+name: shennas-studio-prod
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shennas-studio-prod
+    restart: unless-stopped
+    ports:
+      - '3000:3000' # Frontend
+      - '9000:9000' # Backend API
+      - '7001:7001' # Admin UI
+    environment:
+      - NODE_ENV=production
+
+      # Database - External (managed PostgreSQL)
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_SSL=${DATABASE_SSL:-false}
+      - DATABASE_SSL_REJECT_UNAUTHORIZED=${DATABASE_SSL_REJECT_UNAUTHORIZED:-false}
+
+      # Redis - External or managed
+      - REDIS_URL=${REDIS_URL}
+
+      # Security - Generate strong secrets for production
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+
+      # CORS - Production domains
+      # shop.shennastudio.com = storefront, admin.shennastudio.com = backend/admin, www/root = main website
+      - STORE_CORS=${STORE_CORS:-https://shop.shennastudio.com,https://www.shennastudio.com,https://shennastudio.com}
+      - ADMIN_CORS=${ADMIN_CORS:-https://admin.shennastudio.com}
+      - AUTH_CORS=${AUTH_CORS:-https://shop.shennastudio.com,https://www.shennastudio.com,https://shennastudio.com}
+
+      # Admin setup
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennastudio.com}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+
+      # Auto initialization for production
+      - AUTO_MIGRATE=${AUTO_MIGRATE:-true}
+      - AUTO_SEED=${AUTO_SEED:-false}
+      - AUTO_CREATE_ADMIN=${AUTO_CREATE_ADMIN:-true}
+
+      # Medusa configuration
+      - MEDUSA_ADMIN_ONBOARDING_TYPE=default
+      - MEDUSA_ADMIN_ONBOARDING_NEXTJS=true
+
+      # Frontend environment variables
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-https://admin.shennastudio.com}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}
+      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}
+      - NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+
+      # Stripe
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+
+      # Server configuration
+      - HOSTNAME=0.0.0.0
+      - PORT=3000
+      - NEXT_TELEMETRY_DISABLED=1
+
+    volumes:
+      - medusa_uploads:/app/backend/uploads
+      - medusa_static:/app/backend/static
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:3000',
+          '||',
+          'curl',
+          '-f',
+          'http://localhost:9000/health',
+        ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 180s
+
+# Volumes (no locks - freely deletable)
+volumes:
+  medusa_uploads:
+  medusa_static:
+
+networks:
+  default:
+    driver: bridge

@@ -1,0 +1,21 @@
+# Nixpacks configuration for Medusa backend on Railway
+# This ensures proper build and deployment for production
+
+[phases.setup]
+nixPkgs = ["nodejs_20", "openssl", "postgresql"]
+
+[phases.install]
+cmds = ["npm ci --production=false"]
+
+[phases.build]
+cmds = [
+  "npm run build",
+  "echo 'Build completed successfully'"
+]
+
+[start]
+cmd = "npm start"
+
+[variables]
+NODE_ENV = "production"
+PORT = "9000"

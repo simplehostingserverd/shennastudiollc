@@ -1,0 +1,135 @@
+{
+  "name": "Shenna's Studio Frontend",
+  "description": "Next.js storefront for Shenna's Studio, connecting to existing Medusa v2 backend",
+  "version": "1.0.0",
+  "service": {
+    "name": "storefront",
+    "rootDirectory": "frontend",
+    "buildCommand": "npm install --legacy-peer-deps && npm run build",
+    "startCommand": "npm start",
+    "builder": "NIXPACKS",
+    "healthcheckPath": "/",
+    "healthcheckTimeout": 300,
+    "restartPolicy": {
+      "type": "ON_FAILURE",
+      "maxRetries": 10
+    }
+  },
+  "environmentVariables": {
+    "required": [
+      {
+        "name": "NEXT_PUBLIC_MEDUSA_BACKEND_URL",
+        "description": "URL of your Medusa backend (use service reference: ${{backend-service.RAILWAY_PUBLIC_DOMAIN}})",
+        "example": "https://api.shennastudio.com"
+      },
+      {
+        "name": "STRIPE_SECRET_KEY",
+        "description": "Stripe secret key for payment processing",
+        "example": "sk_live_xxxxx"
+      },
+      {
+        "name": "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+        "description": "Stripe publishable key (client-side)",
+        "example": "pk_live_xxxxx"
+      }
+    ],
+    "optional": [
+      {
+        "name": "NEXT_PUBLIC_ALGOLIA_APPLICATION_ID",
+        "description": "Algolia application ID for search functionality"
+      },
+      {
+        "name": "NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY",
+        "description": "Algolia search-only API key"
+      },
+      {
+        "name": "ALGOLIA_ADMIN_API_KEY",
+        "description": "Algolia admin API key for indexing"
+      },
+      {
+        "name": "CLOUDINARY_CLOUD_NAME",
+        "description": "Cloudinary cloud name for image optimization"
+      },
+      {
+        "name": "CLOUDINARY_API_KEY",
+        "description": "Cloudinary API key"
+      },
+      {
+        "name": "CLOUDINARY_API_SECRET",
+        "description": "Cloudinary API secret"
+      },
+      {
+        "name": "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME",
+        "description": "Cloudinary cloud name (client-side)"
+      }
+    ],
+    "automatic": [
+      {
+        "name": "NODE_ENV",
+        "value": "production"
+      },
+      {
+        "name": "NEXT_TELEMETRY_DISABLED",
+        "value": "1"
+      },
+      {
+        "name": "PORT",
+        "value": "3000"
+      }
+    ]
+  },
+  "resources": {
+    "recommended": {
+      "memory": "2GB",
+      "cpu": "1 vCPU"
+    },
+    "minimum": {
+      "memory": "512MB",
+      "cpu": "0.5 vCPU"
+    }
+  },
+  "networking": {
+    "publicDomain": true,
+    "customDomain": "Optional - configure after deployment"
+  },
+  "dependencies": {
+    "services": [
+      {
+        "name": "medusa-backend",
+        "type": "API",
+        "required": true,
+        "description": "Existing Medusa v2 backend service"
+      }
+    ]
+  },
+  "deployment": {
+    "strategy": "GitHub",
+    "branch": "main",
+    "autoRedeploy": true,
+    "buildPath": "frontend"
+  },
+  "postDeployment": {
+    "steps": [
+      {
+        "step": 1,
+        "description": "Update backend CORS to include frontend domain",
+        "action": "Add frontend domain to STORE_CORS in backend service"
+      },
+      {
+        "step": 2,
+        "description": "Verify frontend can reach backend",
+        "action": "Test: curl https://your-frontend-domain/api/test-backend"
+      },
+      {
+        "step": 3,
+        "description": "Test checkout flow",
+        "action": "Place a test order through the frontend"
+      },
+      {
+        "step": 4,
+        "description": "Configure custom domain (optional)",
+        "action": "Settings → Networking → Add custom domain"
+      }
+    ]
+  }
+}

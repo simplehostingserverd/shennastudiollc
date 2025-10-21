@@ -1,0 +1,163 @@
+version: '3.8'
+
+name: shenna-studio-production
+
+services:
+  # PostgreSQL Database (Coolify-hosted)
+  postgres:
+    image: postgres:15-alpine
+    container_name: shenna-postgres-prod
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-medusa_db}
+      POSTGRES_USER: ${POSTGRES_USER:-medusa_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-medusa_user} -d ${POSTGRES_DB:-medusa_db}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: shenna-redis-prod
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy noeviction
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Medusa Backend API (Production with Coolify-hosted databases)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: shenna-medusa-backend-prod
+    restart: unless-stopped
+    ports:
+      - '9000:9000' # API and Admin Panel (admin at /app path)
+    environment:
+      # Database - Use Coolify-hosted PostgreSQL
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-medusa_user}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-medusa_db}
+      - DATABASE_SSL=false
+      - DATABASE_SSL_REJECT_UNAUTHORIZED=false
+      - REDIS_URL=redis://redis:6379
+
+      # Security - Use strong production secrets
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+
+      # CORS Configuration for production
+      # shop.shennastudio.com = storefront, admin.shennastudio.com = backend/admin, www/root = main website
+      - STORE_CORS=https://shop.shennastudio.com,https://www.shennastudio.com,https://shennastudio.com
+      - ADMIN_CORS=https://admin.shennastudio.com
+      - AUTH_CORS=https://shop.shennastudio.com,https://www.shennastudio.com,https://shennastudio.com
+
+      # Admin Setup
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennastudio.com}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+
+      # Auto-initialization for production
+      - AUTO_MIGRATE=true
+      - AUTO_SEED=true
+      - AUTO_CREATE_ADMIN=true
+
+      # Startup mode
+      - STARTUP_MODE=${STARTUP_MODE:-full}
+
+      # Medusa Configuration
+      - MEDUSA_ADMIN_ONBOARDING_TYPE=${MEDUSA_ADMIN_ONBOARDING_TYPE:-default}
+      - MEDUSA_ADMIN_ONBOARDING_NEXTJS=${MEDUSA_ADMIN_ONBOARDING_NEXTJS:-true}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - medusa_uploads:/app/uploads
+      - medusa_static:/app/static
+    networks:
+      - shenna-network-prod
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/health']
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 180s
+
+  # Next.js Frontend (Production)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: shenna-frontend-prod
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      # Backend Connection - Required for build and runtime
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL}
+      - NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
+
+      # Backend internal connection (for startup script to wait for backend service)
+      - BACKEND_HOST=backend
+      - BACKEND_PORT=9000
+
+      # Payment Processing - Use production Stripe keys (set in Coolify)
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-}
+
+      # Search (Algolia Production)
+      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}
+      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}
+      - ALGOLIA_ADMIN_API_KEY=${ALGOLIA_ADMIN_API_KEY:-}
+
+      # Image Optimization (Cloudinary Production)
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+
+      # App Configuration
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - HOSTNAME=0.0.0.0
+    depends_on:
+      backend:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - shenna-network-prod
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000']
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 180s
+
+# Named Volumes for production (no locks - freely deletable)
+volumes:
+  postgres_data:
+  redis_data:
+  medusa_uploads:
+  medusa_static:
+
+# Networks
+networks:
+  shenna-network-prod:
+    driver: bridge

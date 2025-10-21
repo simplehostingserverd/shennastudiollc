@@ -1,0 +1,129 @@
+name: shennas-studio
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: shennas-postgres
+    restart: unless-stopped
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_USER=medusa_user
+      - POSTGRES_PASSWORD=medusa_password
+      - POSTGRES_DB=medusa_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U medusa_user -d medusa_db']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: shennas-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy noeviction
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shennas-studio-app
+    restart: unless-stopped
+    ports:
+      - '3000:3000' # Frontend
+      - '9000:9000' # Backend API and Admin UI at /app
+    environment:
+      - NODE_ENV=production
+
+      # Database
+      - DATABASE_URL=${DATABASE_URL:-postgresql://medusa_user:medusa_password@postgres:5432/medusa_db}
+      - DATABASE_SSL=${DATABASE_SSL:-false}
+      - DATABASE_SSL_REJECT_UNAUTHORIZED=${DATABASE_SSL_REJECT_UNAUTHORIZED:-false}
+
+      # Redis
+      - REDIS_URL=redis://redis:6379
+
+      # Security
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+
+      # CORS - Allow all for development, restrict in production
+      - STORE_CORS=${STORE_CORS:-http://localhost:3000,https://shop.shennastudio.com,https://www.shennastudio.com,https://shennastudio.com}
+      - ADMIN_CORS=${ADMIN_CORS:-http://localhost:3000,http://localhost:9000,https://admin.shennastudio.com}
+      - AUTH_CORS=${AUTH_CORS:-http://localhost:3000,https://shop.shennastudio.com,https://www.shennastudio.com,https://shennastudio.com}
+
+      # Admin setup
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@shennastudio.com}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-AdminPassword123!}
+
+      # Auto initialization
+      - AUTO_MIGRATE=${AUTO_MIGRATE:-true}
+      - AUTO_SEED=${AUTO_SEED:-false}
+      - AUTO_CREATE_ADMIN=${AUTO_CREATE_ADMIN:-true}
+
+      # Medusa configuration
+      - MEDUSA_ADMIN_ONBOARDING_TYPE=default
+      - MEDUSA_ADMIN_ONBOARDING_NEXTJS=true
+
+      # Frontend environment variables
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://localhost:9000}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+      - NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}
+      - NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}
+      - NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+
+      # Stripe
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+
+      # Server configuration
+      - HOSTNAME=0.0.0.0
+      - PORT=3000
+      - NEXT_TELEMETRY_DISABLED=1
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - medusa_uploads:/app/backend/uploads
+      - medusa_static:/app/backend/static
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'curl',
+          '-f',
+          'http://localhost:3000',
+          '||',
+          'curl',
+          '-f',
+          'http://localhost:9000/health',
+        ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 120s
+
+# Volumes (no locks - freely deletable)
+volumes:
+  postgres_data: {}
+  redis_data: {}
+  medusa_uploads: {}
+  medusa_static: {}
+
+networks:
+  default:
+    name: shennas-network
+    driver: bridge

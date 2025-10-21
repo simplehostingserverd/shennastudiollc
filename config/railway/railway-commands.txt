@@ -1,0 +1,75 @@
+=========================================
+Railway Variable Application Commands
+=========================================
+
+Copy and run these commands in your terminal:
+
+# Step 1: Link to your project
+cd /Users/softwareprosorg/Documents/NewShenna/shennastudiollc
+railway link  # Select your project > production
+
+# Step 2: Apply Backend Variables
+railway service Backend
+
+railway variables --set "DATABASE_URL=${{Postgres.DATABASE_PRIVATE_URL}}" --skip-deploys
+railway variables --set "DATABASE_SSL=true" --skip-deploys
+railway variables --set "DATABASE_SSL_REJECT_UNAUTHORIZED=false" --skip-deploys
+railway variables --set "REDIS_URL=${{Redis.REDIS_PRIVATE_URL}}?family=0" --skip-deploys
+railway variables --set "JWT_SECRET=yu9wpn74lomn116sb76m27cz5atofwq7" --skip-deploys
+railway variables --set "COOKIE_SECRET=zapgxlrinbmnb5w42djbur3qz2g58vle" --skip-deploys
+railway variables --set "STORE_CORS=${{Storefront.NEXT_PUBLIC_BASE_URL}}" --skip-deploys
+railway variables --set "ADMIN_CORS=https://${{RAILWAY_PUBLIC_DOMAIN}},https://${{RAILWAY_PRIVATE_DOMAIN}}" --skip-deploys
+railway variables --set "AUTH_CORS=https://${{RAILWAY_PUBLIC_DOMAIN}},https://${{RAILWAY_PRIVATE_DOMAIN}}" --skip-deploys
+railway variables --set "MEDUSA_ADMIN_EMAIL=admin@shennasstudio.com" --skip-deploys
+railway variables --set "MEDUSA_ADMIN_PASSWORD=ztwry4ctxurryzcoqpdkf0qv8u13rocf" --skip-deploys
+railway variables --set "AUTO_MIGRATE=true" --skip-deploys
+railway variables --set "AUTO_SEED=false" --skip-deploys
+railway variables --set "AUTO_CREATE_ADMIN=true" --skip-deploys
+railway variables --set "MEDUSA_ADMIN_ONBOARDING_TYPE=default" --skip-deploys
+railway variables --set "MEDUSA_ADMIN_ONBOARDING_NEXTJS=true" --skip-deploys
+railway variables --set "BACKEND_URL=https://${{RAILWAY_PUBLIC_DOMAIN}}" --skip-deploys
+railway variables --set "MEDUSA_BACKEND_URL=https://${{RAILWAY_PUBLIC_DOMAIN}}" --skip-deploys
+railway variables --set "RAILWAY_PUBLIC_DOMAIN_VALUE=https://${{RAILWAY_PUBLIC_DOMAIN}}" --skip-deploys
+railway variables --set "NODE_ENV=production" --skip-deploys
+railway variables --set "PORT=9000" --skip-deploys
+railway variables --set "WORKER_MODE=shared" --skip-deploys
+railway variables --set "DATABASE_LOGGING=false" --skip-deploys
+railway variables --set "RAILWAY_HEALTHCHECK_TIMEOUT_SEC=720" --skip-deploys
+railway variables --set "STRIPE_API_KEY=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" --skip-deploys
+railway variables --set "STRIPE_SECRET_KEY=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" --skip-deploys
+railway variables --set "STRIPE_WEBHOOK_SECRET=" --skip-deploys
+railway variables --set "MEILISEARCH_HOST=https://${{MeiliSearch.MEILI_PUBLIC_URL}}" --skip-deploys
+railway variables --set "MEILISEARCH_MASTER_KEY=${{MeiliSearch.MEILI_MASTER_KEY}}" --skip-deploys
+railway variables --set "MINIO_ENDPOINT=${{Bucket.MINIO_PUBLIC_HOST}}" --skip-deploys
+railway variables --set "MINIO_ACCESS_KEY=${{Bucket.MINIO_ROOT_USER}}" --skip-deploys
+railway variables --set "MINIO_SECRET_KEY=${{Bucket.MINIO_ROOT_PASSWORD}}" --skip-deploys
+railway variables --set "RESEND_API_KEY=" --skip-deploys
+railway variables --set "RESEND_FROM=" --skip-deploys
+
+# Step 3: Apply Frontend Variables
+railway service Storefront
+
+railway variables --set "NEXT_PUBLIC_BASE_URL=https://${{RAILWAY_PUBLIC_DOMAIN}}" --skip-deploys
+railway variables --set "NEXT_PUBLIC_MEDUSA_BACKEND_URL=${{Backend.RAILWAY_PUBLIC_DOMAIN_VALUE}}" --skip-deploys
+railway variables --set "NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_c98766c1f4cd3eae138e5a337134ebf9a88f073220ec26d55dfab65f1b0d25c1" --skip-deploys
+railway variables --set "NEXT_PUBLIC_INDEX_NAME=products" --skip-deploys
+railway variables --set "NEXT_PUBLIC_SEARCH_ENDPOINT=https://${{MeiliSearch.MEILI_PUBLIC_URL}}" --skip-deploys
+railway variables --set "MEILISEARCH_API_KEY=${{MeiliSearch.MEILI_MASTER_KEY}}" --skip-deploys
+railway variables --set "NEXT_PUBLIC_MINIO_ENDPOINT=${{Bucket.MINIO_PUBLIC_HOST}}" --skip-deploys
+railway variables --set "STRIPE_SECRET_KEY=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" --skip-deploys
+railway variables --set "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_51RdPwMP4GPds5FMqYouB5PBrSK8udOL1PcTXM6J4rGqIKnA75jTTBOGqkMGKIDRnqOSxIK4BakHFUFXK9Bd0TTGB00VoS4YZTX" --skip-deploys
+railway variables --set "NEXT_PUBLIC_STRIPE_KEY=pk_live_51RdPwMP4GPds5FMqYouB5PBrSK8udOL1PcTXM6J4rGqIKnA75jTTBOGqkMGKIDRnqOSxIK4BakHFUFXK9Bd0TTGB00VoS4YZTX" --skip-deploys
+railway variables --set "NEXTAUTH_SECRET=L05T/EKL9v4K2w+mvQKZcrQCJ7UuRqCUmeN+N3PyjD0=" --skip-deploys
+railway variables --set "NEXTAUTH_URL=https://${{RAILWAY_PUBLIC_DOMAIN}}" --skip-deploys
+railway variables --set "NODE_ENV=production" --skip-deploys
+railway variables --set "NEXT_TELEMETRY_DISABLED=1" --skip-deploys
+railway variables --set "HOSTNAME=0.0.0.0" --skip-deploys
+railway variables --set "PORT=3000" --skip-deploys
+
+# Step 4: Deploy Services
+railway service Backend
+railway up
+
+railway service Storefront
+railway up
+
