@@ -48,12 +48,12 @@ module.exports = defineConfig({
         'https://shennastudio.com,https://www.shennastudio.com',
 
       // CORS - Admin API (Production domains)
-      adminCors: process.env.ADMIN_CORS || 'https://api.shennastudio.com',
+      adminCors: process.env.ADMIN_CORS || 'https://backend-production-38d0a.up.railway.app',
 
       // CORS - Authentication (Production domains)
       authCors:
         process.env.AUTH_CORS ||
-        'https://shennastudio.com,https://www.shennastudio.com,https://api.shennastudio.com',
+        'https://shennastudio.com,https://www.shennastudio.com,https://backend-production-38d0a.up.railway.app',
 
       // JWT Secret for token generation (Required - min 32 characters)
       jwtSecret: process.env.JWT_SECRET || 'supersecret',
@@ -84,7 +84,7 @@ module.exports = defineConfig({
     backendUrl:
       process.env.BACKEND_URL ||
       process.env.MEDUSA_BACKEND_URL ||
-      'https://api.shennastudio.com',
+      'https://backend-production-38d0a.up.railway.app',
 
     // Admin dashboard path (default: /app)
     path: '/app' as `/${string}`,
