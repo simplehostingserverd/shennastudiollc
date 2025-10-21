@@ -26,19 +26,13 @@ else
 fi
 
 echo ""
-echo "🧹 FORCE CLEARING ALL CACHES..."
+echo "🧹 Clearing build caches (keeping node_modules for faster builds)..."
 echo "Removing .next directory..."
 rm -rf .next
 echo "Removing node_modules/.cache..."
 rm -rf node_modules/.cache
 echo "Removing .turbo cache..."
 rm -rf .turbo
-echo "Clearing npm cache..."
-npm cache clean --force 2>/dev/null || true
-echo "✅ All caches cleared"
-echo ""
-echo "📦 Reinstalling dependencies to ensure fresh build..."
-rm -rf node_modules
-echo "✅ Ready for clean install and build"
+echo "✅ Build caches cleared (node_modules preserved)"
 echo ""
 echo "================================================"

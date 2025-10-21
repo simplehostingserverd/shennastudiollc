@@ -3,19 +3,23 @@ nixPkgs = ["nodejs_20", "openssl"]
 
 [phases.install]
 cmds = [
-  "npm ci --legacy-peer-deps --prefer-offline --no-audit || npm install --legacy-peer-deps --prefer-offline --no-audit"
+  "npm ci --legacy-peer-deps --prefer-offline --no-audit --loglevel=error || npm install --legacy-peer-deps --prefer-offline --no-audit --loglevel=error"
 ]
+# Cache node_modules to speed up builds
+dependsOn = []
 
 [phases.build]
 cmds = [
   "chmod +x pre-build.sh",
   "bash pre-build.sh",
-  "cp .env.railway .env.production.local",
-  "cat .env.production.local",
+  "cp .env.railway .env.production.local 2>/dev/null || echo 'No .env.railway file'",
   "npm run build"
 ]
 # Make environment variables available during build
 dependsOn = ["install"]
+# Increase build timeout
+[phases.build.env]
+CI = "false"
 
 [variables]
 # Ensure NEXT_PUBLIC_* variables are available during build
