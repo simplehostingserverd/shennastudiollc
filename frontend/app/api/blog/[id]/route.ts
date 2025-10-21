@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const post = await prisma.blogPost.findUnique({
+    let post = await prisma.blogPost.findUnique({
       where: { id: params.id },
       include: {
         author: {
@@ -34,11 +34,38 @@ export async function GET(
     })
 
     if (!post) {
+      post = await prisma.blogPost.findUnique({
+        where: { slug: params.id },
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          comments: {
+            where: { approved: true },
+            orderBy: { createdAt: 'desc' },
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      })
+    }
+
+    if (!post) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
     }
 
     await prisma.blogPost.update({
-      where: { id: params.id },
+      where: { id: post.id },
       data: { views: { increment: 1 } },
     })
 
