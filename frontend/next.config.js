@@ -55,8 +55,8 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Apply headers to all routes
-        source: '/:path*',
+        // Apply security headers to HTML pages only (exclude static assets)
+        source: '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:jpg|jpeg|gif|png|svg|ico|webp|mp4|mov|css|js)).*)',
         headers: [
           // CORS Headers - Allow backend API access
           {
@@ -104,6 +104,34 @@ const nextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()',
+          },
+        ],
+      },
+      {
+        // Proper Content-Type headers for static JavaScript files
+        source: '/_next/static/:path*.js',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript; charset=utf-8',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // Proper Content-Type headers for static CSS files
+        source: '/_next/static/:path*.css',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/css; charset=utf-8',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
           },
         ],
       },
