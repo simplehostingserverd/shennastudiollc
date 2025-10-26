@@ -309,6 +309,59 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Blog Section */}
+      <section className="py-24 bg-gradient-to-b from-ocean-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-ocean-900 mb-6">
+              Ocean{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">
+                Conservation Blog
+              </span>
+            </h2>
+            <p className="text-xl text-ocean-600 max-w-3xl mx-auto leading-relaxed mb-8">
+              Discover ocean conservation stories, marine life insights, and product care tips
+              from our team dedicated to protecting our precious oceans.
+            </p>
+            <Link href="/blog">
+              <Button
+                variant="primary"
+                size="lg"
+                className="bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-lg px-12 py-4 transform hover:scale-105 transition-all duration-300"
+              >
+                Explore Our Blog
+              </Button>
+            </Link>
+          </div>
+
+          <div className="bg-white rounded-3xl shadow-xl p-8 border border-ocean-100">
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="text-center p-6">
+                <div className="text-5xl mb-4">🌊</div>
+                <h3 className="text-xl font-bold text-ocean-900 mb-3">Conservation Stories</h3>
+                <p className="text-ocean-600">
+                  Learn about ocean conservation efforts and how your purchases make a difference
+                </p>
+              </div>
+              <div className="text-center p-6">
+                <div className="text-5xl mb-4">🐠</div>
+                <h3 className="text-xl font-bold text-ocean-900 mb-3">Marine Life Education</h3>
+                <p className="text-ocean-600">
+                  Discover fascinating facts about ocean creatures and ecosystems
+                </p>
+              </div>
+              <div className="text-center p-6">
+                <div className="text-5xl mb-4">💎</div>
+                <h3 className="text-xl font-bold text-ocean-900 mb-3">Product Care Tips</h3>
+                <p className="text-ocean-600">
+                  Expert advice on caring for your ocean-inspired jewelry and accessories
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Conservation Message */}
       <section className="py-24 bg-gradient-to-br from-ocean-900 via-ocean-800 to-teal-800 text-white relative overflow-hidden">
         {/* Background pattern */}

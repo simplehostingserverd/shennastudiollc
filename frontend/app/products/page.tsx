@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from 'react'
 import ProductGrid from '@/app/components/ProductGrid'
 import { Product, MedusaClient } from '@/src/lib/medusa'
 import Head from 'next/head'
-import Breadcrumbs from '@/app/components/Breadcrumbs'
 
 const collections = [
   {
@@ -315,7 +314,6 @@ export default function ProductsPage() {
         <title>Ocean-Themed Products | Sea Turtle Jewelry, Nautical Decor & Marine Gifts | Shenna's Studio</title>
         <meta name="description" content="Shop premium ocean-inspired products including sea turtle jewelry, coral accessories, nautical home decor, marine life gifts, and eco-friendly treasures. 10% of proceeds support ocean conservation." />
       </Head>
-      <Breadcrumbs />
       <div className="min-h-screen products-page-background py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
