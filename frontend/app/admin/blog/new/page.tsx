@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import ImageUpload from '@/app/components/ImageUpload'
 
 export default function NewBlogPostPage() {
   const router = useRouter()
@@ -138,38 +139,31 @@ export default function NewBlogPostPage() {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Category
-                </label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
-                >
-                  <option>Conservation</option>
-                  <option>Product Care</option>
-                  <option>Behind the Scenes</option>
-                  <option>Marine Life</option>
-                  <option>Gift Guide</option>
-                  <option>Beads & Bracelets</option>
-                  <option>DIY & Tutorials</option>
-                </select>
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category
+              </label>
+              <select
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
+              >
+                <option>Conservation</option>
+                <option>Product Care</option>
+                <option>Behind the Scenes</option>
+                <option>Marine Life</option>
+                <option>Gift Guide</option>
+                <option>Beads & Bracelets</option>
+                <option>DIY & Tutorials</option>
+              </select>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Cover Image URL
-                </label>
-                <input
-                  type="text"
-                  value={formData.coverImage}
-                  onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
-                  placeholder="https://..."
-                />
-              </div>
+            <div>
+              <ImageUpload
+                label="Cover Image"
+                currentImage={formData.coverImage}
+                onUploadComplete={(url) => setFormData({ ...formData, coverImage: url })}
+              />
             </div>
 
             <div>

@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
+import { PrismaClient } from '@prisma/client'
 import {
   sendCustomerReceipt,
   sendAdminNotification,
   OrderEmailData,
 } from '@/src/lib/resend'
+
+const prisma = new PrismaClient()
 
 // Helper to get Stripe instance (lazy initialization)
 function getStripe() {
@@ -122,6 +125,58 @@ export async function POST(request: NextRequest) {
             }),
           }
 
+          // Save order to database with full address information
+          try {
+            const order = await prisma.order.create({
+              data: {
+                stripeSessionId: session.id,
+                stripePaymentIntent: fullSession.payment_intent?.toString() || null,
+                total: total,
+                status: 'completed',
+
+                // Customer Information
+                customerEmail: customerEmail || null,
+                customerName: customerName || null,
+                customerPhone: fullSession.customer_details?.phone || null,
+
+                // Shipping Address
+                shippingName: shippingDetails?.name || null,
+                shippingLine1: shippingDetails?.address?.line1 || null,
+                shippingLine2: shippingDetails?.address?.line2 || null,
+                shippingCity: shippingDetails?.address?.city || null,
+                shippingState: shippingDetails?.address?.state || null,
+                shippingPostalCode: shippingDetails?.address?.postal_code || null,
+                shippingCountry: shippingDetails?.address?.country || null,
+
+                // Billing Address (from customer details)
+                billingName: fullSession.customer_details?.name || null,
+                billingLine1: fullSession.customer_details?.address?.line1 || null,
+                billingLine2: fullSession.customer_details?.address?.line2 || null,
+                billingCity: fullSession.customer_details?.address?.city || null,
+                billingState: fullSession.customer_details?.address?.state || null,
+                billingPostalCode: fullSession.customer_details?.address?.postal_code || null,
+                billingCountry: fullSession.customer_details?.address?.country || null,
+              },
+            })
+
+            // Create order items
+            for (const item of lineItems) {
+              await prisma.orderItem.create({
+                data: {
+                  orderId: order.id,
+                  productId: `stripe-${item.price?.id || 'unknown'}`,
+                  quantity: item.quantity || 1,
+                  price: item.amount_total || 0,
+                },
+              })
+            }
+
+            console.log('Order saved to database:', order.id)
+          } catch (dbError) {
+            console.error('Failed to save order to database:', dbError)
+            // Continue with emails even if database save fails
+          }
+
           // Send emails
           if (customerEmail) {
             const customerResult = await sendCustomerReceipt(emailData)
@@ -169,6 +224,8 @@ export async function POST(request: NextRequest) {
       { error: 'Webhook handler failed' },
       { status: 500 }
     )
+  } finally {
+    await prisma.$disconnect()
   }
 }
 

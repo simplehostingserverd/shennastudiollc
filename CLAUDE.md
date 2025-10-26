@@ -24,9 +24,11 @@ This is a monorepo structure with separate frontend and backend directories.
 ### Quick Start (Recommended)
 
 ```bash
-node start-dev.js                                         # Start both frontend and backend
-node start-dev.js --turbo                                # Start with Turbopack (faster)
+cd frontend && node start-dev.js                         # Start both frontend and backend
+cd frontend && node start-dev.js --turbo                 # Start with Turbopack (faster)
 ```
+
+**Note**: The `start-dev.js` script is located in the `frontend/` directory and manages both frontend and backend processes.
 
 ### Docker Development (Alternative)
 
@@ -53,7 +55,10 @@ docker-compose exec medusa-backend npm run seed          # Seed data
 - `npm start` - Start production Next.js server (uses standalone build)
 - `npm run start:pm2` - Start with PM2 process manager (production)
 - `npm run lint` - Run ESLint
-- `npm run db:seed` - Seed Prisma database
+- `npm run test` - Run Vitest tests in watch mode
+- `npm run test:run` - Run Vitest tests once
+- `npm run test:coverage` - Run tests with coverage report
+- `npm run db:seed` - Seed Prisma database (for blog, comments, affiliates)
 - `npm run algolia:index` - Index products to Algolia
 
 ### Backend (`backend/`)
@@ -81,9 +86,9 @@ docker-compose exec medusa-backend npm run seed          # Seed data
 
 ## Key Dependencies
 
-- **Frontend**: Next.js 15.5.3, React 18.3.1, Tailwind CSS, Stripe, NextAuth 5.0.0-beta.28, Prisma 6.15.0
+- **Frontend**: Next.js 15.5.3, React 18.3.1, Tailwind CSS, Stripe, NextAuth 5.0.0-beta.28, Prisma 6.15.0, Three.js (3D graphics)
 - **Backend**: Medusa 2.10.1, MikroORM 6.4.3, PostgreSQL, Redis, TypeScript 5.7.2
-- **Testing**: Jest 30.1.2 with experimental VM modules (backend only)
+- **Testing**: Vitest 3.2.4 with React Testing Library (frontend), Jest 30.1.2 with experimental VM modules (backend)
 - **Build Tools**: SWC compiler, Turbopack (optional)
 
 ## Project Structure
@@ -93,20 +98,28 @@ shennastudiollc/
 ├── frontend/              # Next.js storefront application
 │   ├── app/              # Next.js App Router pages and components
 │   │   ├── about/        # About page components
-│   │   ├── api/          # API routes
+│   │   ├── admin/        # Admin dashboard pages
+│   │   ├── api/          # API routes (affiliates, blog, comments, webhooks, etc.)
+│   │   ├── blog/         # Blog system pages
 │   │   ├── cart/         # Shopping cart pages
 │   │   ├── checkout/     # Checkout flow
+│   │   ├── community/    # Community chat feature
 │   │   ├── components/   # Reusable React components
+│   │   ├── conservation/ # Ocean conservation page
 │   │   ├── contact/      # Contact page
-│   │   ├── context/      # React context providers
+│   │   ├── context/      # React context providers (CartContext, etc.)
+│   │   ├── custom-design/# Custom design request page
+│   │   ├── custom-tshirt/# Custom t-shirt designer
 │   │   ├── faq/          # FAQ pages
+│   │   ├── hooks/        # Custom React hooks
 │   │   ├── products/     # Product listing and detail pages
 │   │   ├── returns/      # Returns policy page
 │   │   └── shipping/     # Shipping information
-│   ├── src/lib/          # Shared utilities
-│   ├── prisma/           # Database schema and migrations (frontend)
-│   ├── scripts/          # Frontend utility scripts
+│   ├── src/lib/          # Shared utilities (medusa client, auth config)
+│   ├── prisma/           # Prisma database (blog posts, comments, affiliates, subscribers)
+│   ├── scripts/          # Frontend utility scripts (Algolia indexing, seeding)
 │   ├── public/           # Static assets (images, favicon, etc.)
+│   ├── start-dev.js      # Development server launcher for both frontend and backend
 │   └── Dockerfile        # Frontend Docker build
 ├── backend/               # Medusa e-commerce backend
 │   ├── src/
@@ -131,14 +144,24 @@ shennastudiollc/
 
 **Frontend (frontend/.env)**:
 
-- `NEXT_PUBLIC_MEDUSA_BACKEND_URL` - Backend API URL
+Core:
+- `DATABASE_URL` - Prisma database connection string (for blog, comments, affiliates)
+- `NEXT_PUBLIC_MEDUSA_BACKEND_URL` - Backend API URL (default: http://localhost:9000)
+- `NEXTAUTH_URL` - NextAuth base URL (default: http://localhost:3000)
+- `NEXTAUTH_SECRET` - NextAuth secret key for session encryption
+
+Payments:
 - `STRIPE_SECRET_KEY` - Stripe secret key
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Stripe publishable key
-- `NEXT_PUBLIC_ALGOLIA_APPLICATION_ID` - Algolia app ID (optional)
-- `NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY` - Algolia search key (optional)
-- `CLOUDINARY_CLOUD_NAME` - Cloudinary cloud name (optional)
-- `CLOUDINARY_API_KEY` - Cloudinary API key (optional)
-- `CLOUDINARY_API_SECRET` - Cloudinary API secret (optional)
+- `STRIPE_WEBHOOK_SECRET` - Stripe webhook signing secret
+
+Optional Services:
+- `NEXT_PUBLIC_ALGOLIA_APPLICATION_ID` - Algolia app ID
+- `NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY` - Algolia search key
+- `CLOUDINARY_CLOUD_NAME` - Cloudinary cloud name
+- `CLOUDINARY_API_KEY` - Cloudinary API key
+- `CLOUDINARY_API_SECRET` - Cloudinary API secret
+- `RESEND_API_KEY` - Resend email service API key
 
 **Backend (backend/.env)**:
 
@@ -182,11 +205,27 @@ docker-compose exec medusa-backend npm run seed
 
 ## Database Management
 
+### Dual Database Architecture
+
+This project uses **two separate databases** for different concerns:
+
+1. **Medusa Database (Backend)**: Handles e-commerce data (products, orders, customers, payments)
+2. **Prisma Database (Frontend)**: Handles content and community features (blog, comments, affiliates)
+
+This separation allows:
+- Independent scaling of e-commerce vs content features
+- Clear separation of concerns
+- Different database configurations for different needs
+- Easier maintenance and migrations
+
+**Important**: Both databases can use the same PostgreSQL instance with different database names, or separate instances entirely.
+
 ### Medusa Database (Backend)
 
 The backend supports multiple database configurations:
 - **Local PostgreSQL**: Via Docker (port 5433 for dev, 5432 for production) - default for development
 - **SSL Support**: Configured via DATABASE_SSL and DATABASE_SSL_REJECT_UNAUTHORIZED env vars
+- **Data**: Products, variants, orders, customers, carts, payments, shipping, inventory
 
 Commands (run from `backend/`):
 - Run migrations: `npx medusa db:migrate`
@@ -195,16 +234,35 @@ Commands (run from `backend/`):
 
 ### Prisma Database (Frontend)
 
-The frontend uses its own Prisma database for additional features:
+The frontend uses its own Prisma database for additional features not handled by Medusa:
+- **Blog System**: Blog posts, categories, tags
+- **Comments**: Blog comments and community chat messages
+- **Affiliates**: Affiliate program management
+- **Newsletter**: Email subscriber management
+- **User Data**: NextAuth authentication and sessions
+
+Commands (run from `frontend/`):
 - Seed: `npm run db:seed`
 - Generate client: `npx prisma generate`
 - Push schema: `npx prisma db push`
+- Migrations: `npx prisma migrate dev`
 
 ## Testing
 
-- Integration tests are available in `ocean-backend/`
-- Use Jest with experimental VM modules
-- Run tests with appropriate NODE_OPTIONS flags set in package.json
+### Frontend Testing (`frontend/`)
+
+- Uses Vitest 3.2.4 with React Testing Library
+- Run tests: `npm run test` (watch mode) or `npm run test:run` (single run)
+- Coverage: `npm run test:coverage`
+- Test files: `*.test.ts`, `*.test.tsx`
+
+### Backend Testing (`backend/`)
+
+- Uses Jest 30.1.2 with experimental VM modules
+- Integration tests: `npm run test:integration:http` and `npm run test:integration:modules`
+- Unit tests: `npm run test:unit`
+- Tests located in `integration-tests/` directory
+- NODE_OPTIONS flags are configured in package.json
 
 ## Admin Panel
 
@@ -226,12 +284,33 @@ The system includes auto-initialization that creates the admin user on first run
 
 ## Deployment Notes
 
-- Use Coolify VPS for production (see COOLIFY_DEPLOYMENT.md)
+### Deployment Options
+
+1. **Coolify VPS** (Recommended for self-hosted):
+   - See `docs/COOLIFY_DEPLOYMENT_GUIDE.md` for comprehensive setup
+   - See `docs/DEPLOY_ON_COOLIFY.md` for quick start
+   - Uses `docker-compose.coolify.prod.yml` configuration
+
+2. **Railway** (Cloud PaaS):
+   - See Railway-related docs in `docs/` directory
+   - Scripts available in `scripts/railway/`
+   - Configuration files in `config/railway/`
+
+3. **Docker Compose** (Generic deployment):
+   - Use `docker-compose.prod.yml` for production
+   - Configure external databases (PostgreSQL, Redis)
+   - Set AUTO_MIGRATE, AUTO_SEED, AUTO_CREATE_ADMIN env vars
+
+### Pre-Deployment Checklist
+
 - Configure SSL/TLS certificates
-- Set up proper CORS for production domains
-- Use strong secrets in production
+- Set up proper CORS for production domains (see `docs/CORS-CONFIGURATION.md`)
+- Use strong secrets (JWT_SECRET, COOKIE_SECRET, NEXTAUTH_SECRET)
+- Configure external database connections
+- Set up Stripe webhooks for production
 - Enable database backups
-- Monitor health check endpoints
+- Monitor health check endpoints (`/api/health`)
+- Review `docs/DEPLOYMENT_CHECKLIST.md`
 
 ## Frontend Architecture Patterns
 
@@ -240,7 +319,18 @@ The system includes auto-initialization that creates the admin user on first run
 - **Pages**: App Router structure in `app/` directory with route-based folders
 - **Components**: Reusable UI components in `app/components/`
 - **Context**: React Context providers for global state (CartContext, etc.)
+- **Hooks**: Custom React hooks in `app/hooks/` for reusable logic
 - **API Integration**: Medusa.js SDK client in `src/lib/medusa.ts`
+
+### Key Features
+
+- **E-commerce**: Product catalog, cart, checkout with Stripe integration
+- **Blog System**: Full blog with categories, tags, and comments (Prisma-based)
+- **Community Chat**: Real-time community messaging system
+- **Affiliate Program**: Affiliate tracking and management
+- **Custom Design**: Custom t-shirt designer and design request forms
+- **3D Graphics**: Three.js integration for interactive ocean-themed elements
+- **Authentication**: NextAuth 5.0.0-beta.28 for user authentication
 
 ### Key Design Patterns
 
@@ -249,6 +339,7 @@ The system includes auto-initialization that creates the admin user on first run
 - **Collection Filtering**: Client-side filtering using keyword matching
 - **Background Images**: Uses CSS classes with Tailwind for ocean-themed backgrounds
 - **State Management**: React hooks with useCallback for performance optimization
+- **API Routes**: Next.js API routes in `app/api/` for serverless functions
 
 ### Common Issues & Solutions
 
@@ -258,17 +349,95 @@ The system includes auto-initialization that creates the admin user on first run
 - **CORS**: Backend must include frontend domain in STORE_CORS configuration
 - **Environment Variables**: All `NEXT_PUBLIC_*` vars are exposed to browser
 
+## Configuration Files
+
+### Frontend Configuration
+
+- `next.config.js` - Next.js configuration (standalone output, image domains, webpack config)
+- `tailwind.config.ts` - Tailwind CSS configuration and theme customization
+- `postcss.config.js` - PostCSS configuration for Tailwind
+- `vitest.config.ts` - Vitest test runner configuration
+- `ecosystem.config.js` - PM2 process manager configuration
+- `prisma/schema.prisma` - Prisma database schema for blog, comments, affiliates
+
+### Backend Configuration
+
+- `medusa-config.ts` - Medusa backend configuration (database, modules, plugins, admin)
+- `jest.config.js` - Jest test configuration with experimental VM modules
+- `ecosystem.config.js` - PM2 process manager configuration
+
+### Root Configuration
+
+- `docker-compose.yml` - Development Docker orchestration
+- `docker-compose.prod.yml` - Production Docker orchestration
+- `docker-compose.coolify.prod.yml` - Coolify-specific production setup
+- `.nvmrc` - Node.js version specification (v20)
+- `Procfile` - Process file for some deployment platforms
+
 ## Important Notes
 
-- **Node.js Version**: Backend requires Node.js 20+
+- **Node.js Version**: Backend requires Node.js 20+ (specified in `.nvmrc`)
 - **Package Overrides**: Both projects include security overrides for axios, braces, ws, and other dependencies
 - **Development Mode**: Use Turbopack (`npm run dev:turbo`) for faster development builds
 - **Database Migrations**: Always run `npx medusa db:migrate` after pulling backend changes
+- **Prisma Changes**: Run `npx prisma generate` after schema changes in frontend
 - **Testing**: Backend tests require experimental VM modules flag in NODE_OPTIONS
 - **Next.js Configuration**: Uses standalone output mode for optimized Docker builds
 - **Container Architecture**: Health checks are configured for all services
 - **Image Optimization**: Configured for Cloudinary domains and unoptimized static assets
 - **Container Persistence**: Uses Docker volumes for PostgreSQL data, Redis data, and Medusa uploads
+
+## Common Development Workflows
+
+### Adding a New Product (via Medusa Admin)
+
+1. Access Medusa Admin at http://localhost:9000/app
+2. Navigate to Products → Add Product
+3. Fill in product details, variants, pricing
+4. Upload images (stored in Medusa database)
+5. Product automatically available in frontend
+
+### Creating Blog Posts (via Frontend Admin or Prisma)
+
+1. Access frontend admin dashboard at http://localhost:3000/admin
+2. Create blog post with categories and tags
+3. Data stored in Prisma database
+4. Automatically appears on blog page
+
+### Testing Stripe Integration Locally
+
+1. Use Stripe test keys in `.env` files
+2. Install Stripe CLI: `brew install stripe/stripe-cli/stripe`
+3. Forward webhooks: `stripe listen --forward-to localhost:3000/api/webhooks/stripe`
+4. Copy webhook signing secret to `STRIPE_WEBHOOK_SECRET`
+5. Test checkout with Stripe test cards
+
+### Database Migrations After Git Pull
+
+```bash
+# Backend (Medusa)
+cd backend
+npx medusa db:migrate
+
+# Frontend (Prisma)
+cd frontend
+npx prisma generate
+npx prisma migrate dev
+```
+
+### Debugging Backend Connection Issues
+
+1. Check backend is running: `curl http://localhost:9000/health`
+2. Verify `NEXT_PUBLIC_MEDUSA_BACKEND_URL` in frontend `.env`
+3. Check CORS settings in `backend/medusa-config.ts`
+4. Review backend logs for errors
+
+### Adding Custom API Routes
+
+**Frontend**: Create file in `frontend/app/api/[route-name]/route.ts`
+**Backend**: Create file in `backend/src/api/[route-name]/route.ts`
+
+Both follow their respective framework conventions (Next.js App Router vs Medusa routes).
 
 ## Container Architecture Details
 
@@ -287,7 +456,7 @@ Both frontend and backend support PM2 for production process management:
 
 - **Frontend**: `npm run start:pm2` - Runs Next.js standalone server with PM2
 - **Backend**: `npm run start:pm2` - Runs Medusa server with PM2
-- **Configuration**: `ecosystem.config.js` in root directory
+- **Configuration**: `ecosystem.config.js` in respective directories
 - **Benefits**: Auto-restart on failure, zero-downtime deployments, log management
 
 # Important Instructions

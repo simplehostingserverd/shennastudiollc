@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import ImageUpload from '@/app/components/ImageUpload'
 
 interface BlogEditPageProps {
   params: {
@@ -260,15 +261,10 @@ export default function EditBlogPostPage({ params }: BlogEditPageProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Cover Image URL
-              </label>
-              <input
-                type="url"
-                value={formData.coverImage}
-                onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
-                placeholder="https://example.com/image.jpg"
+              <ImageUpload
+                label="Cover Image"
+                currentImage={formData.coverImage}
+                onUploadComplete={(url) => setFormData({ ...formData, coverImage: url })}
               />
             </div>
           </div>

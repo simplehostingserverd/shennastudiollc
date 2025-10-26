@@ -105,7 +105,8 @@
       "Bash(railway:*)",
       "Bash(npx playwright install:*)",
       "Read(//tmp/**)",
-      "WebFetch(domain:docs.stripe.com)"
+      "WebFetch(domain:docs.stripe.com)",
+      "Bash(npx prisma migrate:*)"
     ],
     "deny": [],
     "ask": []

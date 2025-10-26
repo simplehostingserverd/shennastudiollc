@@ -33,14 +33,43 @@ model Product {
 }
 
 model Order {
-  id        String      @id @default(cuid())
-  userId    String
-  user      User        @relation(fields: [userId], references: [id])
-  items     OrderItem[]
-  total     Int         // total in cents
-  status    String      @default("pending")
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id                  String      @id @default(cuid())
+  userId              String?
+  user                User?       @relation(fields: [userId], references: [id])
+  items               OrderItem[]
+  total               Int         // total in cents
+  status              String      @default("pending")
+  stripeSessionId     String?     @unique
+  stripePaymentIntent String?
+
+  // Customer Information
+  customerEmail       String?
+  customerName        String?
+  customerPhone       String?
+
+  // Shipping Address
+  shippingName        String?
+  shippingLine1       String?
+  shippingLine2       String?
+  shippingCity        String?
+  shippingState       String?
+  shippingPostalCode  String?
+  shippingCountry     String?
+
+  // Billing Address
+  billingName         String?
+  billingLine1        String?
+  billingLine2        String?
+  billingCity         String?
+  billingState        String?
+  billingPostalCode   String?
+  billingCountry      String?
+
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+
+  @@index([stripeSessionId])
+  @@index([customerEmail])
 }
 
 model OrderItem {
