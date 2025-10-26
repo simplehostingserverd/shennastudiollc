@@ -91,6 +91,12 @@ export default function Navbar() {
               About
             </Link>
             <Link
+              href="/blog"
+              className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium"
+            >
+              Blog
+            </Link>
+            <Link
               href="/contact"
               className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium"
             >
@@ -196,6 +202,13 @@ export default function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 About
+              </Link>
+              <Link
+                href="/blog"
+                className="text-ocean-700 hover:text-ocean-900 transition-colors font-medium py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Blog
               </Link>
               <Link
                 href="/contact"
