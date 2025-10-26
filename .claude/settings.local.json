@@ -106,7 +106,9 @@
       "Bash(npx playwright install:*)",
       "Read(//tmp/**)",
       "WebFetch(domain:docs.stripe.com)",
-      "Bash(npx prisma migrate:*)"
+      "Bash(npx prisma migrate:*)",
+      "Bash(DATABASE_URL=\"postgresql://user:pass@localhost:5432/temp\" npx prisma migrate:*)",
+      "Bash(npx vitest:*)"
     ],
     "deny": [],
     "ask": []
