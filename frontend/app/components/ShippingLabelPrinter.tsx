@@ -76,58 +76,58 @@ export default function ShippingLabelPrinter({ order, onClose }: ShippingLabelPr
     // Company header
     commands.push(0x1B, 0x61, 0x01) // Center align
     commands.push(0x1D, 0x21, 0x11) // Double height and width
-    commands.push(...this.textToBytes("SHENNA'S STUDIO\n"))
+    commands.push(...textToBytes("SHENNA'S STUDIO\n"))
     commands.push(0x1D, 0x21, 0x00) // Normal size
 
-    commands.push(...this.textToBytes('Ocean-Themed Products\n'))
-    commands.push(...this.textToBytes('10% to Ocean Conservation\n'))
-    commands.push(...this.textToBytes('www.shennastudio.com\n'))
+    commands.push(...textToBytes('Ocean-Themed Products\n'))
+    commands.push(...textToBytes('10% to Ocean Conservation\n'))
+    commands.push(...textToBytes('www.shennastudio.com\n'))
     commands.push(0x1B, 0x64, 0x02) // Feed 2 lines
 
     // Divider line
-    commands.push(...this.textToBytes('================================\n'))
+    commands.push(...textToBytes('================================\n'))
 
     // Order number
     commands.push(0x1B, 0x61, 0x00) // Left align
     commands.push(0x1D, 0x21, 0x01) // Double width
     const orderNum = order.stripeSessionId?.substring(8, 17).toUpperCase() || order.id.substring(0, 8)
-    commands.push(...this.textToBytes(`ORDER: ${orderNum}\n`))
+    commands.push(...textToBytes(`ORDER: ${orderNum}\n`))
     commands.push(0x1D, 0x21, 0x00) // Normal size
     commands.push(0x1B, 0x64, 0x01) // Feed 1 line
 
     // Ship to section
     commands.push(0x1D, 0x21, 0x11) // Double height and width
-    commands.push(...this.textToBytes('SHIP TO:\n'))
+    commands.push(...textToBytes('SHIP TO:\n'))
     commands.push(0x1D, 0x21, 0x00) // Normal size
 
     commands.push(0x1B, 0x45, 0x01) // Bold on
-    commands.push(...this.textToBytes(`${order.shippingName}\n`))
+    commands.push(...textToBytes(`${order.shippingName}\n`))
     commands.push(0x1B, 0x45, 0x00) // Bold off
 
-    commands.push(...this.textToBytes(`${order.shippingLine1}\n`))
+    commands.push(...textToBytes(`${order.shippingLine1}\n`))
     if (order.shippingLine2) {
-      commands.push(...this.textToBytes(`${order.shippingLine2}\n`))
+      commands.push(...textToBytes(`${order.shippingLine2}\n`))
     }
-    commands.push(...this.textToBytes(`${order.shippingCity}, ${order.shippingState} ${order.shippingPostalCode}\n`))
-    commands.push(...this.textToBytes(`${order.shippingCountry}\n`))
+    commands.push(...textToBytes(`${order.shippingCity}, ${order.shippingState} ${order.shippingPostalCode}\n`))
+    commands.push(...textToBytes(`${order.shippingCountry}\n`))
 
     if (order.customerPhone) {
-      commands.push(...this.textToBytes(`Tel: ${order.customerPhone}\n`))
+      commands.push(...textToBytes(`Tel: ${order.customerPhone}\n`))
     }
 
     commands.push(0x1B, 0x64, 0x01) // Feed 1 line
 
     // Divider
-    commands.push(...this.textToBytes('--------------------------------\n'))
+    commands.push(...textToBytes('--------------------------------\n'))
 
     // Items
     commands.push(0x1B, 0x45, 0x01) // Bold on
-    commands.push(...this.textToBytes(`ITEMS (${order.items?.length || 0}):\n`))
+    commands.push(...textToBytes(`ITEMS (${order.items?.length || 0}):\n`))
     commands.push(0x1B, 0x45, 0x00) // Bold off
 
     if (order.items && order.items.length > 0) {
       order.items.forEach((item, index) => {
-        commands.push(...this.textToBytes(`${index + 1}. Qty: ${item.quantity}\n`))
+        commands.push(...textToBytes(`${index + 1}. Qty: ${item.quantity}\n`))
       })
     }
 
@@ -139,15 +139,15 @@ export default function ShippingLabelPrinter({ order, onClose }: ShippingLabelPr
       style: 'currency',
       currency: 'USD'
     }).format(order.total / 100)
-    commands.push(...this.textToBytes(`TOTAL: ${totalFormatted}\n`))
+    commands.push(...textToBytes(`TOTAL: ${totalFormatted}\n`))
     commands.push(0x1D, 0x21, 0x00) // Normal size
 
     commands.push(0x1B, 0x64, 0x02) // Feed 2 lines
 
     // Footer
     commands.push(0x1B, 0x61, 0x01) // Center align
-    commands.push(...this.textToBytes('Thank you for supporting\n'))
-    commands.push(...this.textToBytes('Ocean Conservation!\n'))
+    commands.push(...textToBytes('Thank you for supporting\n'))
+    commands.push(...textToBytes('Ocean Conservation!\n'))
     commands.push(0x1B, 0x61, 0x00) // Left align
 
     // Cut paper
@@ -158,7 +158,7 @@ export default function ShippingLabelPrinter({ order, onClose }: ShippingLabelPr
     return new Uint8Array(commands)
   }
 
-  private textToBytes = (text: string): number[] => {
+  const textToBytes = (text: string): number[] => {
     const bytes: number[] = []
     for (let i = 0; i < text.length; i++) {
       bytes.push(text.charCodeAt(i))
