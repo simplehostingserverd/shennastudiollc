@@ -3,7 +3,6 @@ import Script from 'next/script'
 import { CartProvider } from '@/app/context/CartContext'
 import Navbar from '@/app/components/NavBar'
 import Footer from '@/app/components/Footer'
-import Breadcrumbs from '@/app/components/Breadcrumbs'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -211,7 +210,6 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col">
         <CartProvider>
           <Navbar />
-          <Breadcrumbs />
           <main className="flex-grow">{children}</main>
           <Footer />
         </CartProvider>
