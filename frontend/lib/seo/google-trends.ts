@@ -15,9 +15,38 @@ export interface TrendsData {
   }>
 }
 
+interface GoogleTrendsOptions {
+  keyword: string
+  startTime: Date
+  geo: string
+  category?: string
+}
+
+interface GoogleTrendsTimelineItem {
+  time: string
+  value: number[]
+}
+
+interface GoogleTrendsRankedItem {
+  query?: string
+  value: number
+  topic?: {
+    title: string
+  }
+}
+
+interface GoogleTrendsResponse {
+  default: {
+    timelineData?: GoogleTrendsTimelineItem[]
+    rankedList?: Array<{
+      rankedKeyword?: GoogleTrendsRankedItem[]
+    }>
+  }
+}
+
 export async function getGoogleTrendsData(keyword: string, category?: string): Promise<TrendsData> {
   try {
-    const options: any = {
+    const options: GoogleTrendsOptions = {
       keyword,
       startTime: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000), // Last year
       geo: 'US',
@@ -28,19 +57,19 @@ export async function getGoogleTrendsData(keyword: string, category?: string): P
     }
 
     const results = await googleTrends.interestOverTime(options)
-    const data = JSON.parse(results)
+    const data: GoogleTrendsResponse = JSON.parse(results)
 
     return {
-      interest_over_time: data.default.timelineData?.map((item: any) => ({
+      interest_over_time: data.default.timelineData?.map((item) => ({
         date: item.time,
         value: item.value[0]
       })) || [],
-      related_queries: data.default.rankedList?.[0]?.rankedKeyword?.map((item: any) => ({
-        query: item.query,
+      related_queries: data.default.rankedList?.[0]?.rankedKeyword?.map((item) => ({
+        query: item.query || '',
         value: item.value
       })) || [],
-      related_topics: data.default.rankedList?.[1]?.rankedKeyword?.map((item: any) => ({
-        topic: item.topic.title,
+      related_topics: data.default.rankedList?.[1]?.rankedKeyword?.map((item) => ({
+        topic: item.topic?.title || '',
         value: item.value
       })) || []
     }
@@ -50,9 +79,24 @@ export async function getGoogleTrendsData(keyword: string, category?: string): P
   }
 }
 
-export async function getRisingTopics(category: string = 'ocean conservation'): Promise<Array<{
+interface DailyTrendsItem {
+  title: {
+    query: string
+  }
+  formattedTraffic: string
+}
+
+interface DailyTrendsResponse {
+  default: {
+    trendingSearchesDays?: Array<{
+      trendingSearches?: DailyTrendsItem[]
+    }>
+  }
+}
+
+export async function getRisingTopics(_category: string = 'ocean conservation'): Promise<Array<{
   title: string
-  value: number
+  value: string
   formattedValue: string
 }>> {
   try {
@@ -61,18 +105,18 @@ export async function getRisingTopics(category: string = 'ocean conservation'): 
       geo: 'US',
     })
 
-    const data = JSON.parse(results)
+    const data: DailyTrendsResponse = JSON.parse(results)
 
     // Filter for relevant topics
     return data.default.trendingSearchesDays?.[0]?.trendingSearches
-      ?.filter((item: any) =>
+      ?.filter((item) =>
         item.title.query.toLowerCase().includes('ocean') ||
         item.title.query.toLowerCase().includes('conservation') ||
         item.title.query.toLowerCase().includes('marine') ||
         item.title.query.toLowerCase().includes('sea') ||
         item.title.query.toLowerCase().includes('beach')
       )
-      ?.map((item: any) => ({
+      ?.map((item) => ({
         title: item.title.query,
         value: item.formattedTraffic,
         formattedValue: item.formattedTraffic

@@ -23,15 +23,6 @@ interface BlogPostAnalytics {
   conversionRate: number
 }
 
-interface GAPageView {
-  pagePath: string
-  pageTitle: string
-  screenPageViews: string
-  totalUsers: string
-  averageSessionDuration: string
-  bounceRate: string
-}
-
 interface GAMetrics {
   views: number
   uniqueUsers: number
@@ -43,7 +34,7 @@ interface GAMetrics {
  * Fetch Google Analytics 4 data using the Google Analytics Data API
  * Requires GA4_PROPERTY_ID and GOOGLE_APPLICATION_CREDENTIALS environment variables
  */
-async function fetchGA4Data(path: string, dateRange: { startDate: string; endDate: string }): Promise<GAMetrics | null> {
+async function fetchGA4Data(_path: string, _dateRange: { startDate: string; endDate: string }): Promise<GAMetrics | null> {
   try {
     // Check if GA4 is configured
     const propertyId = process.env.GA4_PROPERTY_ID
@@ -104,7 +95,7 @@ async function fetchGA4Data(path: string, dateRange: { startDate: string; endDat
 /**
  * Track page view - stores in database for analytics
  */
-export async function trackPageView(postId: string, userAgent: string, referrer?: string) {
+export async function trackPageView(postId: string, _userAgent: string, _referrer?: string) {
   try {
     // Get the blog post
     const post = await prisma.blogPost.findUnique({
@@ -205,11 +196,7 @@ export async function getBlogAnalytics(): Promise<BlogPostAnalytics[]> {
 /**
  * Parse keywords from blog post metadata into ranking data
  */
-function parseKeywordRankings(keywords: string): BlogPostAnalytics['keywordRankings'] {
-  if (!keywords) return []
-
-  const keywordList = keywords.split(',').map(k => k.trim()).filter(Boolean)
-
+function parseKeywordRankings(_keywords: string): BlogPostAnalytics['keywordRankings'] {
   // In production, you would query actual ranking data from SEO tools
   // For now, return empty array since we need external APIs for this
   return []
@@ -392,7 +379,7 @@ export function getKeywordTrackingData(): Array<{
 /**
  * Track custom events
  */
-export async function trackEvent(eventName: string, properties: Record<string, any>) {
+export async function trackEvent(eventName: string, properties: Record<string, unknown>) {
   try {
     console.log(`Event tracked: ${eventName}`, properties)
 
