@@ -4,9 +4,9 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 interface BlogPost {
@@ -39,23 +39,34 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
   const [post, setPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([])
+  const [slug, setSlug] = useState<string>('')
 
   useEffect(() => {
-    fetchBlogPost()
-  }, [params.slug])
+    const loadParams = async () => {
+      const resolvedParams = await params
+      setSlug(resolvedParams.slug)
+    }
+    loadParams()
+  }, [params])
+
+  useEffect(() => {
+    if (slug) {
+      fetchBlogPost()
+    }
+  }, [slug])
 
   const fetchBlogPost = async () => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/blog/${params.slug}`)
+      const response = await fetch(`/api/blog/${slug}`)
       if (response.ok) {
         const data = await response.json()
         setPost(data)
-        
+
         if (data.category) {
           const relatedResponse = await fetch(`/api/blog?category=${data.category}&published=true&limit=3`)
           const relatedData = await relatedResponse.json()
-          setRelatedPosts(relatedData.posts.filter((p: BlogPost) => p.slug !== params.slug).slice(0, 2))
+          setRelatedPosts(relatedData.posts.filter((p: BlogPost) => p.slug !== slug).slice(0, 2))
         }
       }
     } catch (error) {

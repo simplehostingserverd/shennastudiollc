@@ -88,12 +88,20 @@ export default function AdminBlogPage() {
             <h1 className="text-3xl font-bold text-gray-900">Blog Posts</h1>
             <p className="text-gray-600 mt-1">Manage your blog content</p>
           </div>
-          <Link
-            href="/admin/blog/new"
-            className="px-6 py-3 bg-ocean-600 text-white rounded-lg hover:bg-ocean-700 transition-colors font-semibold"
-          >
-            + New Post
-          </Link>
+          <div className="flex gap-4">
+            <Link
+              href="/admin/seo"
+              className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold"
+            >
+              🎯 SEO Dashboard
+            </Link>
+            <Link
+              href="/admin/blog/new"
+              className="px-6 py-3 bg-ocean-600 text-white rounded-lg hover:bg-ocean-700 transition-colors font-semibold"
+            >
+              + New Post
+            </Link>
+          </div>
         </div>
 
         <div className="bg-white rounded-lg shadow mb-6">

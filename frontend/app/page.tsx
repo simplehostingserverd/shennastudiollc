@@ -109,7 +109,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-ocean-900/30 to-transparent"></div>
 
-        <div className="relative z-10 text-center max-w-6xl mx-auto px-4">
+        <div className="relative z-10 max-w-6xl mx-auto px-4">
           <div className="mb-8">
             <div className="mb-6">
               <Image
@@ -117,17 +117,14 @@ export default function HomePage() {
                 alt="Shenna's Studio - Ocean Conservation & Marine Life Products"
                 width={200}
                 height={200}
-                className="mx-auto mb-8 opacity-90 hover:opacity-100 transition-opacity duration-300"
+                className="mb-8 opacity-90 hover:opacity-100 transition-opacity duration-300"
                 priority
               />
             </div>
-            <h1 className="text-6xl md:text-8xl font-display font-bold text-white mb-6 leading-tight tracking-wide">
-              Shenna&apos;s{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-blue-300">
-                Studio
-              </span>
+            <h1 className="text-6xl md:text-8xl font-display font-bold mb-6 leading-tight tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-blue-300">
+              Shenna&apos;s Studio
             </h1>
-            <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed max-w-3xl mx-auto font-light">
+            <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed max-w-3xl font-light">
               Discover exquisite ocean-inspired treasures that celebrate marine
               life while supporting ocean conservation.
               <span className="block mt-2 text-lg text-teal-200">
@@ -136,7 +133,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-6 items-center">
             <Link href="#products">
               <Button
                 variant="primary"

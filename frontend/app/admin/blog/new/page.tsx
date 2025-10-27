@@ -18,7 +18,7 @@ export default function NewBlogPostPage() {
     tags: '',
     keywords: '',
     metaDescription: '',
-    published: false,
+    readTime: '',
   })
 
   const generateSlug = (title: string) => {
@@ -36,7 +36,7 @@ export default function NewBlogPostPage() {
     })
   }
 
-  const handleSubmit = async (e: React.FormEvent, publish: boolean) => {
+  const handleSubmit = async (e: React.FormEvent, publish?: boolean) => {
     e.preventDefault()
     setSaving(true)
 
@@ -47,8 +47,7 @@ export default function NewBlogPostPage() {
         body: JSON.stringify({
           ...formData,
           tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
-          published: publish,
-          authorId: 'temp-admin-id',
+          published: publish || false,
         }),
       })
 
@@ -134,48 +133,54 @@ export default function NewBlogPostPage() {
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                 rows={15}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-transparent font-mono text-sm"
-                placeholder="Write your blog post content (Markdown supported)"
+                placeholder="Write your blog post content (HTML supported)"
                 required
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category
-              </label>
-              <select
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
-              >
-                <option>Conservation</option>
-                <option>Product Care</option>
-                <option>Behind the Scenes</option>
-                <option>Marine Life</option>
-                <option>Gift Guide</option>
-                <option>Beads & Bracelets</option>
-                <option>DIY & Tutorials</option>
-              </select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Category
+                </label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
+                >
+                  <option value="Conservation">Conservation</option>
+                  <option value="Marine Life">Marine Life</option>
+                  <option value="Product Care">Product Care</option>
+                  <option value="Behind the Scenes">Behind the Scenes</option>
+                  <option value="Gift Guide">Gift Guide</option>
+                  <option value="News">News</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Read Time
+                </label>
+                <input
+                  type="text"
+                  value={formData.readTime}
+                  onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
+                  placeholder="5 min read"
+                />
+              </div>
             </div>
 
             <div>
-              <ImageUpload
-                label="Cover Image"
-                currentImage={formData.coverImage}
-                onUploadComplete={(url) => setFormData({ ...formData, coverImage: url })}
-              />
-            </div>
-
-            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tags (comma separated)
+                Tags
               </label>
               <input
                 type="text"
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
-                placeholder="ocean, conservation, beads, tutorial"
+                placeholder="ocean, conservation, marine life (comma-separated)"
               />
             </div>
 
@@ -188,7 +193,7 @@ export default function NewBlogPostPage() {
                 value={formData.keywords}
                 onChange={(e) => setFormData({ ...formData, keywords: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
-                placeholder="ocean conservation, bead bracelets, marine life"
+                placeholder="Keywords for search engines"
               />
             </div>
 
@@ -200,39 +205,49 @@ export default function NewBlogPostPage() {
                 value={formData.metaDescription}
                 onChange={(e) => setFormData({ ...formData, metaDescription: e.target.value })}
                 rows={2}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
-                placeholder="SEO description for search engines (155-160 characters)"
                 maxLength={160}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ocean-500 focus:border-transparent"
+                placeholder="SEO description (max 160 characters)"
               />
               <p className="text-sm text-gray-500 mt-1">
                 {formData.metaDescription.length}/160 characters
               </p>
             </div>
+
+            <div>
+              <ImageUpload
+                label="Cover Image"
+                currentImage={formData.coverImage}
+                onUploadComplete={(url) => setFormData({ ...formData, coverImage: url })}
+              />
+            </div>
           </div>
 
-          <div className="flex justify-end gap-4">
+          <div className="flex justify-between items-center bg-white rounded-lg shadow p-6">
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={(e) => handleSubmit(e, false)}
+                disabled={saving}
+                className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50"
+              >
+                {saving ? 'Saving...' : 'Save as Draft'}
+              </button>
+              <button
+                type="button"
+                onClick={(e) => handleSubmit(e, true)}
+                disabled={saving}
+                className="px-6 py-2 bg-ocean-600 text-white rounded-lg hover:bg-ocean-700 transition-colors disabled:opacity-50"
+              >
+                {saving ? 'Publishing...' : 'Publish'}
+              </button>
+            </div>
             <Link
               href="/admin/blog"
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="text-gray-600 hover:text-gray-800"
             >
               Cancel
             </Link>
-            <button
-              type="button"
-              onClick={(e) => handleSubmit(e, false)}
-              disabled={saving}
-              className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50"
-            >
-              {saving ? 'Saving...' : 'Save as Draft'}
-            </button>
-            <button
-              type="button"
-              onClick={(e) => handleSubmit(e, true)}
-              disabled={saving}
-              className="px-6 py-3 bg-ocean-600 text-white rounded-lg hover:bg-ocean-700 transition-colors disabled:opacity-50"
-            >
-              {saving ? 'Publishing...' : 'Publish Now'}
-            </button>
           </div>
         </form>
       </div>

@@ -6,15 +6,16 @@ import Link from 'next/link'
 import ImageUpload from '@/app/components/ImageUpload'
 
 interface BlogEditPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default function EditBlogPostPage({ params }: BlogEditPageProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [postId, setPostId] = useState<string>('')
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
@@ -30,12 +31,22 @@ export default function EditBlogPostPage({ params }: BlogEditPageProps) {
   })
 
   useEffect(() => {
-    fetchPost()
-  }, [params.id])
+    const loadParams = async () => {
+      const resolvedParams = await params
+      setPostId(resolvedParams.id)
+    }
+    loadParams()
+  }, [params])
+
+  useEffect(() => {
+    if (postId) {
+      fetchPost()
+    }
+  }, [postId])
 
   const fetchPost = async () => {
     try {
-      const response = await fetch(`/api/blog/${params.id}`)
+      const response = await fetch(`/api/blog/${postId}`)
       if (response.ok) {
         const post = await response.json()
         setFormData({
@@ -79,7 +90,7 @@ export default function EditBlogPostPage({ params }: BlogEditPageProps) {
     setSaving(true)
 
     try {
-      const response = await fetch(`/api/blog/${params.id}`, {
+      const response = await fetch(`/api/blog/${postId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
