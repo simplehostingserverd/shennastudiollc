@@ -3,6 +3,7 @@ import Script from 'next/script'
 import { CartProvider } from '@/app/context/CartContext'
 import Navbar from '@/app/components/NavBar'
 import Footer from '@/app/components/Footer'
+import GoogleAnalytics from '@/app/components/GoogleAnalytics'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -208,6 +209,9 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col">
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        )}
         <CartProvider>
           <Navbar />
           <main className="flex-grow">{children}</main>

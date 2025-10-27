@@ -1,4 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 interface BlogPostAnalytics {
   id: string
@@ -21,74 +23,222 @@ interface BlogPostAnalytics {
   conversionRate: number
 }
 
-// Mock analytics data (in production, integrate with Google Analytics, Ahrefs, SEMrush, etc.)
-let analyticsData: BlogPostAnalytics[] = []
-
-export function trackPageView(postId: string, userAgent: string, referrer?: string) {
-  // In production, integrate with Google Analytics or similar
-  console.log(`Page view tracked for post ${postId}`)
+interface GAPageView {
+  pagePath: string
+  pageTitle: string
+  screenPageViews: string
+  totalUsers: string
+  averageSessionDuration: string
+  bounceRate: string
 }
 
-export function getBlogAnalytics(): BlogPostAnalytics[] {
-  // Mock data for demonstration
-  return [
-    {
-      id: '1',
-      title: 'Ocean Conservation: A Complete Guide',
-      slug: 'ocean-conservation-guide',
-      publishedAt: '2024-01-15T00:00:00Z',
-      views: 12500,
-      uniqueViews: 8900,
-      avgTimeOnPage: 4.2,
-      bounceRate: 0.35,
-      organicTraffic: 9800,
-      socialShares: 245,
-      backlinks: 67,
-      keywordRankings: [
-        { keyword: 'ocean conservation', position: 3, searchVolume: 18100, change: 2 },
-        { keyword: 'marine life protection', position: 5, searchVolume: 5400, change: -1 },
-        { keyword: 'sea turtle conservation', position: 2, searchVolume: 2900, change: 1 }
-      ],
-      conversionRate: 0.085
-    },
-    {
-      id: '2',
-      title: 'Beading for Beginners: Essential Techniques',
-      slug: 'beading-beginners-guide',
-      publishedAt: '2024-01-20T00:00:00Z',
-      views: 8200,
-      uniqueViews: 6200,
-      avgTimeOnPage: 6.1,
-      bounceRate: 0.28,
-      organicTraffic: 7100,
-      socialShares: 189,
-      backlinks: 34,
-      keywordRankings: [
-        { keyword: 'beading tutorial', position: 4, searchVolume: 12100, change: 1 },
-        { keyword: 'jewelry making beginners', position: 7, searchVolume: 8800, change: -2 },
-        { keyword: 'bracelet making', position: 3, searchVolume: 6600, change: 0 }
-      ],
-      conversionRate: 0.092
+interface GAMetrics {
+  views: number
+  uniqueUsers: number
+  avgSessionDuration: number
+  bounceRate: number
+}
+
+/**
+ * Fetch Google Analytics 4 data using the Google Analytics Data API
+ * Requires GA4_PROPERTY_ID and GOOGLE_APPLICATION_CREDENTIALS environment variables
+ */
+async function fetchGA4Data(path: string, dateRange: { startDate: string; endDate: string }): Promise<GAMetrics | null> {
+  try {
+    // Check if GA4 is configured
+    const propertyId = process.env.GA4_PROPERTY_ID
+    if (!propertyId) {
+      console.log('GA4_PROPERTY_ID not configured, skipping analytics fetch')
+      return null
     }
-  ]
+
+    // Note: In production, you would use the Google Analytics Data API here
+    // This requires @google-analytics/data package and service account credentials
+    // Example implementation:
+    /*
+    const { BetaAnalyticsDataClient } = require('@google-analytics/data');
+    const analyticsDataClient = new BetaAnalyticsDataClient({
+      keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    });
+
+    const [response] = await analyticsDataClient.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [dateRange],
+      dimensions: [{ name: 'pagePath' }],
+      metrics: [
+        { name: 'screenPageViews' },
+        { name: 'totalUsers' },
+        { name: 'averageSessionDuration' },
+        { name: 'bounceRate' },
+      ],
+      dimensionFilter: {
+        filter: {
+          fieldName: 'pagePath',
+          stringFilter: {
+            matchType: 'EXACT',
+            value: path,
+          },
+        },
+      },
+    });
+
+    const row = response.rows?.[0];
+    if (!row) return null;
+
+    return {
+      views: parseInt(row.metricValues?.[0]?.value || '0'),
+      uniqueUsers: parseInt(row.metricValues?.[1]?.value || '0'),
+      avgSessionDuration: parseFloat(row.metricValues?.[2]?.value || '0'),
+      bounceRate: parseFloat(row.metricValues?.[3]?.value || '0'),
+    };
+    */
+
+    // For now, return null to indicate GA4 data is not available
+    return null
+  } catch (error) {
+    console.error('Error fetching GA4 data:', error)
+    return null
+  }
 }
 
-export function getOverallAnalytics() {
-  const posts = getBlogAnalytics()
+/**
+ * Track page view - stores in database for analytics
+ */
+export async function trackPageView(postId: string, userAgent: string, referrer?: string) {
+  try {
+    // Get the blog post
+    const post = await prisma.blogPost.findUnique({
+      where: { id: postId },
+    })
+
+    if (!post) {
+      console.warn(`Blog post ${postId} not found`)
+      return
+    }
+
+    // Increment view count
+    await prisma.blogPost.update({
+      where: { id: postId },
+      data: {
+        views: {
+          increment: 1,
+        },
+      },
+    })
+
+    // You can also log to an analytics table here for more detailed tracking
+    // await prisma.pageView.create({
+    //   data: {
+    //     postId,
+    //     userAgent,
+    //     referrer,
+    //     timestamp: new Date(),
+    //   },
+    // })
+
+    console.log(`Page view tracked for post ${postId}`)
+  } catch (error) {
+    console.error('Error tracking page view:', error)
+  }
+}
+
+/**
+ * Get blog post analytics combining database views with GA4 data
+ */
+export async function getBlogAnalytics(): Promise<BlogPostAnalytics[]> {
+  try {
+    // Fetch published blog posts from database
+    const posts = await prisma.blogPost.findMany({
+      where: {
+        published: true,
+      },
+      orderBy: {
+        views: 'desc',
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        publishedAt: true,
+        views: true,
+        keywords: true,
+      },
+    })
+
+    // Enhance with GA4 data if available
+    const enhancedPosts: BlogPostAnalytics[] = await Promise.all(
+      posts.map(async (post) => {
+        // Try to fetch GA4 metrics for this post
+        const ga4Data = await fetchGA4Data(`/blog/${post.slug}`, {
+          startDate: '30daysAgo',
+          endDate: 'today',
+        })
+
+        // Parse keywords for ranking data (if available from external SEO tools)
+        const keywordRankings = parseKeywordRankings(post.keywords || '')
+
+        return {
+          id: post.id,
+          title: post.title,
+          slug: post.slug,
+          publishedAt: post.publishedAt?.toISOString() || new Date().toISOString(),
+          views: post.views,
+          uniqueViews: ga4Data?.uniqueUsers || Math.floor(post.views * 0.7), // Estimate if GA4 not available
+          avgTimeOnPage: ga4Data?.avgSessionDuration || 0,
+          bounceRate: ga4Data?.bounceRate || 0,
+          organicTraffic: Math.floor(post.views * 0.6), // Estimate organic traffic
+          socialShares: 0, // Would come from social media APIs
+          backlinks: 0, // Would come from SEO tools like Ahrefs, SEMrush
+          keywordRankings,
+          conversionRate: 0.02, // 2% default conversion rate
+        }
+      })
+    )
+
+    return enhancedPosts
+  } catch (error) {
+    console.error('Error fetching blog analytics:', error)
+    return []
+  }
+}
+
+/**
+ * Parse keywords from blog post metadata into ranking data
+ */
+function parseKeywordRankings(keywords: string): BlogPostAnalytics['keywordRankings'] {
+  if (!keywords) return []
+
+  const keywordList = keywords.split(',').map(k => k.trim()).filter(Boolean)
+
+  // In production, you would query actual ranking data from SEO tools
+  // For now, return empty array since we need external APIs for this
+  return []
+}
+
+/**
+ * Get overall analytics summary
+ */
+export async function getOverallAnalytics() {
+  const posts = await getBlogAnalytics()
 
   return {
     totalPosts: posts.length,
     totalViews: posts.reduce((sum, post) => sum + post.views, 0),
     totalOrganicTraffic: posts.reduce((sum, post) => sum + post.organicTraffic, 0),
-    avgConversionRate: posts.reduce((sum, post) => sum + post.conversionRate, 0) / posts.length,
+    avgConversionRate: posts.length > 0
+      ? posts.reduce((sum, post) => sum + post.conversionRate, 0) / posts.length
+      : 0,
     totalBacklinks: posts.reduce((sum, post) => sum + post.backlinks, 0),
     totalSocialShares: posts.reduce((sum, post) => sum + post.socialShares, 0),
     topKeywords: getTopPerformingKeywords(posts),
-    trafficTrend: getTrafficTrend(posts),
-    revenueGenerated: calculateRevenueFromBlog(posts)
+    trafficTrend: await getTrafficTrend(),
+    revenueGenerated: calculateRevenueFromBlog(posts),
   }
 }
 
+/**
+ * Get top performing keywords across all posts
+ */
 function getTopPerformingKeywords(posts: BlogPostAnalytics[]): Array<{
   keyword: string
   avgPosition: number
@@ -118,28 +268,68 @@ function getTopPerformingKeywords(posts: BlogPostAnalytics[]): Array<{
       keyword,
       avgPosition: data.positions.reduce((a, b) => a + b, 0) / data.positions.length,
       totalSearchVolume: data.searchVolumes.reduce((a, b) => a + b, 0),
-      postsRanking: data.postCount
+      postsRanking: data.postCount,
     }))
     .sort((a, b) => a.avgPosition - b.avgPosition)
     .slice(0, 10)
 }
 
-function getTrafficTrend(posts: BlogPostAnalytics[]): Array<{
+/**
+ * Get traffic trend from GA4 or database
+ */
+async function getTrafficTrend(): Promise<Array<{
   month: string
   organicTraffic: number
   totalViews: number
-}> {
-  // Mock trend data - in production, calculate from actual data
-  return [
-    { month: '2024-01', organicTraffic: 12500, totalViews: 15600 },
-    { month: '2024-02', organicTraffic: 15200, totalViews: 18900 },
-    { month: '2024-03', organicTraffic: 18100, totalViews: 22100 },
-    { month: '2024-04', organicTraffic: 21300, totalViews: 25800 },
-    { month: '2024-05', organicTraffic: 24900, totalViews: 29800 },
-    { month: '2024-06', organicTraffic: 28200, totalViews: 33400 }
-  ]
+}>> {
+  try {
+    // In production, fetch actual monthly data from GA4
+    // For now, calculate from database views
+    const posts = await prisma.blogPost.findMany({
+      where: {
+        published: true,
+        publishedAt: {
+          not: null,
+        },
+      },
+      select: {
+        views: true,
+        publishedAt: true,
+      },
+    })
+
+    // Group by month
+    const monthlyData = new Map<string, { views: number; organic: number }>()
+
+    posts.forEach(post => {
+      if (!post.publishedAt) return
+
+      const monthKey = post.publishedAt.toISOString().substring(0, 7) // YYYY-MM
+      const existing = monthlyData.get(monthKey) || { views: 0, organic: 0 }
+
+      monthlyData.set(monthKey, {
+        views: existing.views + post.views,
+        organic: existing.organic + Math.floor(post.views * 0.6),
+      })
+    })
+
+    return Array.from(monthlyData.entries())
+      .map(([month, data]) => ({
+        month,
+        organicTraffic: data.organic,
+        totalViews: data.views,
+      }))
+      .sort((a, b) => a.month.localeCompare(b.month))
+      .slice(-6) // Last 6 months
+  } catch (error) {
+    console.error('Error getting traffic trend:', error)
+    return []
+  }
 }
 
+/**
+ * Calculate estimated revenue from blog traffic
+ */
 function calculateRevenueFromBlog(posts: BlogPostAnalytics[]): {
   affiliateRevenue: number
   adRevenue: number
@@ -147,21 +337,27 @@ function calculateRevenueFromBlog(posts: BlogPostAnalytics[]): {
   total: number
 } {
   const totalViews = posts.reduce((sum, post) => sum + post.views, 0)
-  const avgConversionRate = posts.reduce((sum, post) => sum + post.conversionRate, 0) / posts.length
+  const avgConversionRate = posts.length > 0
+    ? posts.reduce((sum, post) => sum + post.conversionRate, 0) / posts.length
+    : 0.02
 
-  // Rough estimates (in production, use actual tracking data)
-  const affiliateRevenue = totalViews * avgConversionRate * 0.3 * 45 // 30% commission on $45 avg order
+  // Conservative revenue estimates
+  const affiliateRevenue = totalViews * avgConversionRate * 0.3 * 45 // 30% commission on $45 avg
   const adRevenue = totalViews * 0.001 * 2 // $2 CPM
-  const productRevenue = totalViews * avgConversionRate * 0.2 * 35 // 20% direct sales on $35 avg product
+  const productRevenue = totalViews * avgConversionRate * 0.2 * 35 // 20% direct sales at $35
 
   return {
     affiliateRevenue: Math.round(affiliateRevenue),
     adRevenue: Math.round(adRevenue),
     productRevenue: Math.round(productRevenue),
-    total: Math.round(affiliateRevenue + adRevenue + productRevenue)
+    total: Math.round(affiliateRevenue + adRevenue + productRevenue),
   }
 }
 
+/**
+ * Get competitor analysis
+ * Note: Requires external SEO tools API integration (Ahrefs, SEMrush, etc.)
+ */
 export function getCompetitorAnalysis(): Array<{
   domain: string
   blogPosts: number
@@ -170,27 +366,15 @@ export function getCompetitorAnalysis(): Array<{
   backlinks: number
   socialFollowing: number
 }> {
-  // Mock competitor data
-  return [
-    {
-      domain: 'oceanconservancy.org',
-      blogPosts: 245,
-      monthlyTraffic: 185000,
-      topKeywords: ['ocean conservation', 'marine protection', 'sea turtles'],
-      backlinks: 12500,
-      socialFollowing: 89000
-    },
-    {
-      domain: 'beading.com',
-      blogPosts: 189,
-      monthlyTraffic: 95000,
-      topKeywords: ['beading tutorials', 'jewelry making', 'bracelet patterns'],
-      backlinks: 7800,
-      socialFollowing: 45600
-    }
-  ]
+  // This would integrate with SEO tools APIs in production
+  // For now, return empty array
+  return []
 }
 
+/**
+ * Get keyword tracking data
+ * Note: Requires external SEO tools API integration
+ */
 export function getKeywordTrackingData(): Array<{
   keyword: string
   currentPosition: number
@@ -200,25 +384,27 @@ export function getKeywordTrackingData(): Array<{
   trend: 'up' | 'down' | 'stable'
   lastUpdated: string
 }> {
-  // Mock keyword tracking data
-  return [
-    {
-      keyword: 'ocean conservation',
-      currentPosition: 3,
-      previousPosition: 5,
-      searchVolume: 18100,
-      competition: 'High',
-      trend: 'up',
-      lastUpdated: '2024-01-27T00:00:00Z'
-    },
-    {
-      keyword: 'beading tutorial',
-      currentPosition: 4,
-      previousPosition: 4,
-      searchVolume: 12100,
-      competition: 'Medium',
-      trend: 'stable',
-      lastUpdated: '2024-01-27T00:00:00Z'
-    }
-  ]
+  // This would integrate with SEO tools APIs in production
+  // For now, return empty array
+  return []
+}
+
+/**
+ * Track custom events
+ */
+export async function trackEvent(eventName: string, properties: Record<string, any>) {
+  try {
+    console.log(`Event tracked: ${eventName}`, properties)
+
+    // You could store these in a database table for custom event tracking
+    // await prisma.analyticsEvent.create({
+    //   data: {
+    //     eventName,
+    //     properties: JSON.stringify(properties),
+    //     timestamp: new Date(),
+    //   },
+    // })
+  } catch (error) {
+    console.error('Error tracking event:', error)
+  }
 }
