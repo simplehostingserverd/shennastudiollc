@@ -9,6 +9,22 @@ echo "🚀 Starting Shenna's Studio Frontend..."
 echo "================================================"
 echo ""
 
+# Run database migrations and seeding
+echo "📊 Running database migrations..."
+if command -v npx &> /dev/null; then
+    npx prisma migrate deploy || echo "⚠️  Migration failed or no migrations to run"
+
+    echo "🌱 Seeding blog posts..."
+    npx tsx scripts/seed-blog-posts.ts || echo "⚠️  Seeding failed or already completed"
+
+    echo "✅ Database setup complete"
+    echo ""
+else
+    echo "⚠️  npx not found, skipping database setup"
+    echo ""
+fi
+
+
 # Check if we have a standalone build
 if [ -d ".next/standalone" ]; then
     echo "✅ Found standalone build"
