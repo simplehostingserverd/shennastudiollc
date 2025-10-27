@@ -1,8 +1,12 @@
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-})
+function getOpenAIClient(): OpenAI {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) {
+    throw new Error('OPENAI_API_KEY environment variable not set')
+  }
+  return new OpenAI({ apiKey })
+}
 
 export interface BlogPostContent {
   title: string
@@ -22,6 +26,8 @@ export async function generateBlogPost(
   category: string = 'Conservation'
 ): Promise<BlogPostContent> {
   try {
+    const openai = getOpenAIClient()
+
     const prompt = `Write a comprehensive, SEO-optimized blog post about "${topic}" for the ocean conservation niche.
 
 Requirements:
@@ -134,6 +140,8 @@ export async function optimizeContent(
   suggestions: string[]
 }> {
   try {
+    const openai = getOpenAIClient()
+
     const prompt = `Analyze and optimize this blog content for SEO. Primary keyword: "${keywords[0]}"
 
 Content to analyze:

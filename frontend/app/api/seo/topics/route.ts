@@ -3,9 +3,13 @@ import { getRisingTopics } from '@/lib/seo/google-trends'
 import { getKeywordSuggestions, analyzeCompetition } from '@/lib/seo/serper'
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-})
+function getOpenAIClient() {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) {
+    throw new Error('OPENAI_API_KEY environment variable not set')
+  }
+  return new OpenAI({ apiKey })
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -55,6 +59,8 @@ async function generateTopicIdeas(category: string, limit: number): Promise<Arra
   estimatedTraffic: string
 }>> {
   try {
+    const openai = getOpenAIClient()
+
     const prompt = `Generate ${limit} high-converting blog post ideas for the "${category}" niche. Each idea should include:
 
 1. Compelling title (SEO optimized)
