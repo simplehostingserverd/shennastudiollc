@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
-import PlausibleProvider from 'next-plausible'
 import { CartProvider } from '@/app/context/CartContext'
 import Navbar from '@/app/components/NavBar'
 import Footer from '@/app/components/Footer'
@@ -208,23 +207,31 @@ export default function RootLayout({
             __html: JSON.stringify(websiteSchema),
           }}
         />
+        {/* Plausible Analytics */}
+        <Script
+          defer
+          data-domain="shennastudio.com"
+          src="https://plausible-analytics-ce-production-730c.up.railway.app/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
+          strategy="afterInteractive"
+        />
+        <Script id="plausible-init" strategy="afterInteractive">
+          {`window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`}
+        </Script>
       </head>
       <body className="min-h-screen flex flex-col">
-        <PlausibleProvider domain="www.shennastudio.com">
-          {typeof process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID !== 'undefined' && (
-            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!} />
-          )}
-          <CartProvider>
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            <Footer />
-          </CartProvider>
-          <Script
-            src="https://app.rybbit.io/api/script.js"
-            data-site-id="a56da861ea4f"
-            strategy="afterInteractive"
-          />
-        </PlausibleProvider>
+        {typeof process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID !== 'undefined' && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!} />
+        )}
+        <CartProvider>
+          <Navbar />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </CartProvider>
+        <Script
+          src="https://app.rybbit.io/api/script.js"
+          data-site-id="a56da861ea4f"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   )
