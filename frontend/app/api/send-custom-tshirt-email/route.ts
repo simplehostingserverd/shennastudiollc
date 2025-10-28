@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ServerClient } from 'postmark'
 
+// Force this route to be dynamic (not pre-rendered during build)
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
