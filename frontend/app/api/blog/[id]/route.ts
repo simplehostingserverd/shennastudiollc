@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 
+// Force this route to be dynamic
+export const dynamic = 'force-dynamic'
+
 const prisma = new PrismaClient()
 
 export async function GET(
@@ -9,72 +12,49 @@ export async function GET(
 ) {
   try {
     const params = await context.params
-    let post = await prisma.blogPost.findUnique({
-      where: { id: params.id },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        comments: {
-          where: { approved: true },
-          orderBy: { createdAt: 'desc' },
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        },
-      },
-    })
 
-    if (!post) {
-      post = await prisma.blogPost.findUnique({
-        where: { slug: params.id },
-        include: {
-          author: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-          comments: {
-            where: { approved: true },
-            orderBy: { createdAt: 'desc' },
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  name: true,
-                },
-              },
-            },
-          },
-        },
-      })
-    }
+    // Try to find by ID first, then by slug
+    let posts = await prisma.$queryRawUnsafe<any[]>(`
+      SELECT
+        bp.*,
+        u.id as "author_id",
+        u.email as "author_email",
+        COALESCE(u.first_name || ' ' || u.last_name, u.email) as "author_name"
+      FROM "BlogPost" bp
+      LEFT JOIN "user" u ON bp."authorId" = u.id
+      WHERE bp.id = $1 OR bp.slug = $1
+      LIMIT 1
+    `, params.id)
 
-    if (!post) {
+    if (!posts || posts.length === 0) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
     }
 
-    await prisma.blogPost.update({
-      where: { id: post.id },
-      data: { views: { increment: 1 } },
-    })
+    const post = posts[0]
 
-    return NextResponse.json(post)
+    // Increment view count
+    await prisma.$executeRawUnsafe(`
+      UPDATE "BlogPost"
+      SET views = views + 1
+      WHERE id = $1
+    `, post.id)
+
+    // Format post for frontend
+    const formattedPost = {
+      ...post,
+      author: {
+        id: post.author_id,
+        email: post.author_email,
+        name: post.author_name || 'Shenna\'s Studio',
+      },
+      comments: [], // We'll add comment fetching later if needed
+    }
+
+    return NextResponse.json(formattedPost)
   } catch (error) {
     console.error('Error fetching blog post:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch blog post' },
+      { error: 'Failed to fetch blog post', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
   }

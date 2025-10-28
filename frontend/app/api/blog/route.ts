@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 
+// Force this route to be dynamic
+export const dynamic = 'force-dynamic'
+
 const prisma = new PrismaClient()
 
 export async function GET(request: NextRequest) {
@@ -11,44 +14,52 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const offset = parseInt(searchParams.get('offset') || '0')
 
-    const where: any = {}
-    
+    // Build WHERE clause for raw query
+    let whereClause = 'WHERE "published" = true'
+    const params: any[] = []
+    let paramIndex = 1
+
     if (category && category !== 'All') {
-      where.category = category
-    }
-    
-    if (published !== null) {
-      where.published = published === 'true'
+      whereClause += ` AND "category" = $${paramIndex}`
+      params.push(category)
+      paramIndex++
     }
 
-    const [posts, total] = await Promise.all([
-      prisma.blogPost.findMany({
-        where,
-        include: {
-          author: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-          _count: {
-            select: {
-              comments: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-        take: limit,
-        skip: offset,
-      }),
-      prisma.blogPost.count({ where }),
-    ])
+    // Fetch posts using raw query to avoid Prisma schema issues
+    const posts = await prisma.$queryRawUnsafe<any[]>(`
+      SELECT
+        bp.*,
+        u.id as "author_id",
+        u.email as "author_email",
+        COALESCE(u.first_name || ' ' || u.last_name, u.email) as "author_name"
+      FROM "BlogPost" bp
+      LEFT JOIN "user" u ON bp."authorId" = u.id
+      ${whereClause}
+      ORDER BY bp."createdAt" DESC
+      LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
+    `, ...params, limit, offset)
+
+    const totalResult = await prisma.$queryRawUnsafe<any[]>(`
+      SELECT COUNT(*) as count FROM "BlogPost" ${whereClause}
+    `, ...params)
+
+    const total = parseInt(totalResult[0]?.count || '0')
+
+    // Format posts for frontend
+    const formattedPosts = posts.map(post => ({
+      ...post,
+      author: {
+        id: post.author_id,
+        email: post.author_email,
+        name: post.author_name || 'Shenna\'s Studio',
+      },
+      _count: {
+        comments: 0, // We'll add comment counting later if needed
+      },
+    }))
 
     return NextResponse.json({
-      posts,
+      posts: formattedPosts,
       total,
       limit,
       offset,
@@ -56,7 +67,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error fetching blog posts:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch blog posts' },
+      { error: 'Failed to fetch blog posts', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
   }
