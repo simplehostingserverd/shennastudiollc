@@ -2,6 +2,11 @@
 const nextConfig = {
   output: 'standalone',
 
+  // Enable instrumentation for PostHog and other third-party tools
+  experimental: {
+    instrumentationHook: true,
+  },
+
   // Disable linting and type checking during build (for faster deployments)
   eslint: {
     ignoreDuringBuilds: true,
