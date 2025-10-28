@@ -14,6 +14,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import Image from 'next/image'
+import posthog from 'posthog-js'
 
 export default function CartPage() {
   const {
@@ -29,6 +30,17 @@ export default function CartPage() {
   } = useCart()
 
   const handleQuantityChange = async (itemId: string, newQuantity: number) => {
+    const item = items.find((i) => i.id === itemId)
+    if (item) {
+      posthog.capture('cart_item_quantity_changed', {
+        cartId,
+        itemId: item.id,
+        itemTitle: item.title,
+        oldQuantity: item.quantity,
+        newQuantity: newQuantity,
+      })
+    }
+
     if (newQuantity <= 0) {
       await removeItem(itemId)
     } else {
@@ -218,6 +230,12 @@ export default function CartPage() {
                   disabled={isLoading}
                   loading={isLoading}
                   onClick={async () => {
+                    posthog.capture('checkout_proceeded', {
+                      cartId,
+                      itemCount,
+                      total,
+                      subtotal,
+                    })
                     try {
                       const response = await fetch(
                         '/api/create-checkout-session',

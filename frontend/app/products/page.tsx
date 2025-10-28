@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import ProductGrid from '@/app/components/ProductGrid'
 import { Product, MedusaClient } from '@/src/lib/medusa'
 import Head from 'next/head'
+import posthog from 'posthog-js'
 
 const collections = [
   {
@@ -232,6 +233,11 @@ export default function ProductsPage() {
 
   const handleCollectionChange = useCallback(
     (collectionId: string) => {
+      const collection = collections.find((c) => c.id === collectionId)
+      posthog.capture('product_collection_filtered', {
+        collection_id: collectionId,
+        collection_name: collection?.name,
+      })
       handleCollectionFilter(collectionId)
     },
     [handleCollectionFilter]
@@ -298,7 +304,10 @@ export default function ProductsPage() {
           </h1>
           <p className="text-lg text-blue-700 mb-8">{error}</p>
           <button
-            onClick={() => fetchProducts()}
+            onClick={() => {
+              posthog.capture('product_fetch_retried', { error_message: error })
+              fetchProducts()
+            }}
             className="bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 transition-colors font-medium"
           >
             Try Again

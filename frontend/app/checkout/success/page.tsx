@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import posthog from 'posthog-js'
 import Button from '@/app/components/ui/Button'
 import Link from 'next/link'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
@@ -72,12 +73,30 @@ function CheckoutSuccessContent() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
             <Link href="/">
-              <Button variant="primary" size="lg">
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={() =>
+                  posthog.capture('continue_shopping_clicked', {
+                    order_number: orderNumber,
+                    session_id: sessionId,
+                  })
+                }
+              >
                 Continue Shopping
               </Button>
             </Link>
             <Link href="/contact">
-              <Button variant="outline" size="lg">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() =>
+                  posthog.capture('contact_support_clicked', {
+                    order_number: orderNumber,
+                    session_id: sessionId,
+                  })
+                }
+              >
                 Contact Support
               </Button>
             </Link>

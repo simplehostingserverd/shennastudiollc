@@ -9,6 +9,7 @@ import Button from '@/app/components/ui/Button'
 import { Product } from '@/src/lib/medusa'
 import Link from 'next/link'
 import Image from 'next/image'
+import posthog from 'posthog-js'
 
 interface MedusaClient {
   store?: {
@@ -77,6 +78,9 @@ export default function HomePage() {
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    posthog.capture('newsletter_subscribed', {
+      component: 'homepage_newsletter_form',
+    })
     setIsSubmittingNewsletter(true)
     setNewsletterStatus({ type: null, message: '' })
 
@@ -84,7 +88,8 @@ export default function HomePage() {
     setTimeout(() => {
       setNewsletterStatus({
         type: 'success',
-        message: 'Newsletter signup is temporarily unavailable. Please email us at shenna@shennastudio.com to be added to our mailing list!',
+        message:
+          'Newsletter signup is temporarily unavailable. Please email us at shenna@shennastudio.com to be added to our mailing list!',
       })
       setIsSubmittingNewsletter(false)
     }, 500)
@@ -108,11 +113,10 @@ export default function HomePage() {
           Your browser does not support the video tag.
         </video>
 
-        {/* Elegant overlay with subtle animation */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
+        {/* Subtle overlay - reduced opacity for more original video colors */}
+        <div className="absolute inset-0 bg-black/10"></div>
 
-        {/* Logo - positioned absolutely to the far left */}
+        {/* Logo - positioned absolutely to the far left edge */}
         <div className="absolute top-8 left-0 z-20">
           <Image
             src="/ShennasLogo.png"
@@ -124,12 +128,12 @@ export default function HomePage() {
           />
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-4 pt-32">
-          <div className="mb-8 text-center">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 pt-32 text-center">
+          <div className="mb-8">
             <h1 className="text-6xl md:text-8xl font-display font-bold mb-8 leading-tight tracking-wide text-white drop-shadow-2xl">
               Shenna&apos;s Studio
             </h1>
-            <p className="text-xl md:text-2xl text-white mb-8 leading-relaxed max-w-3xl mx-auto font-light drop-shadow-lg">
+            <p className="text-xl md:text-2xl text-white mb-8 leading-relaxed max-w-3xl mx-auto font-light drop-shadow-lg text-center">
               Discover exquisite ocean-inspired treasures that celebrate marine
               life while supporting ocean conservation.
               <span className="block mt-2 text-lg text-white/90">
@@ -267,7 +271,16 @@ export default function HomePage() {
                               product.variants[0].prices[0]?.amount / 100 || 0
                             ).toFixed(2)}
                           </span>
-                          <Link href={`/products/${product.handle}`}>
+                          <Link
+                            href={`/products/${product.handle}`}
+                            onClick={() =>
+                              posthog.capture('product_details_viewed', {
+                                product_id: product.id,
+                                product_title: product.title,
+                                product_handle: product.handle,
+                              })
+                            }
+                          >
                             <Button
                               variant="primary"
                               size="sm"
@@ -322,8 +335,9 @@ export default function HomePage() {
               </span>
             </h2>
             <p className="text-xl text-ocean-600 max-w-3xl mx-auto leading-relaxed mb-8">
-              Discover ocean conservation stories, marine life insights, and product care tips
-              from our team dedicated to protecting our precious oceans.
+              Discover ocean conservation stories, marine life insights, and
+              product care tips from our team dedicated to protecting our
+              precious oceans.
             </p>
             <Link href="/blog">
               <Button
@@ -340,23 +354,32 @@ export default function HomePage() {
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center p-6">
                 <div className="text-5xl mb-4">🌊</div>
-                <h3 className="text-xl font-bold text-ocean-900 mb-3">Conservation Stories</h3>
+                <h3 className="text-xl font-bold text-ocean-900 mb-3">
+                  Conservation Stories
+                </h3>
                 <p className="text-ocean-600">
-                  Learn about ocean conservation efforts and how your purchases make a difference
+                  Learn about ocean conservation efforts and how your purchases
+                  make a difference
                 </p>
               </div>
               <div className="text-center p-6">
                 <div className="text-5xl mb-4">🐠</div>
-                <h3 className="text-xl font-bold text-ocean-900 mb-3">Marine Life Education</h3>
+                <h3 className="text-xl font-bold text-ocean-900 mb-3">
+                  Marine Life Education
+                </h3>
                 <p className="text-ocean-600">
-                  Discover fascinating facts about ocean creatures and ecosystems
+                  Discover fascinating facts about ocean creatures and
+                  ecosystems
                 </p>
               </div>
               <div className="text-center p-6">
                 <div className="text-5xl mb-4">💎</div>
-                <h3 className="text-xl font-bold text-ocean-900 mb-3">Product Care Tips</h3>
+                <h3 className="text-xl font-bold text-ocean-900 mb-3">
+                  Product Care Tips
+                </h3>
                 <p className="text-ocean-600">
-                  Expert advice on caring for your ocean-inspired jewelry and accessories
+                  Expert advice on caring for your ocean-inspired jewelry and
+                  accessories
                 </p>
               </div>
             </div>

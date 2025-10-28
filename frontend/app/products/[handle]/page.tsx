@@ -14,6 +14,7 @@ import {
 import Link from 'next/link'
 import Image from 'next/image'
 import ProductComments from '@/app/components/ProductComments'
+import posthog from 'posthog-js'
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -56,6 +57,14 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return
+
+    posthog.capture('product-added-to-cart', {
+      product_id: product?.id,
+      product_title: product?.title,
+      variant_id: selectedVariant,
+      quantity: quantity,
+      price: priceInDollars,
+    })
 
     try {
       setIsAddingToCart(true)
@@ -252,7 +261,15 @@ export default function ProductDetailPage() {
                   {product.title}
                 </h1>
                 <button
-                  onClick={() => setIsFavorite(!isFavorite)}
+                  onClick={() => {
+                    const newFavoriteState = !isFavorite
+                    setIsFavorite(newFavoriteState)
+                    posthog.capture('product-favorite-toggled', {
+                      product_id: product.id,
+                      product_title: product.title,
+                      favorited: newFavoriteState,
+                    })
+                  }}
                   className="p-2 text-coral-500 hover:text-coral-600 transition-colors"
                 >
                   {isFavorite ? (
