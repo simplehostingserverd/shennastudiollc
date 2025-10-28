@@ -3,12 +3,80 @@
 import { useState, useEffect } from 'react'
 import { getBlogAnalytics, getOverallAnalytics, getCompetitorAnalysis, getKeywordTrackingData } from '@/lib/seo/analytics'
 
+interface KeywordRanking {
+  keyword: string
+  position: number
+  searchVolume: number
+  change: number
+}
+
+interface BlogPostAnalytics {
+  id: string
+  title: string
+  slug: string
+  publishedAt: string
+  views: number
+  uniqueViews: number
+  avgTimeOnPage: number
+  bounceRate: number
+  organicTraffic: number
+  socialShares: number
+  backlinks: number
+  keywordRankings: KeywordRanking[]
+  conversionRate: number
+}
+
+interface OverallAnalytics {
+  totalPosts: number
+  totalViews: number
+  totalOrganicTraffic: number
+  avgConversionRate: number
+  totalBacklinks: number
+  totalSocialShares: number
+  topKeywords: Array<{
+    keyword: string
+    avgPosition: number
+    totalSearchVolume: number
+    postsRanking: number
+  }>
+  trafficTrend: Array<{
+    month: string
+    organicTraffic: number
+    totalViews: number
+  }>
+  revenueGenerated: {
+    affiliateRevenue: number
+    adRevenue: number
+    productRevenue: number
+    total: number
+  }
+}
+
+interface CompetitorData {
+  domain: string
+  blogPosts: number
+  monthlyTraffic: number
+  topKeywords: string[]
+  backlinks: number
+  socialFollowing: number
+}
+
+interface KeywordData {
+  keyword: string
+  currentPosition: number
+  previousPosition: number
+  searchVolume: number
+  competition: 'Low' | 'Medium' | 'High'
+  trend: 'up' | 'down' | 'stable'
+  lastUpdated: string
+}
+
 export default function AnalyticsDashboard() {
   const [loading, setLoading] = useState(true)
-  const [overallAnalytics, setOverallAnalytics] = useState<any>(null)
-  const [blogPosts, setBlogPosts] = useState<any[]>([])
-  const [competitors, setCompetitors] = useState<any[]>([])
-  const [keywords, setKeywords] = useState<any[]>([])
+  const [overallAnalytics, setOverallAnalytics] = useState<OverallAnalytics | null>(null)
+  const [blogPosts, setBlogPosts] = useState<BlogPostAnalytics[]>([])
+  const [competitors, setCompetitors] = useState<CompetitorData[]>([])
+  const [keywords, setKeywords] = useState<KeywordData[]>([])
 
   useEffect(() => {
     loadAnalytics()
@@ -144,7 +212,7 @@ export default function AnalyticsDashboard() {
                 <div className="mt-3 pt-3 border-t border-gray-200">
                   <div className="text-sm font-medium text-gray-700 mb-2">Top Keywords:</div>
                   <div className="flex flex-wrap gap-2">
-                    {post.keywordRankings.slice(0, 3).map((kw: any, i: number) => (
+                    {post.keywordRankings.slice(0, 3).map((kw, i) => (
                       <span key={i} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
                         {kw.keyword} (#{kw.position})
                       </span>
@@ -241,7 +309,7 @@ export default function AnalyticsDashboard() {
               </div>
 
               <div className="flex flex-wrap gap-2">
-                {competitor.topKeywords.map((kw: string, i: number) => (
+                {competitor.topKeywords.map((kw, i) => (
                   <span key={i} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
                     {kw}
                   </span>

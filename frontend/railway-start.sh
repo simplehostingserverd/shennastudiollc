@@ -12,11 +12,25 @@ echo ""
 # Run database migrations and seeding
 echo "📊 Running database migrations..."
 if command -v npx &> /dev/null; then
-    npx prisma migrate deploy || echo "⚠️  Migration failed or no migrations to run"
+    echo "Running Prisma migrations..."
+    npx prisma migrate deploy 2>&1 || {
+        echo "⚠️  Migration failed or no migrations to run"
+    }
 
+    echo ""
     echo "🌱 Seeding blog posts..."
-    npx tsx scripts/seed-blog-posts.ts || echo "⚠️  Seeding failed or already completed"
+    echo "Checking if blog posts need seeding..."
 
+    # Run the seed script with better error handling
+    if npx tsx scripts/seed-blog-posts.ts 2>&1; then
+        echo "✅ Blog post seeding completed successfully"
+    else
+        EXIT_CODE=$?
+        echo "⚠️  Seeding exited with code $EXIT_CODE"
+        echo "This may be normal if posts already exist"
+    fi
+
+    echo ""
     echo "✅ Database setup complete"
     echo ""
 else

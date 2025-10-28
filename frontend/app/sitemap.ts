@@ -1,5 +1,8 @@
 import { MetadataRoute } from 'next'
 import createMedusaClient from '@/src/lib/medusa'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://shennastudio.com'
@@ -13,6 +16,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${baseUrl}/products`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/blog`,
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
       priority: 0.9,
@@ -50,6 +59,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   try {
+    // Fetch products from Medusa
     const medusa = await createMedusaClient()
     const response = await medusa.store.product.list({ limit: 100 })
 
@@ -61,9 +71,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       })) || []
 
-    return [...staticPages, ...productPages]
+    // Fetch blog posts from Prisma
+    const blogPosts = await prisma.blogPost.findMany({
+      where: {
+        published: true,
+      },
+      select: {
+        slug: true,
+        updatedAt: true,
+        publishedAt: true,
+      },
+    })
+
+    const blogPages = blogPosts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: post.updatedAt || post.publishedAt || new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }))
+
+    await prisma.$disconnect()
+
+    return [...staticPages, ...productPages, ...blogPages]
   } catch (error) {
     console.error('Error generating sitemap:', error)
+    await prisma.$disconnect()
     return staticPages
   }
 }
