@@ -14,10 +14,11 @@ function CheckoutSuccessContent() {
   )
 
   useEffect(() => {
-    // Clear cart after successful checkout
+    // Note: We intentionally do NOT clear the cart here
+    // This allows users to navigate back and still see their cart state
+    // The cart can be manually cleared by the user or will be reset when they add new items
     if (sessionId) {
-      localStorage.removeItem('cart_id')
-      // You can also call your cart context's clearCart method here
+      console.log('Checkout completed successfully:', sessionId)
     }
   }, [sessionId])
 

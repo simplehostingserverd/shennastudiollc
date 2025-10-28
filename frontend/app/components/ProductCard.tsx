@@ -16,7 +16,6 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const { addItem, isLoading } = useCart()
   const [quantity, setQuantity] = useState(1)
-  const [isFlipped, setIsFlipped] = useState(false)
   const [imageLoading, setImageLoading] = useState(true)
 
   // Get the first available variant and its price
@@ -42,72 +41,28 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="group bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl card-hover">
-      {/* Flip Card Container */}
-      <div
-        className="relative h-64 cursor-pointer"
-        style={{ perspective: '1000px' }}
-        onMouseEnter={() => setIsFlipped(true)}
-        onMouseLeave={() => setIsFlipped(false)}
-      >
-        <div
-          className={`relative w-full h-full transition-transform duration-700`}
-          style={{
-            transformStyle: 'preserve-3d',
-            transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
-          }}
-        >
-          {/* Front of Card - Product Image */}
-          <div
-            className="absolute inset-0 bg-ocean-50"
-            style={{ backfaceVisibility: 'hidden' }}
-          >
-            {imageLoading && (
-              <div className="absolute inset-0 animate-pulse bg-ocean-100"></div>
-            )}
-            <Image
-              src={imageUrl}
-              alt={`${product.title} - Ocean-inspired ${product.subtitle || 'product'} from Shenna's Studio`}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className={`object-cover ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
-              onLoad={() => setImageLoading(false)}
-              onError={() => setImageLoading(false)}
-            />
+      {/* Product Image - Click to view details */}
+      <Link href={`/products/${product.handle}`} className="block relative h-64 bg-ocean-50 overflow-hidden">
+        {imageLoading && (
+          <div className="absolute inset-0 animate-pulse bg-ocean-100"></div>
+        )}
+        <Image
+          src={imageUrl}
+          alt={`${product.title} - Ocean-inspired product from Shenna's Studio`}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className={`object-cover transition-transform duration-300 group-hover:scale-105 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
+          onLoad={() => setImageLoading(false)}
+          onError={() => setImageLoading(false)}
+        />
 
-            {/* Badge */}
-            {product.status === 'published' && (
-              <div className="absolute top-3 left-3 bg-seafoam-gradient text-white px-2 py-1 rounded-full text-xs font-medium">
-                New
-              </div>
-            )}
+        {/* Badge */}
+        {product.status === 'published' && (
+          <div className="absolute top-3 left-3 bg-seafoam-gradient text-white px-2 py-1 rounded-full text-xs font-medium">
+            New
           </div>
-
-          {/* Back of Card - Product Info */}
-          <div
-            className="absolute inset-0 bg-gradient-to-br from-ocean-600 to-teal-600 p-6 flex flex-col justify-center items-center text-white"
-            style={{
-              backfaceVisibility: 'hidden',
-              transform: 'rotateY(180deg)'
-            }}
-          >
-            <h4 className="text-lg font-bold mb-3 text-center">{product.title}</h4>
-            <p className="text-sm text-center mb-4 line-clamp-4 text-ocean-50">
-              {product.description || 'No description available'}
-            </p>
-            {price && (
-              <div className="text-2xl font-bold mb-4">
-                {formatPrice(price.amount, price.currency_code)}
-              </div>
-            )}
-            <Link
-              href={`/products/${product.handle}`}
-              className="bg-white text-ocean-600 px-4 py-2 rounded-lg hover:bg-ocean-50 transition-colors font-medium"
-            >
-              View Details
-            </Link>
-          </div>
-        </div>
-      </div>
+        )}
+      </Link>
 
       {/* Content */}
       <div className="p-6">

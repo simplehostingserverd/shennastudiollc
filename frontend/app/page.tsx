@@ -92,7 +92,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-ocean-900 via-ocean-700 to-teal-600 text-white overflow-hidden">
         <video
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
+          className="absolute inset-0 w-full h-full object-cover opacity-100"
           autoPlay
           loop
           muted
@@ -106,34 +106,36 @@ export default function HomePage() {
         </video>
 
         {/* Elegant overlay with subtle animation */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-ocean-900/30 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-4">
-          <div className="mb-8">
-            <div className="mb-6 flex justify-start">
-              <Image
-                src="/ShennasLogo.png"
-                alt="Shenna's Studio - Ocean Conservation & Marine Life Products"
-                width={200}
-                height={200}
-                className="mb-8 opacity-90 hover:opacity-100 transition-opacity duration-300"
-                priority
-              />
-            </div>
-            <h1 className="text-6xl md:text-8xl font-display font-bold mb-6 leading-tight tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-blue-300">
+        {/* Logo - positioned absolutely to the far left */}
+        <div className="absolute top-8 left-0 z-20">
+          <Image
+            src="/ShennasLogo.png"
+            alt="Shenna's Studio - Ocean Conservation & Marine Life Products"
+            width={180}
+            height={180}
+            className="opacity-90 hover:opacity-100 transition-opacity duration-300"
+            priority
+          />
+        </div>
+
+        <div className="relative z-10 max-w-6xl mx-auto px-4 pt-32">
+          <div className="mb-8 text-center">
+            <h1 className="text-6xl md:text-8xl font-display font-bold mb-8 leading-tight tracking-wide text-white drop-shadow-2xl">
               Shenna&apos;s Studio
             </h1>
-            <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed max-w-3xl font-light">
+            <p className="text-xl md:text-2xl text-white mb-8 leading-relaxed max-w-3xl mx-auto font-light drop-shadow-lg">
               Discover exquisite ocean-inspired treasures that celebrate marine
               life while supporting ocean conservation.
-              <span className="block mt-2 text-lg text-teal-200">
+              <span className="block mt-2 text-lg text-white/90">
                 Every purchase helps protect our precious oceans 🌊
               </span>
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-6 items-center">
+          <div className="flex flex-col sm:flex-row gap-6 items-center justify-center">
             <Link href="#products">
               <Button
                 variant="primary"
@@ -147,7 +149,7 @@ export default function HomePage() {
               <Button
                 variant="outline"
                 size="lg"
-                className="text-lg px-10 py-4 border-2 border-white/50 text-white hover:bg-white/10 backdrop-blur-sm transition-all duration-300"
+                className="text-lg px-10 py-4 border-2 border-white/80 text-white hover:bg-white/20 backdrop-blur-sm transition-all duration-300"
               >
                 Our Ocean Mission
               </Button>
