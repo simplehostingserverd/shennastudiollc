@@ -23,24 +23,19 @@ const prisma = new PrismaClient()
 async function seedBlogPosts() {
   console.log('🌊 Seeding SEO-optimized blog posts...')
 
-  // First, ensure there's a user to be the author
-  let author = await prisma.user.findFirst({
-    where: {
-      role: 'admin'
-    }
-  })
+  // Use the existing Medusa admin user as the blog author
+  // Query the user table directly to get the first user
+  const existingUser = await prisma.$queryRaw<Array<{ id: string }>>`
+    SELECT id FROM "user" LIMIT 1
+  `
 
-  if (!author) {
-    console.log('Creating admin user for blog posts...')
-    author = await prisma.user.create({
-      data: {
-        email: 'admin@shennastudio.com',
-        name: 'Shenna\'s Studio Team',
-        password: 'placeholder_hash', // This won't be used for login
-        role: 'admin'
-      }
-    })
+  if (!existingUser || existingUser.length === 0) {
+    console.error('❌ No user found in database. Please create a user first.')
+    process.exit(1)
   }
+
+  const authorId = existingUser[0].id
+  console.log(`✅ Using existing user (${authorId}) as blog author`)
 
   const blogPosts = [
     {
@@ -2600,7 +2595,7 @@ Start each day with ocean-inspired beauty and conservation commitment—one cup 
       const post = await prisma.blogPost.create({
         data: {
           ...postData,
-          authorId: author.id,
+          authorId: authorId,
         }
       })
 
