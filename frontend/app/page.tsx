@@ -128,9 +128,9 @@ export default function HomePage() {
           />
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-4 pt-32 text-center">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 pt-96 text-center">
           <div className="mb-8">
-            <h1 className="text-6xl md:text-8xl font-display font-bold mb-8 leading-tight tracking-wide text-white drop-shadow-2xl">
+            <h1 className="text-6xl md:text-8xl font-display font-bold mb-8 leading-tight tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-300 drop-shadow-2xl">
               Shenna&apos;s Studio
             </h1>
             <p className="text-xl md:text-2xl text-white mb-8 leading-relaxed max-w-3xl mx-auto font-light drop-shadow-lg text-center">
@@ -230,9 +230,17 @@ export default function HomePage() {
           ) : products.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {products.slice(0, 12).map((product, index) => (
-                <div
+                <Link
                   key={product.id}
-                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-ocean-200"
+                  href={`/products/${product.handle}`}
+                  onClick={() =>
+                    posthog.capture('product_details_viewed', {
+                      product_id: product.id,
+                      product_title: product.title,
+                      product_handle: product.handle,
+                    })
+                  }
+                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-ocean-200 cursor-pointer"
                 >
                   <div className="relative overflow-hidden">
                     {product.images && product.images.length > 0 ? (
@@ -271,28 +279,17 @@ export default function HomePage() {
                               product.variants[0].prices[0]?.amount / 100 || 0
                             ).toFixed(2)}
                           </span>
-                          <Link
-                            href={`/products/${product.handle}`}
-                            onClick={() =>
-                              posthog.capture('product_details_viewed', {
-                                product_id: product.id,
-                                product_title: product.title,
-                                product_handle: product.handle,
-                              })
-                            }
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            className="bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-200"
                           >
-                            <Button
-                              variant="primary"
-                              size="sm"
-                              className="bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-200"
-                            >
-                              View Details
-                            </Button>
-                          </Link>
+                            View Details
+                          </Button>
                         </div>
                       )}
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           ) : (
