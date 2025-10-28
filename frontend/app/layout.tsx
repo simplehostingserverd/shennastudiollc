@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import PlausibleProvider from 'next-plausible'
 import { CartProvider } from '@/app/context/CartContext'
 import Navbar from '@/app/components/NavBar'
 import Footer from '@/app/components/Footer'
@@ -209,19 +210,21 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col">
-        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
-        )}
-        <CartProvider>
-          <Navbar />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </CartProvider>
-        <Script
-          src="https://app.rybbit.io/api/script.js"
-          data-site-id="a56da861ea4f"
-          strategy="afterInteractive"
-        />
+        <PlausibleProvider domain="www.shennastudio.com">
+          {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+          )}
+          <CartProvider>
+            <Navbar />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+          </CartProvider>
+          <Script
+            src="https://app.rybbit.io/api/script.js"
+            data-site-id="a56da861ea4f"
+            strategy="afterInteractive"
+          />
+        </PlausibleProvider>
       </body>
     </html>
   )
