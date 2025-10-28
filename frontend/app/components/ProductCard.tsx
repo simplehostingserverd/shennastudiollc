@@ -4,12 +4,7 @@ import { useState } from 'react'
 import { useCart } from '@/app/context/CartContext'
 import Button from './ui/Button'
 import { formatPrice } from '@/src/lib/utils'
-import {
-  HeartIcon,
-  ShoppingCartIcon,
-  EyeIcon,
-} from '@heroicons/react/24/outline'
-import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid'
+import { ShoppingCartIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { Product, ProductOptionValue } from '@/src/lib/medusa'
 import Image from 'next/image'
@@ -21,7 +16,7 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const { addItem, isLoading } = useCart()
   const [quantity, setQuantity] = useState(1)
-  const [isLiked, setIsLiked] = useState(false)
+  const [isFlipped, setIsFlipped] = useState(false)
   const [imageLoading, setImageLoading] = useState(true)
 
   // Get the first available variant and its price
@@ -47,53 +42,71 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="group bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl card-hover">
-      {/* Image Container */}
-      <div className="relative overflow-hidden">
-        <div className="relative h-64 bg-ocean-50">
-          {imageLoading && (
-            <div className="absolute inset-0 animate-pulse bg-ocean-100"></div>
-          )}
-          <Image
-            src={imageUrl}
-            alt={`${product.title} - Ocean-inspired ${product.subtitle || 'product'} from Shenna's Studio`}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className={`object-cover transition-transform duration-500 group-hover:scale-105 ${
-              imageLoading ? 'opacity-0' : 'opacity-100'
-            }`}
-            onLoad={() => setImageLoading(false)}
-            onError={() => setImageLoading(false)}
-          />
+      {/* Flip Card Container */}
+      <div
+        className="relative h-64 cursor-pointer"
+        style={{ perspective: '1000px' }}
+        onMouseEnter={() => setIsFlipped(true)}
+        onMouseLeave={() => setIsFlipped(false)}
+      >
+        <div
+          className={`relative w-full h-full transition-transform duration-700`}
+          style={{
+            transformStyle: 'preserve-3d',
+            transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+          }}
+        >
+          {/* Front of Card - Product Image */}
+          <div
+            className="absolute inset-0 bg-ocean-50"
+            style={{ backfaceVisibility: 'hidden' }}
+          >
+            {imageLoading && (
+              <div className="absolute inset-0 animate-pulse bg-ocean-100"></div>
+            )}
+            <Image
+              src={imageUrl}
+              alt={`${product.title} - Ocean-inspired ${product.subtitle || 'product'} from Shenna's Studio`}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className={`object-cover ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
+              onLoad={() => setImageLoading(false)}
+              onError={() => setImageLoading(false)}
+            />
 
-          {/* Overlay Actions */}
-          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-            <div className="transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex space-x-2">
-              <Link
-                href={`/products/${product.handle}`}
-                className="bg-white text-ocean-600 p-2 rounded-full shadow-lg hover:bg-ocean-50 transition-colors"
-              >
-                <EyeIcon className="h-5 w-5" />
-              </Link>
-              <button
-                onClick={() => setIsLiked(!isLiked)}
-                className="bg-white text-coral-500 p-2 rounded-full shadow-lg hover:bg-coral-50 transition-colors"
-              >
-                {isLiked ? (
-                  <HeartIconSolid className="h-5 w-5" />
-                ) : (
-                  <HeartIcon className="h-5 w-5" />
-                )}
-              </button>
-            </div>
+            {/* Badge */}
+            {product.status === 'published' && (
+              <div className="absolute top-3 left-3 bg-seafoam-gradient text-white px-2 py-1 rounded-full text-xs font-medium">
+                New
+              </div>
+            )}
+          </div>
+
+          {/* Back of Card - Product Info */}
+          <div
+            className="absolute inset-0 bg-gradient-to-br from-ocean-600 to-teal-600 p-6 flex flex-col justify-center items-center text-white"
+            style={{
+              backfaceVisibility: 'hidden',
+              transform: 'rotateY(180deg)'
+            }}
+          >
+            <h4 className="text-lg font-bold mb-3 text-center">{product.title}</h4>
+            <p className="text-sm text-center mb-4 line-clamp-4 text-ocean-50">
+              {product.description || 'No description available'}
+            </p>
+            {price && (
+              <div className="text-2xl font-bold mb-4">
+                {formatPrice(price.amount, price.currency_code)}
+              </div>
+            )}
+            <Link
+              href={`/products/${product.handle}`}
+              className="bg-white text-ocean-600 px-4 py-2 rounded-lg hover:bg-ocean-50 transition-colors font-medium"
+            >
+              View Details
+            </Link>
           </div>
         </div>
-
-        {/* Badge */}
-        {product.status === 'published' && (
-          <div className="absolute top-3 left-3 bg-seafoam-gradient text-white px-2 py-1 rounded-full text-xs font-medium">
-            New
-          </div>
-        )}
       </div>
 
       {/* Content */}
