@@ -1,9 +1,23 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import ProductCard from './ProductCard'
-import { Product } from '@/src/lib/medusa'
+import { Product, MedusaClient } from '@/src/lib/medusa'
 import createMedusaClient from '@/src/lib/medusa'
+
+// Debounce hook to delay API calls
+function useDebounce(value: string, delay: number) {
+  const [debouncedValue, setDebouncedValue] = useState(value)
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value, delay])
+  return debouncedValue
+}
 
 interface ProductGridProps {
   products?: Product[]
@@ -15,41 +29,47 @@ interface ProductGridProps {
 export default function ProductGrid({
   products: initialProducts,
   category,
-  searchQuery,
+  searchQuery = '',
   className = '',
 }: ProductGridProps) {
   const [products, setProducts] = useState<Product[]>(initialProducts || [])
   const [loading, setLoading] = useState(!initialProducts)
   const [error, setError] = useState<string | null>(null)
+  const [medusaClient, setMedusaClient] = useState<MedusaClient | null>(null)
 
-  const fetchProducts = useCallback(async () => {
+  const debouncedSearchQuery = useDebounce(searchQuery, 500) // 500ms delay
+
+  useEffect(() => {
+    // Initialize the Medusa client once
+    const initClient = async () => {
+      try {
+        const client = await createMedusaClient()
+        setMedusaClient(client)
+      } catch (e) {
+        console.error("Failed to create Medusa client", e)
+        setError("Could not connect to the store.")
+      }
+    }
+    initClient()
+  }, [])
+
+  const fetchProducts = async () => {
+    if (!medusaClient) return
+
     try {
       setLoading(true)
       setError(null)
 
-      // Build query parameters
-      const queryParams: Record<string, unknown> = {
-        limit: 20,
-      }
-
+      const queryParams: Record<string, unknown> = { limit: 20 }
       if (category) {
         queryParams.category_id = category
       }
-
-      if (searchQuery) {
-        queryParams.q = searchQuery
+      if (debouncedSearchQuery) {
+        queryParams.q = debouncedSearchQuery
       }
 
-      const medusa = await createMedusaClient()
-      const response = await medusa.store.product.list({
-        ...queryParams,
-      })
-
-      if (response.products) {
-        setProducts(response.products as unknown as Product[])
-      } else {
-        setProducts([])
-      }
+      const response = await medusaClient.store.product.list(queryParams)
+      setProducts(response.products as unknown as Product[])
     } catch (error) {
       console.error('Error fetching products:', error)
       setError('Failed to load products. Please try again.')
@@ -57,13 +77,33 @@ export default function ProductGrid({
     } finally {
       setLoading(false)
     }
-  }, [category, searchQuery])
+  }
 
   useEffect(() => {
-    if (!initialProducts) {
+    // Fetch products when client is ready or dependencies change
+    if (medusaClient && !initialProducts) {
       fetchProducts()
     }
-  }, [initialProducts, fetchProducts])
+  }, [medusaClient, initialProducts, category, debouncedSearchQuery])
+
+  // Handle retrying the fetch
+  const handleRetry = () => {
+    if (medusaClient) {
+      fetchProducts()
+    } else {
+      // Try to re-initialize if the client failed
+      const initClient = async () => {
+        try {
+          const client = await createMedusaClient()
+          setMedusaClient(client)
+        } catch (e) {
+          console.error("Failed to create Medusa client", e)
+          setError("Could not connect to the store.")
+        }
+      }
+      initClient()
+    }
+  }
 
   if (loading) {
     return (
@@ -92,7 +132,7 @@ export default function ProductGrid({
         </div>
         <p className="text-ocean-600 mb-4">{error}</p>
         <button
-          onClick={fetchProducts}
+          onClick={handleRetry}
           className="bg-ocean-500 text-white px-4 py-2 rounded-lg hover:bg-ocean-600 transition-colors"
         >
           Try Again
