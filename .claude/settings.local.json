@@ -113,7 +113,9 @@
       "Bash(npx tsx:*)",
       "Bash(test:*)",
       "Read(//var/folders/cp/qz9l5m6j5wqb066b7_b431x40000gn/T/TemporaryItems/NSIRD_screencaptureui_ImoqR2/**)",
-      "Read(//Users/softwareprosorg/shena/**)"
+      "Read(//Users/softwareprosorg/shena/**)",
+      "Bash(npm uninstall:*)",
+      "Bash(npx -y @posthog/wizard@latest)"
     ],
     "deny": [],
     "ask": []
