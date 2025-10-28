@@ -228,13 +228,13 @@ export default function HomePage() {
               </p>
             </div>
           ) : products.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {products.slice(0, 12).map((product, index) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {products.slice(0, 4).map((product, index) => (
                 <Link
                   key={product.id}
-                  href={`/products/${product.handle}`}
+                  href="/products"
                   onClick={() =>
-                    posthog.capture('product_details_viewed', {
+                    posthog.capture('product_collection_viewed', {
                       product_id: product.id,
                       product_title: product.title,
                       product_handle: product.handle,
@@ -256,9 +256,6 @@ export default function HomePage() {
                         <div className="text-ocean-400 text-4xl">🌊</div>
                       </div>
                     )}
-                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-ocean-800">
-                      #{index + 1}
-                    </div>
                   </div>
                   <div className="p-6">
                     <h3 className="text-lg font-bold text-ocean-900 mb-2 group-hover:text-ocean-700 transition-colors">
@@ -305,7 +302,7 @@ export default function HomePage() {
             </div>
           )}
 
-          {products.length > 12 && (
+          {products.length > 4 && (
             <div className="text-center mt-16">
               <Link href="/products">
                 <Button

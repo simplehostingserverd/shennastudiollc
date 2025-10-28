@@ -11,6 +11,13 @@ const __dirname = dirname(__filename)
 // Load environment variables from .env file
 dotenv.config({ path: resolve(__dirname, '../.env') })
 
+// Check if DATABASE_URL is available
+if (!process.env.DATABASE_URL) {
+  console.log('⚠️  DATABASE_URL not found - skipping blog seeding')
+  console.log('This is normal during build time. Blog posts will be seeded at runtime.')
+  process.exit(0)
+}
+
 const prisma = new PrismaClient()
 
 async function seedBlogPosts() {
