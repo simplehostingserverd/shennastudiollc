@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import { Suspense } from 'react'
 import { CartProvider } from '@/app/context/CartContext'
 import Navbar from '@/app/components/NavBar'
 import Footer from '@/app/components/Footer'
@@ -221,9 +222,13 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col">
         <PostHogProvider>
-          <PostHogPageView />
+          <Suspense fallback={null}>
+            <PostHogPageView />
+          </Suspense>
           {typeof process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID !== 'undefined' && (
-            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!} />
+            <Suspense fallback={null}>
+              <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!} />
+            </Suspense>
           )}
           <CartProvider>
             <Navbar />

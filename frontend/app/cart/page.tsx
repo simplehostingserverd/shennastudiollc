@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering for this page since it uses client-side cart state
+export const dynamic = 'force-dynamic'
+
 import { useCart } from '@/app/context/CartContext'
 import Button from '@/app/components/ui/Button'
 import { formatPrice } from '@/src/lib/utils'

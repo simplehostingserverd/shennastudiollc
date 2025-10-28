@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering since this page fetches products client-side
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect, useCallback } from 'react'
 import SearchBar from '@/app/components/SearchBar'
 import Button from '@/app/components/ui/Button'
