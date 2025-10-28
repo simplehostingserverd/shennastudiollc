@@ -211,8 +211,8 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col">
         <PlausibleProvider domain="www.shennastudio.com">
-          {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+          {typeof process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID !== 'undefined' && (
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!} />
           )}
           <CartProvider>
             <Navbar />

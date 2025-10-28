@@ -111,7 +111,7 @@ export default function HomePage() {
 
         <div className="relative z-10 max-w-6xl mx-auto px-4">
           <div className="mb-8">
-            <div className="mb-6">
+            <div className="mb-6 flex justify-start">
               <Image
                 src="/ShennasLogo.png"
                 alt="Shenna's Studio - Ocean Conservation & Marine Life Products"
