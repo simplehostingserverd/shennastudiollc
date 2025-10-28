@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ServerClient } from 'postmark'
 
-// Initialize Postmark client
-const postmarkClient = new ServerClient(process.env.POSTMARK_API_KEY || '')
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -16,6 +13,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    // Initialize Postmark client (lazy initialization to avoid build-time errors)
+    const postmarkClient = new ServerClient(process.env.POSTMARK_API_KEY || '')
 
     // Send email using Postmark
     const response = await postmarkClient.sendEmail({

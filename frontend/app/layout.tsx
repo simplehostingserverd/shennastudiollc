@@ -6,6 +6,7 @@ import Navbar from '@/app/components/NavBar'
 import Footer from '@/app/components/Footer'
 import GoogleAnalytics from '@/app/components/GoogleAnalytics'
 import { PostHogProvider, PostHogPageView } from '@/app/components/PostHogProvider'
+import InstagramChatButton from '@/app/components/InstagramChatButton'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -234,6 +235,7 @@ export default function RootLayout({
             <Navbar />
             <main className="flex-grow">{children}</main>
             <Footer />
+            <InstagramChatButton />
           </CartProvider>
           <Script
             src="https://app.rybbit.io/api/script.js"
