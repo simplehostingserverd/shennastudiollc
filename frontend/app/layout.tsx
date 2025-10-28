@@ -4,6 +4,7 @@ import { CartProvider } from '@/app/context/CartContext'
 import Navbar from '@/app/components/NavBar'
 import Footer from '@/app/components/Footer'
 import GoogleAnalytics from '@/app/components/GoogleAnalytics'
+import { PostHogProvider, PostHogPageView } from '@/app/components/PostHogProvider'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -219,19 +220,22 @@ export default function RootLayout({
         </Script>
       </head>
       <body className="min-h-screen flex flex-col">
-        {typeof process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID !== 'undefined' && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!} />
-        )}
-        <CartProvider>
-          <Navbar />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </CartProvider>
-        <Script
-          src="https://app.rybbit.io/api/script.js"
-          data-site-id="a56da861ea4f"
-          strategy="afterInteractive"
-        />
+        <PostHogProvider>
+          <PostHogPageView />
+          {typeof process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID !== 'undefined' && (
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!} />
+          )}
+          <CartProvider>
+            <Navbar />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+          </CartProvider>
+          <Script
+            src="https://app.rybbit.io/api/script.js"
+            data-site-id="a56da861ea4f"
+            strategy="afterInteractive"
+          />
+        </PostHogProvider>
       </body>
     </html>
   )
