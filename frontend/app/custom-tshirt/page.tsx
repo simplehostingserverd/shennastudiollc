@@ -186,25 +186,57 @@ export default function CustomTshirtPage() {
     setIsSubmitting(true)
     setSubmitStatus({ type: null, message: '' })
 
-    // For now, show a success message directing users to email
-    setTimeout(() => {
+    try {
+      // Prepare the data to send
+      const requestData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        size: formData.size,
+        quantity: formData.quantity,
+        description: formData.description,
+        imageUrl: imagePreview || '', // Include the image preview data URL
+      }
+
+      const response = await fetch('/api/send-custom-tshirt-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setSubmitStatus({
+          type: 'success',
+          message:
+            "Thank you for your custom t-shirt request! We've received your order and will get back to you within 24 hours with pricing and timeline.",
+        })
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          size: '',
+          quantity: '',
+          description: '',
+        })
+        handleRemoveImage()
+      } else {
+        throw new Error(data.error || 'Failed to submit order')
+      }
+    } catch (error) {
+      console.error('Error submitting custom t-shirt form:', error)
       setSubmitStatus({
-        type: 'success',
+        type: 'error',
         message:
-          "Thank you for your custom t-shirt request! Please email your design photo and details to shenna@shennastudio.com and we'll get back to you within 24 hours with pricing and timeline.",
+          'Failed to submit order. Please email your design and details directly to shenna@shennastudio.com',
       })
+    } finally {
       setIsSubmitting(false)
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        size: '',
-        quantity: '',
-        description: '',
-      })
-      handleRemoveImage()
-    }, 500)
+    }
   }
 
   return (
@@ -842,7 +874,7 @@ export default function CustomTshirtPage() {
                   <div>
                     <p className="text-sm text-ocean-500 font-medium">Phone</p>
                     <p className="text-ocean-800 font-semibold">
-                      (956) 555-WAVE
+                      855-761-6186
                     </p>
                   </div>
                 </motion.div>

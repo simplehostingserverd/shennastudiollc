@@ -116,18 +116,45 @@ export default function ContactPage() {
     setIsSubmitting(true)
     setSubmitStatus({ type: null, message: '' })
 
-    // For now, show a message directing users to email directly
-    setTimeout(() => {
-      posthog.capture('contact-form-submitted', {
-        subject_length: formData.subject.length,
-        message_length: formData.message.length,
+    try {
+      const response = await fetch('/api/send-contact-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        posthog.capture('contact-form-submitted', {
+          subject_length: formData.subject.length,
+          message_length: formData.message.length,
+        })
+        setSubmitStatus({
+          type: 'success',
+          message: "Thank you for contacting us! We've received your message and will respond within 24 hours.",
+        })
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: '',
+        })
+      } else {
+        throw new Error(data.error || 'Failed to send message')
+      }
+    } catch (error) {
+      console.error('Error submitting contact form:', error)
       setSubmitStatus({
-        type: 'success',
-        message: 'Please email us directly at shenna@shennastudio.com - our contact form is temporarily unavailable.',
+        type: 'error',
+        message: 'Failed to send message. Please email us directly at shenna@shennastudio.com',
       })
+    } finally {
       setIsSubmitting(false)
-    }, 500)
+    }
   }
 
   return (
@@ -461,7 +488,7 @@ export default function ContactPage() {
                   <div>
                     <p className="text-sm text-ocean-500 font-medium">Phone</p>
                     <p className="text-ocean-800 font-semibold text-lg">
-                      (956) 555-WAVE
+                      855-761-6186
                     </p>
                   </div>
                 </motion.div>
@@ -484,52 +511,6 @@ export default function ContactPage() {
                   </div>
                 </motion.div>
               </div>
-            </motion.div>
-
-            {/* Business Hours */}
-            <motion.div
-              variants={scaleIn}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-gradient-to-br from-white to-ocean-50 rounded-3xl p-8 shadow-xl border border-ocean-100"
-            >
-              <h3 className="text-2xl font-display font-bold text-ocean-900 mb-6">
-                Studio Hours
-              </h3>
-
-              <div className="space-y-4 text-ocean-700">
-                <motion.div
-                  className="flex justify-between items-center py-2 border-b border-ocean-100"
-                  whileHover={{ x: 5 }}
-                >
-                  <span className="font-medium">Monday - Friday</span>
-                  <span className="font-bold">9:00 AM - 6:00 PM</span>
-                </motion.div>
-                <motion.div
-                  className="flex justify-between items-center py-2 border-b border-ocean-100"
-                  whileHover={{ x: 5 }}
-                >
-                  <span className="font-medium">Saturday</span>
-                  <span className="font-bold">10:00 AM - 4:00 PM</span>
-                </motion.div>
-                <motion.div
-                  className="flex justify-between items-center py-2"
-                  whileHover={{ x: 5 }}
-                >
-                  <span className="font-medium">Sunday</span>
-                  <span className="font-bold">By Appointment</span>
-                </motion.div>
-              </div>
-
-              <motion.div
-                className="mt-6 p-4 bg-gradient-to-r from-ocean-50 to-seafoam-50 rounded-2xl border-2 border-ocean-100"
-                whileHover={{ scale: 1.02 }}
-              >
-                <p className="text-sm text-ocean-700">
-                  <span className="text-lg">💡</span>{' '}
-                  <strong>Pro Tip:</strong> Call ahead for studio visits to
-                  ensure we&apos;re available to give you our full attention!
-                </p>
-              </motion.div>
             </motion.div>
 
             {/* Ocean Conservation */}
@@ -582,8 +563,8 @@ export default function ContactPage() {
                 a: 'We donate 10% of all proceeds to marine conservation organizations that work to protect our precious ocean ecosystems.',
               },
               {
-                q: 'Can I visit your studio?',
-                a: 'Absolutely! We love welcoming visitors to our studio. Please call ahead to schedule a visit so we can ensure someone is available to assist you.',
+                q: 'Can I place a custom order?',
+                a: 'Yes! We love creating custom pieces. Contact us at shenna@shennastudio.com or call 855-761-6186 to discuss your custom jewelry or t-shirt design ideas.',
               },
               {
                 q: 'Do you offer custom designs?',

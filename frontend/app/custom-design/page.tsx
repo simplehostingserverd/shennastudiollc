@@ -188,31 +188,63 @@ export default function CustomDesignPage() {
     setIsSubmitting(true)
     setSubmitStatus({ type: null, message: '' })
 
-    // For now, show a success message directing users to email
-    setTimeout(() => {
-      posthog.capture('custom-design-request-submitted', {
-        item_type: formData.itemType,
-        budget_provided: formData.budget.trim() !== '',
-        image_filename: selectedImage?.name,
-        image_size: selectedImage?.size,
+    try {
+      // Prepare the data to send
+      const requestData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        itemType: formData.itemType,
+        description: formData.description,
+        budget: formData.budget,
+        imageUrl: imagePreview || '', // Include the image preview data URL
+      }
+
+      const response = await fetch('/api/send-custom-jewelry-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
       })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        posthog.capture('custom-design-request-submitted', {
+          item_type: formData.itemType,
+          budget_provided: formData.budget.trim() !== '',
+          image_filename: selectedImage?.name,
+          image_size: selectedImage?.size,
+        })
+        setSubmitStatus({
+          type: 'success',
+          message:
+            "Thank you for your custom jewelry request! We've received your design and will get back to you within 24 hours to discuss your custom piece.",
+        })
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          itemType: '',
+          description: '',
+          budget: '',
+        })
+        handleRemoveImage()
+      } else {
+        throw new Error(data.error || 'Failed to submit request')
+      }
+    } catch (error) {
+      console.error('Error submitting custom design form:', error)
       setSubmitStatus({
-        type: 'success',
+        type: 'error',
         message:
-          "Thank you for your interest! Please email your design photo and details to shenna@shennastudio.com and we'll get back to you within 24 hours to discuss your custom piece.",
+          'Failed to submit request. Please email your design and details directly to shenna@shennastudio.com',
       })
+    } finally {
       setIsSubmitting(false)
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        itemType: '',
-        description: '',
-        budget: '',
-      })
-      handleRemoveImage()
-    }, 500)
+    }
   }
 
   return (
@@ -793,7 +825,7 @@ export default function CustomDesignPage() {
                   <div>
                     <p className="text-sm text-ocean-500 font-medium">Phone</p>
                     <p className="text-ocean-800 font-semibold">
-                      (956) 555-WAVE
+                      855-761-6186
                     </p>
                   </div>
                 </motion.div>

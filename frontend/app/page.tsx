@@ -143,7 +143,7 @@ export default function HomePage() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-6 items-center justify-center">
-            <Link href="#products">
+            <Link href="/products">
               <Button
                 variant="primary"
                 size="lg"
