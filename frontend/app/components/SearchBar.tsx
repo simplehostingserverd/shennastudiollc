@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { algoliaClient } from '@/src/lib/algolia'
 import ProductGrid from './ProductGrid'
 import { Product, ProductOptionValue } from '@/src/lib/medusa'
+import posthog from 'posthog-js'
 
 interface AlgoliaHit {
   objectID: string
@@ -104,8 +105,16 @@ export default function SearchBar() {
         })
 
         setResults(transformedResults)
+        posthog.capture('product-search-executed', {
+          query: q,
+          results_count: transformedResults.length,
+        })
       } catch (error) {
         console.warn('Search not available:', error)
+        posthog.capture('product-search-failed', {
+          query: q,
+          error: error instanceof Error ? error.message : String(error),
+        })
         setResults([])
       } finally {
         setIsSearching(false)

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import posthog from 'posthog-js'
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -204,6 +205,15 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                 <Link
                   href="/products"
                   className="inline-block px-6 py-3 bg-ocean-500 text-white rounded-lg hover:bg-ocean-600 transition-colors font-semibold"
+                  onClick={() => {
+                    posthog.capture('blog_cta_clicked', {
+                      cta_text: 'Shop Ocean Products',
+                      cta_destination: '/products',
+                      post_slug: post.slug,
+                      post_title: post.title,
+                      post_category: post.category
+                    })
+                  }}
                 >
                   Shop Ocean Products
                 </Link>
@@ -222,6 +232,13 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                     key={relatedPost.id}
                     href={`/blog/${relatedPost.slug}`}
                     className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+                    onClick={() => {
+                      posthog.capture('related_article_clicked', {
+                        current_post_slug: post.slug,
+                        clicked_post_slug: relatedPost.slug,
+                        clicked_post_title: relatedPost.title
+                      })
+                    }}
                   >
                     <h4 className="text-lg font-bold text-ocean-900 mb-2">
                       {relatedPost.title}

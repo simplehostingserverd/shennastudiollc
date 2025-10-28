@@ -9,6 +9,7 @@ import Button from './ui/Button'
 import { useCart } from '@/app/context/CartContext'
 import { useState } from 'react'
 import Image from 'next/image'
+import posthog from 'posthog-js'
 
 export default function Navbar() {
   const { itemCount } = useCart()
@@ -112,7 +113,15 @@ export default function Navbar() {
             </button>
 
             {/* Cart Icon with Badge */}
-            <Link href="/cart" className="relative group">
+            <Link
+              href="/cart"
+              className="relative group"
+              onClick={() =>
+                posthog.capture('navbar-cart-icon-clicked', {
+                  item_count: itemCount,
+                })
+              }
+            >
               <div className="p-2 text-ocean-600 hover:text-ocean-800 transition-colors group-hover:scale-105">
                 <ShoppingCartIcon className="h-5 w-5" />
                 {itemCount > 0 && (
@@ -129,6 +138,11 @@ export default function Navbar() {
                 variant="primary"
                 size="sm"
                 className="hidden sm:inline-flex"
+                onClick={() =>
+                  posthog.capture('navbar-shop-now-clicked', {
+                    location: 'header',
+                  })
+                }
               >
                 Shop Now
               </Button>
@@ -136,7 +150,10 @@ export default function Navbar() {
 
             {/* Mobile Menu Button */}
             <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={() => {
+                posthog.capture('navbar-mobile-menu-toggled', { open: !isMenuOpen })
+                setIsMenuOpen(!isMenuOpen)
+              }}
               className="md:hidden p-2 text-ocean-600 hover:text-ocean-800 transition-colors"
             >
               <svg
@@ -218,7 +235,16 @@ export default function Navbar() {
                 Contact
               </Link>
               <Link href="/products">
-                <Button variant="primary" size="sm" className="w-full mt-4">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="w-full mt-4"
+                  onClick={() =>
+                    posthog.capture('navbar-shop-now-clicked', {
+                      location: 'mobile_menu',
+                    })
+                  }
+                >
                   Shop Now
                 </Button>
               </Link>

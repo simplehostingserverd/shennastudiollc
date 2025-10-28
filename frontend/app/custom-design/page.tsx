@@ -1,5 +1,6 @@
 'use client'
 
+import posthog from 'posthog-js'
 import { useState, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Button from '@/app/components/ui/Button'
@@ -110,6 +111,11 @@ export default function CustomDesignPage() {
       }
 
       setSelectedImage(file)
+      posthog.capture('custom-design-image-uploaded', {
+        file_name: file.name,
+        file_size: file.size,
+        file_type: file.type,
+      })
       setErrors((prev) => ({ ...prev, image: undefined }))
 
       // Create preview
@@ -184,6 +190,12 @@ export default function CustomDesignPage() {
 
     // For now, show a success message directing users to email
     setTimeout(() => {
+      posthog.capture('custom-design-request-submitted', {
+        item_type: formData.itemType,
+        budget_provided: formData.budget.trim() !== '',
+        image_filename: selectedImage?.name,
+        image_size: selectedImage?.size,
+      })
       setSubmitStatus({
         type: 'success',
         message:

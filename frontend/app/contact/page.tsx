@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Button from '@/app/components/ui/Button'
 import Head from 'next/head'
+import posthog from 'posthog-js'
 
 interface FormData {
   name: string
@@ -108,6 +109,7 @@ export default function ContactPage() {
     e.preventDefault()
 
     if (!validateForm()) {
+      posthog.capture('contact-form-validation-failed')
       return
     }
 
@@ -116,6 +118,10 @@ export default function ContactPage() {
 
     // For now, show a message directing users to email directly
     setTimeout(() => {
+      posthog.capture('contact-form-submitted', {
+        subject_length: formData.subject.length,
+        message_length: formData.message.length,
+      })
       setSubmitStatus({
         type: 'success',
         message: 'Please email us directly at shenna@shennastudio.com - our contact form is temporarily unavailable.',
