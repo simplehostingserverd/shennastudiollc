@@ -1,4 +1,4 @@
-import { loadEnv } from '@medusajs/utils'
+const { loadEnv } = require('@medusajs/utils')
 loadEnv('test', process.cwd())
 
 module.exports = {
@@ -8,6 +8,7 @@ module.exports = {
       {
         jsc: {
           parser: { syntax: 'typescript', decorators: true },
+          target: 'es2022',
         },
       },
     ],
