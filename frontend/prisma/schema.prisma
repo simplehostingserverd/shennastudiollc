@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["frontend"]
 }
 
 model User {
@@ -19,6 +20,8 @@ model User {
   messages     Message[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+
+  @@schema("frontend")
 }
 
 model Product {
@@ -30,6 +33,8 @@ model Product {
   orders      OrderItem[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+
+  @@schema("frontend")
 }
 
 model Order {
@@ -70,6 +75,7 @@ model Order {
 
   @@index([stripeSessionId])
   @@index([customerEmail])
+  @@schema("frontend")
 }
 
 model OrderItem {
@@ -80,6 +86,8 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
   price     Int     // price at time of order in cents
+
+  @@schema("frontend")
 }
 
 model ProductComment {
@@ -91,6 +99,8 @@ model ProductComment {
   rating       Int      @default(5)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@schema("frontend")
 }
 
 model AffiliateLink {
@@ -103,6 +113,8 @@ model AffiliateLink {
   clicks      Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@schema("frontend")
 }
 
 model AdPlacement {
@@ -114,6 +126,8 @@ model AdPlacement {
   impressions Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@schema("frontend")
 }
 
 model BlogPost {
@@ -141,6 +155,7 @@ model BlogPost {
   @@index([slug])
   @@index([published])
   @@index([category])
+  @@schema("frontend")
 }
 
 model BlogComment {
@@ -158,6 +173,7 @@ model BlogComment {
 
   @@index([postId])
   @@index([approved])
+  @@schema("frontend")
 }
 
 model Channel {
@@ -174,6 +190,7 @@ model Channel {
   updatedAt   DateTime  @updatedAt
 
   @@index([slug])
+  @@schema("frontend")
 }
 
 model Message {
@@ -189,6 +206,7 @@ model Message {
 
   @@index([channelId])
   @@index([createdAt])
+  @@schema("frontend")
 }
 
 model Newsletter {
@@ -200,4 +218,6 @@ model Newsletter {
   tags        String[]
   createdAt   DateTime @default(now())
   unsubscribedAt DateTime?
+
+  @@schema("frontend")
 }
