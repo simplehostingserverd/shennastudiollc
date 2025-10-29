@@ -3,6 +3,9 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import posthog from 'posthog-js'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -187,11 +190,34 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
           )}
 
           <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg">
-            <div className="prose prose-lg prose-ocean max-w-none">
-              <div 
+            <div className="prose prose-lg max-w-none">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw]}
                 className="text-ocean-700 leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: post.content }}
-              />
+                components={{
+                  h1: ({node, ...props}) => <h1 className="text-3xl font-bold text-ocean-900 mt-8 mb-4" {...props} />,
+                  h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-ocean-900 mt-6 mb-3" {...props} />,
+                  h3: ({node, ...props}) => <h3 className="text-xl font-bold text-ocean-900 mt-5 mb-2" {...props} />,
+                  h4: ({node, ...props}) => <h4 className="text-lg font-semibold text-ocean-800 mt-4 mb-2" {...props} />,
+                  p: ({node, ...props}) => <p className="text-ocean-700 mb-4 leading-relaxed" {...props} />,
+                  ul: ({node, ...props}) => <ul className="list-disc list-inside text-ocean-700 mb-4 space-y-2 ml-4" {...props} />,
+                  ol: ({node, ...props}) => <ol className="list-decimal list-inside text-ocean-700 mb-4 space-y-2 ml-4" {...props} />,
+                  li: ({node, ...props}) => <li className="text-ocean-700" {...props} />,
+                  a: ({node, ...props}) => <a className="text-ocean-600 hover:text-ocean-800 underline" {...props} />,
+                  blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-ocean-400 pl-4 italic text-ocean-600 my-4" {...props} />,
+                  code: ({node, inline, ...props}: any) =>
+                    inline ? (
+                      <code className="bg-ocean-100 text-ocean-800 px-2 py-1 rounded text-sm" {...props} />
+                    ) : (
+                      <code className="block bg-ocean-100 text-ocean-800 p-4 rounded-lg my-4 overflow-x-auto" {...props} />
+                    ),
+                  strong: ({node, ...props}) => <strong className="font-bold text-ocean-900" {...props} />,
+                  em: ({node, ...props}) => <em className="italic" {...props} />,
+                }}
+              >
+                {post.content}
+              </ReactMarkdown>
             </div>
 
             <div className="mt-12 pt-8 border-t border-ocean-200">
