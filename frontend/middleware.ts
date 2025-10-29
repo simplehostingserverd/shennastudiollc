@@ -38,7 +38,6 @@ const PRODUCTS_PAGE_LIMIT = 20 // Stricter limit for products page
 
 // Suspicious patterns in URLs that scrapers often use
 const SUSPICIOUS_PATTERNS = [
-  /admin/i,
   /wp-admin/i,
   /phpmyadmin/i,
   /\.env/i,
