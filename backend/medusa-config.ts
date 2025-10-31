@@ -115,6 +115,33 @@ module.exports = defineConfig({
         ],
       },
     },
+    // Printful Module for Dropshipping
+    {
+      resolve: '@vymalo/medusa-printful/printful',
+      options: {
+        enableWebhooks: process.env.PRINTFUL_ENABLE_WEBHOOKS === 'true',
+        printfulAccessToken: process.env.PRINTFUL_ACCESS_TOKEN,
+        storeId: process.env.PRINTFUL_STORE_ID,
+        logo_url: process.env.PRINTFUL_LOGO_URL,
+        backendUrl: process.env.BACKEND_URL || process.env.MEDUSA_BACKEND_URL,
+        confirmOrder: process.env.PRINTFUL_CONFIRM_ORDER === 'true',
+      },
+    },
+    // Printful Fulfillment Provider Module
+    {
+      resolve: '@medusajs/medusa/fulfillment',
+      options: {
+        providers: [
+          {
+            resolve: '@vymalo/medusa-printful/printful-fulfillment',
+            id: 'printful',
+            options: {
+              printfulAccessToken: process.env.PRINTFUL_ACCESS_TOKEN,
+            },
+          },
+        ],
+      },
+    },
     // Redis Cache Module
     {
       resolve: '@medusajs/medusa/cache-redis',

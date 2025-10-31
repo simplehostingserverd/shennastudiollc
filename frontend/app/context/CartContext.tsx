@@ -108,7 +108,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     initMedusa()
   }, [])
 
-  // Load cart from localStorage on mount
+  // Load cart from localStorage on mount - only once
   useEffect(() => {
     const loadCart = async (id: string) => {
       try {
@@ -138,15 +138,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    // Only access localStorage on the client side and after medusa is loaded
-    if (isClient && medusa && typeof window !== 'undefined') {
+    // Only load cart once when client is ready and medusa is initialized
+    // Use a ref or state flag to prevent repeated loads
+    if (isClient && medusa && typeof window !== 'undefined' && !cartId) {
       const savedCartId = localStorage.getItem('cart_id')
       if (savedCartId) {
         setCartId(savedCartId)
         loadCart(savedCartId)
       }
     }
-  }, [isClient, medusa])
+    // Only depend on isClient - medusa changes shouldn't reload cart
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isClient])
 
   const createCart = async () => {
     try {

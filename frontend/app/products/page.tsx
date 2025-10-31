@@ -141,94 +141,88 @@ export default function ProductsPage() {
     [medusa]
   )
 
-  // Updated to handle collection filtering via API calls
+  // Updated to handle collection filtering via client-side filtering (avoids API spam)
   const handleCollectionFilter = useCallback(
-    async (collectionId: string) => {
+    (collectionId: string) => {
       setSelectedCollection(collectionId)
 
       if (collectionId === 'all') {
         // Show all products
-        await fetchProducts()
+        setFilteredProducts(products)
       } else {
-        // Find the collection handle
-        const collection = collections.find((c) => c.id === collectionId)
-        if (collection?.handle) {
-          await fetchProducts(collection.handle)
-        } else {
-          // Fallback to keyword-based filtering for compatibility
-          setFilteredProducts(
-            products.filter((product) => {
-              const searchText = (
-                product.title +
-                ' ' +
-                (product.description || '')
-              ).toLowerCase()
+        // Client-side filtering to reduce API calls
+        setFilteredProducts(
+          products.filter((product) => {
+            const searchText = (
+              product.title +
+              ' ' +
+              (product.description || '')
+            ).toLowerCase()
 
-              switch (collectionId) {
-                case 'salesandclearance':
-                  return (
-                    searchText.includes('sale') ||
-                    searchText.includes('clearance') ||
-                    searchText.includes('discount')
-                  )
-                case 'jewelry':
-                  return (
-                    searchText.includes('jewelry') ||
-                    searchText.includes('necklace') ||
-                    searchText.includes('bracelet') ||
-                    searchText.includes('earring')
-                  )
-                case 'clothing':
-                  return (
-                    searchText.includes('shirt') ||
-                    searchText.includes('clothing') ||
-                    searchText.includes('apparel')
-                  )
-                case 'homedecor':
-                  return (
-                    searchText.includes('home') ||
-                    searchText.includes('decor') ||
-                    searchText.includes('decoration')
-                  )
-                case 'pets':
-                  return (
-                    searchText.includes('pet') ||
-                    searchText.includes('dog') ||
-                    searchText.includes('cat')
-                  )
-                case 'furniture':
-                  return (
-                    searchText.includes('furniture') ||
-                    searchText.includes('chair') ||
-                    searchText.includes('table')
-                  )
-                case 'booksandgifts':
-                  return (
-                    searchText.includes('book') ||
-                    searchText.includes('gift') ||
-                    searchText.includes('educational')
-                  )
-                case 'specialoccasions':
-                  return (
-                    searchText.includes('occasion') ||
-                    searchText.includes('special') ||
-                    searchText.includes('celebration')
-                  )
-                case 'holidayideas':
-                  return (
-                    searchText.includes('holiday') ||
-                    searchText.includes('christmas') ||
-                    searchText.includes('seasonal')
-                  )
-                default:
-                  return true
-              }
-            })
-          )
-        }
+            switch (collectionId) {
+              case 'salesandclearance':
+                return (
+                  searchText.includes('sale') ||
+                  searchText.includes('clearance') ||
+                  searchText.includes('discount')
+                )
+              case 'jewelry':
+                return (
+                  searchText.includes('jewelry') ||
+                  searchText.includes('necklace') ||
+                  searchText.includes('bracelet') ||
+                  searchText.includes('earring')
+                )
+              case 'clothing':
+                return (
+                  searchText.includes('shirt') ||
+                  searchText.includes('clothing') ||
+                  searchText.includes('apparel')
+                )
+              case 'homedecor':
+                return (
+                  searchText.includes('home') ||
+                  searchText.includes('decor') ||
+                  searchText.includes('decoration')
+                )
+              case 'pets':
+                return (
+                  searchText.includes('pet') ||
+                  searchText.includes('dog') ||
+                  searchText.includes('cat')
+                )
+              case 'furniture':
+                return (
+                  searchText.includes('furniture') ||
+                  searchText.includes('chair') ||
+                  searchText.includes('table')
+                )
+              case 'booksandgifts':
+                return (
+                  searchText.includes('book') ||
+                  searchText.includes('gift') ||
+                  searchText.includes('educational')
+                )
+              case 'specialoccasions':
+                return (
+                  searchText.includes('occasion') ||
+                  searchText.includes('special') ||
+                  searchText.includes('celebration')
+                )
+              case 'holidayideas':
+                return (
+                  searchText.includes('holiday') ||
+                  searchText.includes('christmas') ||
+                  searchText.includes('seasonal')
+                )
+              default:
+                return true
+            }
+          })
+        )
       }
     },
-    [fetchProducts, products]
+    [products]
   )
 
   const handleCollectionChange = useCallback(
@@ -257,12 +251,13 @@ export default function ProductsPage() {
     initMedusa()
   }, [])
 
-  // Initial load of all products
+  // Initial load of all products - only run once when medusa is ready
   useEffect(() => {
-    if (medusa && selectedCollection === 'all') {
+    if (medusa) {
       fetchProducts()
     }
-  }, [medusa, fetchProducts, selectedCollection])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [medusa])
 
   if (loading) {
     return (
