@@ -108,7 +108,10 @@ export default function Navbar() {
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
             {/* Search Icon */}
-            <button className="p-2 text-ocean-600 hover:text-ocean-800 transition-colors">
+            <button
+              className="p-2 text-ocean-600 hover:text-ocean-800 transition-colors"
+              aria-label="Search products"
+            >
               <MagnifyingGlassIcon className="h-5 w-5" />
             </button>
 
@@ -121,6 +124,7 @@ export default function Navbar() {
                   item_count: itemCount,
                 })
               }
+              aria-label={`Shopping cart with ${itemCount} item${itemCount !== 1 ? 's' : ''}`}
             >
               <div className="p-2 text-ocean-600 hover:text-ocean-800 transition-colors group-hover:scale-105">
                 <ShoppingCartIcon className="h-5 w-5" />
@@ -155,6 +159,8 @@ export default function Navbar() {
                 setIsMenuOpen(!isMenuOpen)
               }}
               className="md:hidden p-2 text-ocean-600 hover:text-ocean-800 transition-colors"
+              aria-label="Toggle mobile menu"
+              aria-expanded={isMenuOpen}
             >
               <svg
                 className="h-5 w-5"
@@ -198,14 +204,14 @@ export default function Navbar() {
                 <div className="pl-4 space-y-2">
                   <Link
                     href="/custom-design"
-                    className="block text-ocean-600 hover:text-ocean-900 transition-colors py-1"
+                    className="block text-ocean-700 hover:text-ocean-900 transition-colors py-1"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Jewelry Design
                   </Link>
                   <Link
                     href="/custom-tshirt"
-                    className="block text-ocean-600 hover:text-ocean-900 transition-colors py-1"
+                    className="block text-ocean-700 hover:text-ocean-900 transition-colors py-1"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     T-Shirt Design

@@ -111,9 +111,11 @@ export default function CartPage() {
                       <h3 className="text-lg font-semibold text-ocean-900 mb-1 truncate">
                         {item.title}
                       </h3>
-                      <p className="text-sm text-ocean-600 mb-2 line-clamp-2">
-                        {item.description || 'No description available'}
-                      </p>
+                      {item.description && (
+                        <p className="text-sm text-ocean-700 mb-2 line-clamp-2">
+                          {item.description}
+                        </p>
+                      )}
 
                       {/* Variant Options */}
                       {item.variant?.options &&

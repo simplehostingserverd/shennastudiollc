@@ -16,6 +16,25 @@ import Image from 'next/image'
 import ProductComments from '@/app/components/ProductComments'
 import posthog from 'posthog-js'
 
+// Generate a consistent review count based on product ID
+const generateReviewCount = (productId: string): number => {
+  // Use product ID to generate a consistent but varied number between 3-89
+  const hash = productId.split('').reduce((acc, char) => {
+    return char.charCodeAt(0) + ((acc << 5) - acc)
+  }, 0)
+  return Math.abs(hash % 87) + 3 // Range: 3-89
+}
+
+// Generate a consistent rating based on product ID
+const generateRating = (productId: string): number => {
+  // Use product ID to generate a rating between 4.0-5.0
+  const hash = productId.split('').reduce((acc, char) => {
+    return char.charCodeAt(0) + ((acc << 7) - acc)
+  }, 0)
+  const rating = 4.0 + (Math.abs(hash % 11) / 10) // Range: 4.0-5.0
+  return Math.round(rating * 10) / 10 // Round to 1 decimal
+}
+
 export default function ProductDetailPage() {
   const params = useParams()
   const handle = params.handle as string
@@ -137,6 +156,9 @@ export default function ProductDetailPage() {
     currency: 'USD',
   }).format(priceInDollars) // Already in dollars, no need to divide
 
+  const reviewCount = generateReviewCount(product.id)
+  const rating = generateRating(product.id)
+
   const productSchema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -190,8 +212,8 @@ export default function ProductDetailPage() {
     },
     aggregateRating: {
       '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      reviewCount: '24',
+      ratingValue: rating.toString(),
+      reviewCount: reviewCount.toString(),
       bestRating: '5',
       worstRating: '1'
     },
@@ -285,14 +307,28 @@ export default function ProductDetailPage() {
                   {formattedPrice}
                 </div>
                 <div className="flex items-center space-x-1">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <StarSolidIcon
-                      key={i}
-                      className="h-4 w-4 text-yellow-400"
-                    />
-                  ))}
+                  {Array.from({ length: 5 }, (_, i) => {
+                    const starRating = rating
+                    const isFullStar = i < Math.floor(starRating)
+                    const isHalfStar = i === Math.floor(starRating) && starRating % 1 >= 0.5
+
+                    return (
+                      <div key={i} className="relative">
+                        {isFullStar ? (
+                          <StarSolidIcon className="h-4 w-4 text-yellow-400" />
+                        ) : isHalfStar ? (
+                          <>
+                            <StarSolidIcon className="h-4 w-4 text-gray-300" />
+                            <StarSolidIcon className="h-4 w-4 text-yellow-400 absolute top-0 left-0" style={{ clipPath: 'inset(0 50% 0 0)' }} />
+                          </>
+                        ) : (
+                          <StarSolidIcon className="h-4 w-4 text-gray-300" />
+                        )}
+                      </div>
+                    )
+                  })}
                   <span className="text-sm text-blue-600 ml-1">
-                    (24 reviews)
+                    {rating} ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
                   </span>
                 </div>
               </div>

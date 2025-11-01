@@ -192,7 +192,7 @@ export default function HomePage() {
                 Ocean Treasure
               </span>
             </h2>
-            <p className="text-xl text-ocean-600 mb-12 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-ocean-700 mb-12 max-w-3xl mx-auto leading-relaxed">
               Search through our carefully curated collection of ocean-inspired
               products, each piece thoughtfully designed to bring the beauty of
               marine life into your world.
@@ -214,7 +214,7 @@ export default function HomePage() {
                 Ocean Collection
               </span>
             </h2>
-            <p className="text-xl text-ocean-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-ocean-700 max-w-3xl mx-auto leading-relaxed">
               Each piece in our collection is carefully crafted to celebrate the
               beauty of marine life while supporting ocean conservation efforts.
             </p>
@@ -223,7 +223,7 @@ export default function HomePage() {
           {loading ? (
             <div className="text-center py-20">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-ocean-600"></div>
-              <p className="mt-4 text-ocean-600 text-lg">
+              <p className="mt-4 text-ocean-700 text-lg">
                 Loading our beautiful collection...
               </p>
             </div>
@@ -241,6 +241,7 @@ export default function HomePage() {
                     })
                   }
                   className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-ocean-200 cursor-pointer"
+                  aria-label={`View ${product.title} - ${product.description ? product.description.substring(0, 50) : 'Product details'}`}
                 >
                   <div className="relative overflow-hidden">
                     {product.images && product.images.length > 0 ? (
@@ -262,7 +263,7 @@ export default function HomePage() {
                       {product.title}
                     </h3>
                     {product.description && (
-                      <p className="text-ocean-600 text-sm mb-4 line-clamp-2">
+                      <p className="text-ocean-700 text-sm mb-4 line-clamp-2">
                         {product.description}
                       </p>
                     )}
@@ -295,7 +296,7 @@ export default function HomePage() {
               <h3 className="text-2xl font-bold text-ocean-900 mb-4">
                 Coming Soon
               </h3>
-              <p className="text-ocean-600 text-lg">
+              <p className="text-ocean-700 text-lg">
                 Our beautiful ocean collection is being prepared. Check back
                 soon!
               </p>
@@ -328,7 +329,7 @@ export default function HomePage() {
                 Conservation Blog
               </span>
             </h2>
-            <p className="text-xl text-ocean-600 max-w-3xl mx-auto leading-relaxed mb-8">
+            <p className="text-xl text-ocean-700 max-w-3xl mx-auto leading-relaxed mb-8">
               Discover ocean conservation stories, marine life insights, and
               product care tips from our team dedicated to protecting our
               precious oceans.
@@ -351,7 +352,7 @@ export default function HomePage() {
                 <h3 className="text-xl font-bold text-ocean-900 mb-3">
                   Conservation Stories
                 </h3>
-                <p className="text-ocean-600">
+                <p className="text-ocean-700">
                   Learn about ocean conservation efforts and how your purchases
                   make a difference
                 </p>
@@ -361,7 +362,7 @@ export default function HomePage() {
                 <h3 className="text-xl font-bold text-ocean-900 mb-3">
                   Marine Life Education
                 </h3>
-                <p className="text-ocean-600">
+                <p className="text-ocean-700">
                   Discover fascinating facts about ocean creatures and
                   ecosystems
                 </p>
@@ -371,7 +372,7 @@ export default function HomePage() {
                 <h3 className="text-xl font-bold text-ocean-900 mb-3">
                   Product Care Tips
                 </h3>
-                <p className="text-ocean-600">
+                <p className="text-ocean-700">
                   Expert advice on caring for your ocean-inspired jewelry and
                   accessories
                 </p>
@@ -465,7 +466,7 @@ export default function HomePage() {
                   Ocean
                 </span>
               </h2>
-              <p className="text-xl text-ocean-600 leading-relaxed max-w-3xl mx-auto">
+              <p className="text-xl text-ocean-700 leading-relaxed max-w-3xl mx-auto">
                 Join our community and get updates on new arrivals, conservation
                 efforts, and exclusive offers. Be the first to know about our
                 ocean-saving initiatives.
@@ -506,7 +507,7 @@ export default function HomePage() {
                   {newsletterStatus.message}
                 </div>
               )}
-              <p className="text-sm text-ocean-500 mt-3 text-center">
+              <p className="text-sm text-ocean-700 mt-3 text-center">
                 🔒 We respect your privacy and never share your email
               </p>
             </form>
@@ -515,7 +516,7 @@ export default function HomePage() {
               <div className="p-6">
                 <div className="text-3xl mb-3">📧</div>
                 <h3 className="font-bold text-ocean-900 mb-2">New Arrivals</h3>
-                <p className="text-ocean-600 text-sm">
+                <p className="text-ocean-700 text-sm">
                   Be first to see our latest ocean treasures
                 </p>
               </div>
@@ -524,7 +525,7 @@ export default function HomePage() {
                 <h3 className="font-bold text-ocean-900 mb-2">
                   Conservation Updates
                 </h3>
-                <p className="text-ocean-600 text-sm">
+                <p className="text-ocean-700 text-sm">
                   Learn about our impact on ocean preservation
                 </p>
               </div>
@@ -533,7 +534,7 @@ export default function HomePage() {
                 <h3 className="font-bold text-ocean-900 mb-2">
                   Exclusive Offers
                 </h3>
-                <p className="text-ocean-600 text-sm">
+                <p className="text-ocean-700 text-sm">
                   Special discounts for our community members
                 </p>
               </div>

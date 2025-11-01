@@ -113,19 +113,33 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const loadCart = async (id: string) => {
       try {
         setIsLoading(true)
-        // Check if medusa client is available
-        if (
-          !medusa ||
-          !medusa.store ||
-          !medusa.store.cart ||
-          !medusa.store.cart.retrieve
-        ) {
-          console.warn('Medusa client not properly initialized')
-          return
-        }
-        const response = await medusa.store.cart.retrieve(id)
-        if (response?.cart) {
-          setItems((response.cart.items || []) as CartItem[])
+
+        // Use direct API call to get cart with expanded fields
+        const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+        const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+
+        const response = await fetch(
+          `${backendUrl}/store/carts/${id}?fields=+items.product.description`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-publishable-api-key': publishableKey || '',
+            },
+            credentials: 'include',
+          }
+        )
+
+        if (response.ok) {
+          const data = await response.json()
+          if (data?.cart?.items) {
+            // Map items to include description from product
+            const itemsWithDescription = data.cart.items.map((item: any) => ({
+              ...item,
+              description: item.product?.description || item.description,
+            }))
+            setItems(itemsWithDescription as CartItem[])
+          }
         }
       } catch (error) {
         console.error('Error loading cart:', error)
@@ -208,20 +222,42 @@ export function CartProvider({ children }: { children: ReactNode }) {
         throw new Error('Failed to create cart')
       }
 
-      if (!medusa || !medusa.store || !medusa.store.cart) {
-        throw new Error('Medusa client not properly initialized')
-      }
+      // Use direct API call to add line item with expanded fields
+      const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+      const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 
-      const response = await medusa.store.cart.createLineItem(currentCartId, {
-        variant_id: variantId,
-        quantity,
-      })
+      const response = await fetch(
+        `${backendUrl}/store/carts/${currentCartId}/line-items?fields=+items.product.description`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-publishable-api-key': publishableKey || '',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            variant_id: variantId,
+            quantity,
+          }),
+        }
+      )
 
-      if (response.cart) {
-        setItems((response.cart.items || []) as CartItem[])
+      if (response.ok) {
+        const data = await response.json()
+        if (data?.cart?.items) {
+          // Map items to include description from product
+          const itemsWithDescription = data.cart.items.map((item: any) => ({
+            ...item,
+            description: item.product?.description || item.description,
+          }))
+          setItems(itemsWithDescription as CartItem[])
+        }
+      } else {
+        throw new Error('Failed to add item to cart')
       }
     } catch (error) {
       console.error('Error adding item to cart:', error)
+      throw error
     } finally {
       setIsLoading(false)
     }
@@ -233,12 +269,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true)
 
-      // Medusa v2: Use direct API call to update line item
+      // Medusa v2: Use direct API call to update line item with expanded fields
       const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
       const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 
       const response = await fetch(
-        `${backendUrl}/store/carts/${cartId}/line-items/${itemId}`,
+        `${backendUrl}/store/carts/${cartId}/line-items/${itemId}?fields=+items.product.description`,
         {
           method: 'POST',
           headers: {
@@ -252,8 +288,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       if (response.ok) {
         const data = await response.json()
-        if (data?.cart) {
-          setItems((data.cart.items || []) as CartItem[])
+        if (data?.cart?.items) {
+          // Map items to include description from product
+          const itemsWithDescription = data.cart.items.map((item: any) => ({
+            ...item,
+            description: item.product?.description || item.description,
+          }))
+          setItems(itemsWithDescription as CartItem[])
         }
       } else {
         const errorData = await response.json().catch(() => ({}))
@@ -274,12 +315,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true)
 
-      // Medusa v2: Use direct API call to delete line item
+      // Medusa v2: Use direct API call to delete line item with expanded fields
       const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
       const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 
       const response = await fetch(
-        `${backendUrl}/store/carts/${cartId}/line-items/${itemId}`,
+        `${backendUrl}/store/carts/${cartId}/line-items/${itemId}?fields=+items.product.description`,
         {
           method: 'DELETE',
           headers: {
@@ -292,8 +333,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       if (response.ok) {
         const data = await response.json()
-        if (data?.cart) {
-          setItems((data.cart.items || []) as CartItem[])
+        if (data?.cart?.items) {
+          // Map items to include description from product
+          const itemsWithDescription = data.cart.items.map((item: any) => ({
+            ...item,
+            description: item.product?.description || item.description,
+          }))
+          setItems(itemsWithDescription as CartItem[])
         } else {
           // If response doesn't include cart, manually filter out the item
           setItems(prevItems => prevItems.filter(item => item.id !== itemId))

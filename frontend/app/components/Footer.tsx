@@ -103,7 +103,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="border-t border-ocean-800 pt-8 mt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-ocean-400 text-sm">
+            <p className="text-ocean-300 text-sm">
               © 2025 Shenna&apos;s Studio. All rights reserved.
             </p>
           </div>
